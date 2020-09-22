@@ -1,0 +1,3 @@
+# Voyager 1
+
+compromising hyper-v at boot using an efi driver...
