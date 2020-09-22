@@ -1,8 +1,12 @@
 #include "types.h"
 
-void vmexit_handler(pcontext_t* context, void* unknown1, void* unknown2, void* unknown3)
+void vmexit_handler(pcontext_t* context, void* unknown)
 {
 	DBG_PRINT("vmexit called....\n");
-	DBG_PRINT("calling original vmexit handler....\n");
-	pvoyager_context->vmexit_handler(context, unknown1, unknown2, unknown3);
+
+	// when hyper-v gets remapped out of winload's context
+	// the linear virtual addresses change... thus an adjustment is required...
+	reinterpret_cast<vmexit_handler_t>(
+		reinterpret_cast<uintptr_t>(&vmexit_handler) - 
+			voyager_context.vmexit_handler_rva)(context, unknown);
 }

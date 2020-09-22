@@ -17,11 +17,11 @@ VOID* MapModule(PVOYAGER_DATA_T VoyagerData, UINT8* ImageBase);
 VOID* HookVmExit(VOID* HypervBase, VOID* HypervSize, VOID* VmExitHook);
 
 //
-// Given hyper-v's base address and size, sig scan it for vmexit handler, then construct "VOYAGER_DATA_T" 
-// using memory already allocated under hyper-v and under the memory allocated for the golden record...
+// creates a structure with all the data needed to be passed to the golden record...
 //
-PVOYAGER_DATA_T MakeVoyagerData
+VOID MakeVoyagerData
 (
+	PVOYAGER_DATA_T VoyagerData,
 	VOID* HypervAlloc,
 	UINT64 HypervAllocSize,
 	VOID* GoldenRecordAlloc,

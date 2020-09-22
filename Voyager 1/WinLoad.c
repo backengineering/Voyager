@@ -46,35 +46,33 @@ EFI_STATUS EFIAPI BlLdrLoadImage(VOID* Arg1, CHAR16* ModulePath, CHAR16* ModuleN
 		{
 			if (!AsciiStrCmp(&pSection->Name, ".reloc"))
 			{
-				PVOYAGER_DATA_T VoyagerData = MakeVoyagerData
+				VOYAGER_DATA_T VoyagerData;
+				MakeVoyagerData
 				(
-					// hyper-v allocation...
+					&VoyagerData,
 					TableEntry->ModuleBase,
 					TableEntry->SizeOfImage,
-
-					// space for golden record is going to be in .reloc section after .reloc data (dont overwrite anything)
 					TableEntry->ModuleBase + pSection->VirtualAddress + pSection->Misc.VirtualSize,
 					GetGoldenRecordSize()
 				);
 
-				VOID* VmExitHook = MapModule(VoyagerData, GoldenRecord);
-				// this makes hyper-v not load/work
+				VOID* VmExitHook = MapModule(&VoyagerData, GoldenRecord);
 				VOID* VmExitFunction = HookVmExit
 				(
-					VoyagerData->HypervModuleBase,
-					VoyagerData->HypervModuleSize,
+					VoyagerData.HypervModuleBase,
+					VoyagerData.HypervModuleSize,
 					VmExitHook
 				);
 
 				pSection->Characteristics = SECTION_RWX;
-				pSection->Misc.VirtualSize += GetGoldenRecordSize() + sizeof(_VOYAGER_DATA);
+				pSection->Misc.VirtualSize += GetGoldenRecordSize();
 				DBG_PRINT("VmExitHook (PayLoad Entry Point) -> 0x%p\n", VmExitHook);
 			}
 		}
 
 		// This fixes the allocation size to include whatever we want... dont ask me why this works it just does... LOL
-		HypervNtHeader->OptionalHeader.SizeOfImage += GetGoldenRecordSize() + sizeof(_VOYAGER_DATA);
-		TableEntry->SizeOfImage += GetGoldenRecordSize() + sizeof(_VOYAGER_DATA);
+		HypervNtHeader->OptionalHeader.SizeOfImage += GetGoldenRecordSize();
+		TableEntry->SizeOfImage += GetGoldenRecordSize();
 	}
 
 	DBG_PRINT("[%s] Image Base -> 0x%p, Image Size -> 0x%x\n", __FUNCTION__, (*lplpTableEntry)->ModuleBase, (*lplpTableEntry)->SizeOfImage);
@@ -96,7 +94,7 @@ UINT64 EFIAPI BlImgAllocateImageBuffer(VOID** imageBuffer, UINTN imageSize, UINT
 	if (HyperVloading && !ExtendedAllocation && ++AllocationCount == 2)
 	{
 		ExtendedAllocation = TRUE;
-		imageSize += GetGoldenRecordSize() + sizeof(_VOYAGER_DATA);
+		imageSize += GetGoldenRecordSize();
 
 		// allocate the entire hyper-v module as rwx...
 		memoryType = BL_MEMORY_ATTRIBUTE_RWX;

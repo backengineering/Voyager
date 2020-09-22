@@ -30,9 +30,9 @@ VOID* MapModule(PVOYAGER_DATA_T VoyagerData, UINT8* ImageBase)
 
 	for (UINT16 i = 0; i < ExportDir->AddressOfFunctions; i++)
 	{
-		if (AsciiStrStr(VoyagerData->ModuleBase + Name[i], "pvoyager_context"))
+		if (AsciiStrStr(VoyagerData->ModuleBase + Name[i], "voyager_context"))
 		{
-			*(VOID**)(VoyagerData->ModuleBase + Address[Ordinal[i]]) = VoyagerData;
+			*(VOYAGER_DATA_T*)(VoyagerData->ModuleBase + Address[Ordinal[i]]) = *VoyagerData;
 			break; // DO NOT REMOVE? Gorilla Code 2020...
 		}
 	}
@@ -77,16 +77,15 @@ VOID* MapModule(PVOYAGER_DATA_T VoyagerData, UINT8* ImageBase)
 	return VoyagerData->ModuleBase + ntHeaders->OptionalHeader.AddressOfEntryPoint;
 }
 
-PVOYAGER_DATA_T MakeVoyagerData
+VOID MakeVoyagerData
 (
+	PVOYAGER_DATA_T VoyagerData,
 	VOID* HypervAlloc,
 	UINT64 HypervAllocSize,
 	VOID* GoldenRecordAlloc,
 	UINT64 GoldenRecordSize
 )
 {
-	// the memory for the voyager data is allocated under the memory for the golden record...
-	PVOYAGER_DATA_T VoyagerData = (UINT64)GoldenRecordAlloc + GoldenRecordSize;
 	VoyagerData->HypervModuleBase = HypervAlloc;
 	VoyagerData->HypervModuleSize = HypervAllocSize;
 	VoyagerData->ModuleBase = GoldenRecordAlloc;
@@ -100,11 +99,6 @@ PVOYAGER_DATA_T MakeVoyagerData
 			"xxxxxxxxxxxxx?xxxx?x????x"
 		);
 
-	DBG_PRINT("VmExitHandler Call Signature Result -> 0x%p\n", VmExitHandler);
-
-	if (!VmExitHandler)
-		return NULL;
-
 	/*
 		.text:FFFFF80000237436                 mov     rcx, [rsp+arg_18] ; rcx = pointer to stack that contians all register values
 		.text:FFFFF8000023743B                 mov     rdx, [rsp+arg_28]
@@ -115,12 +109,7 @@ PVOYAGER_DATA_T MakeVoyagerData
 	UINT64 VmExitHandlerCall = ((UINT64)VmExitHandler) + 19; // + 19 bytes to -> call vmexit_c_handler
 	UINT64 VmExitHandlerCallRip = (UINT64)VmExitHandlerCall + 5; // + 5 bytes because "call vmexit_c_handler" is 5 bytes
 	UINT64 VmExitFunction = VmExitHandlerCallRip + *(INT32*)((UINT64)(VmExitHandlerCall + 1)); // + 1 to skip E8 (call) and read 4 bytes (RVA)
-	VoyagerData->VmExitHandler = VmExitFunction;
-
-	DBG_PRINT("VmExitHandlerCall -> 0x%p\n", VmExitHandlerCall);
-	DBG_PRINT("VmExitHandlerCallRip -> 0x%p\n", VmExitHandlerCallRip);
-	DBG_PRINT("VmExitFunction -> 0x%p\n", VmExitFunction);
-	return VoyagerData;
+	VoyagerData->VmExitHandlerRva = ((UINT64)GetGoldenRecordEntry(GoldenRecordAlloc)) - (UINT64)VmExitFunction;
 }
 
 VOID* HookVmExit(VOID* HypervBase, VOID* HypervSize, VOID* VmExitHook)
@@ -132,8 +121,6 @@ VOID* HookVmExit(VOID* HypervBase, VOID* HypervSize, VOID* VmExitHook)
 			VMEXIT_HANDLER,
 			"xxxxxxxxxxxxx?xxxx?x????x"
 		);
-
-	DBG_PRINT("VmExitHandler Call Signature Result -> 0x%p\n", VmExitHandler);
 
 	/*
 		.text:FFFFF80000237436                 mov     rcx, [rsp+arg_18] ; rcx = pointer to stack that contians all register values
@@ -147,11 +134,5 @@ VOID* HookVmExit(VOID* HypervBase, VOID* HypervSize, VOID* VmExitHook)
 	UINT64 VmExitFunction = VmExitHandlerCallRip + *(INT32*)((UINT64)(VmExitHandlerCall + 1)); // + 1 to skip E8 (call) and read 4 bytes (RVA)
 	INT32 NewVmExitRVA = ((INT64)VmExitHook) - VmExitHandlerCallRip;
 	*(INT32*)((UINT64)(VmExitHandlerCall + 1)) = NewVmExitRVA;
-
-	DBG_PRINT("VmExitHandlerCall -> 0x%p\n", VmExitHandlerCall);
-	DBG_PRINT("VmExitHandlerCallRip -> 0x%p\n", VmExitHandlerCallRip);
-	DBG_PRINT("VmExitFunction -> 0x%p\n", VmExitFunction);
-	DBG_PRINT("NewVmExitRVA -> 0x%x\n", NewVmExitRVA);
-
 	return VmExitFunction;
 }

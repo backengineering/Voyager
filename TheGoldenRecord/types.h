@@ -31,16 +31,18 @@ typedef struct _context_t
 	__m128 xmm4;
 	__m128 xmm5;
 } context_t, *pcontext_t;
-using vmexit_handler_t = void (__fastcall*)(pcontext_t* context, void* unknown1, void* unknown2, void* unknown3);
+using vmexit_handler_t = void (__fastcall*)(pcontext_t* context, void* unknown);
 
 #pragma pack(push, 1)
 typedef struct _VOYAGER_DATA_T
 {
-	vmexit_handler_t vmexit_handler;
+	// RVA from golden record entry ---> back to original vmexit handler...
+	uintptr_t vmexit_handler_rva; 
 	uintptr_t hyperv_module_base;
 	uintptr_t hyperv_module_size;
 	uintptr_t record_base;
 	uintptr_t record_size;
 } VOYAGER_DATA_T, *PVOYAGER_DATA_T;
 #pragma pack(pop)
-__declspec(dllexport) inline PVOYAGER_DATA_T pvoyager_context = nullptr;
+
+__declspec(dllexport) inline VOYAGER_DATA_T voyager_context;
