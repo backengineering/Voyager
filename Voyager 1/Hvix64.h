@@ -1,6 +1,25 @@
 #pragma once
 #include "TheGoldenRecord.h"
-#define VMEXIT_HANDLER "\x65\xC6\x04\x25\x6D\x00\x00\x00\x00\x48\x8B\x4C\x24\x20\x48\x8B\x54\x24\x30\xE8\x6B\xBF\xFE\xFF\xE9"
+
+#if WINVER == 2004
+#define VMEXIT_HANDLER_SIG "\x65\xC6\x04\x25\x6D\x00\x00\x00\x00\x48\x8B\x4C\x24\x00\x48\x8B\x54\x24\x00\xE8\x00\x00\x00\x00\xE9"
+#define VMEXIT_HANDLER_MASK "xxxxxxxxxxxxx?xxxx?x????x"
+#elif WINVER == 1909
+#define VMEXIT_HANDLER_SIG "\x48\x8B\x4C\x24\x00\xEB\x07\xE8\x00\x00\x00\x00\xEB\xF2\x48\x8B\x54\x24\x00\xE8\x00\x00\x00\x00\xE9"
+#define VMEXIT_HANDLER_MASK "xxxx?xxx????xxxxxx?x????x"
+#elif WINVER == 1903
+#define VMEXIT_HANDLER_SIG
+#define VMEXIT_HANDLER_MASK
+#elif WINVER == 1809
+#define VMEXIT_HANDLER_SIG
+#define VMEXIT_HANDLER_MASK
+#elif WINVER == 1803
+#define VMEXIT_HANDLER_SIG
+#define VMEXIT_HANDLER_MASK
+#endif
+
+static_assert(sizeof(VMEXIT_HANDLER_SIG) == sizeof(VMEXIT_HANDLER_MASK), "signature does not match mask size!");
+static_assert(sizeof(VMEXIT_HANDLER_SIG) == 26, "signature is invalid length!");
 
 //
 // AllocBase is the base address of the extra memory allocated below where hyper-v is

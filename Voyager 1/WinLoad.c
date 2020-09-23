@@ -2,7 +2,6 @@
 
 SHITHOOK WinLoadImageShitHook;
 SHITHOOK WinLoadAllocateImageHook;
-SHITHOOK VmExitHandlerShitHook;
 
 BOOLEAN HookedHyperV = FALSE;
 BOOLEAN HyperVloading = FALSE;
@@ -10,6 +9,7 @@ BOOLEAN ExtendedAllocation = FALSE;
 UINT64 AllocationCount = 0;
 CHAR8 ModuleNameStr[0x100];
 
+// thank you cr4sh! ::::)
 EFI_STATUS EFIAPI BlLdrLoadImage(VOID* Arg1, CHAR16* ModulePath, CHAR16* ModuleName, VOID* Arg4, VOID* Arg5, VOID* Arg6, VOID* Arg7, PPLDR_DATA_TABLE_ENTRY lplpTableEntry,
 	VOID* Arg9, VOID* Arg10, VOID* Arg11, VOID* Arg12, VOID* Arg13, VOID* Arg14, VOID* Arg15, VOID* Arg16)
 {
@@ -70,7 +70,6 @@ EFI_STATUS EFIAPI BlLdrLoadImage(VOID* Arg1, CHAR16* ModulePath, CHAR16* ModuleN
 			}
 		}
 
-		// This fixes the allocation size to include whatever we want... dont ask me why this works it just does... LOL
 		HypervNtHeader->OptionalHeader.SizeOfImage += GetGoldenRecordSize();
 		TableEntry->SizeOfImage += GetGoldenRecordSize();
 	}
@@ -103,5 +102,7 @@ UINT64 EFIAPI BlImgAllocateImageBuffer(VOID** imageBuffer, UINTN imageSize, UINT
 	DisableShitHook(&WinLoadAllocateImageHook);
 	UINT64 Result = ((ALLOCATE_IMAGE_BUFFER)WinLoadAllocateImageHook.Address)(imageBuffer, imageSize, memoryType, attributes, unused, flags);
 	EnableShitHook(&WinLoadAllocateImageHook);
+
+	DBG_PRINT("Allocated memory -> 0x%p, size -> 0x%x\n", *imageBuffer, imageSize);
 	return Result;
 }

@@ -176,6 +176,7 @@
     <ClCompile Include="vmexit_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ia32.hpp" />
     <ClInclude Include="types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -44,5 +44,4 @@ typedef struct _VOYAGER_DATA_T
 	uintptr_t record_size;
 } VOYAGER_DATA_T, *PVOYAGER_DATA_T;
 #pragma pack(pop)
-
 __declspec(dllexport) inline VOYAGER_DATA_T voyager_context;
