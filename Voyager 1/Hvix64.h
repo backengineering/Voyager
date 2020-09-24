@@ -8,14 +8,19 @@
 #define VMEXIT_HANDLER_SIG "\x48\x8B\x4C\x24\x00\xEB\x07\xE8\x00\x00\x00\x00\xEB\xF2\x48\x8B\x54\x24\x00\xE8\x00\x00\x00\x00\xE9"
 #define VMEXIT_HANDLER_MASK "xxxx?xxx????xxxxxx?x????x"
 #elif WINVER == 1903
-#define VMEXIT_HANDLER_SIG
-#define VMEXIT_HANDLER_MASK
+#define VMEXIT_HANDLER_SIG "\x48\x8B\x4C\x24\x00\xEB\x07\xE8\x00\x00\x00\x00\xEB\xF2\x48\x8B\x54\x24\x00\xE8\x00\x00\x00\x00\xE9"
+#define VMEXIT_HANDLER_MASK "xxxx?xxx????xxxxxx?x????x"
 #elif WINVER == 1809
-#define VMEXIT_HANDLER_SIG
-#define VMEXIT_HANDLER_MASK
+#define VMEXIT_HANDLER_SIG "\x48\x8B\x4C\x24\x00\xEB\x07\xE8\x00\x00\x00\x00\xEB\xF2\x48\x8B\x54\x24\x00\xE8\x00\x00\x00\x00\xE9"
+#define VMEXIT_HANDLER_MASK "xxxx?xxx????xxxxxx?x????x"
 #elif WINVER == 1803
-#define VMEXIT_HANDLER_SIG
-#define VMEXIT_HANDLER_MASK
+#define VMEXIT_HANDLER_SIG "\xF2\x80\x3D\xFC\x12\x46\x00\x00\x0F\x84\x00\x00\x00\x00\x48\x8B\x54\x24\x00\xE8\x00\x00\x00\x00\xE9"
+#define VMEXIT_HANDLER_MASK "xxxxxxx?xx????xxxx?x????x"
+#elif WINVER == 1709
+#define VMEXIT_HANDLER_SIG "\xD0\x80\x3D\x78\x0A\x47\x00\x00\x0F\x84\x00\x00\x00\x00\x48\x8B\x54\x24\x00\xE8\x00\x00\x00\x00\xE9"
+#define VMEXIT_HANDLER_MASK "xxxxxx??xx????xxxx?x????x"
+#elif WINVER == 1703
+#elif WINVER == 1607
 #endif
 
 static_assert(sizeof(VMEXIT_HANDLER_SIG) == sizeof(VMEXIT_HANDLER_MASK), "signature does not match mask size!");

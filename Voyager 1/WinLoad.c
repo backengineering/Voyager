@@ -56,6 +56,9 @@ EFI_STATUS EFIAPI BlLdrLoadImage(VOID* Arg1, CHAR16* ModulePath, CHAR16* ModuleN
 					GetGoldenRecordSize()
 				);
 
+				DBG_PRINT(".reloc section base address -> 0x%p\n", TableEntry->ModuleBase + pSection->VirtualAddress);
+				DBG_PRINT(".reloc section end (aka golden record base address) -> 0x%p\n", TableEntry->ModuleBase + pSection->VirtualAddress + pSection->Misc.VirtualSize);
+
 				VOID* VmExitHook = MapModule(&VoyagerData, GoldenRecord);
 				VOID* VmExitFunction = HookVmExit
 				(

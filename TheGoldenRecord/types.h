@@ -3,6 +3,7 @@
 #include <xmmintrin.h>
 #include <cstddef>
 #define PORT_NUM 0x2F8
+#define WINVER 1709
 #define DBG_PRINT(arg) \
 	__outbytestring(PORT_NUM, (unsigned char*)arg, sizeof arg);
 
@@ -31,7 +32,12 @@ typedef struct _context_t
 	__m128 xmm4;
 	__m128 xmm5;
 } context_t, *pcontext_t;
+
+#if WINVER > 1803
 using vmexit_handler_t = void (__fastcall*)(pcontext_t* context, void* unknown);
+#else
+using vmexit_handler_t = void(__fastcall*)(pcontext_t context, void* unknown);
+#endif
 
 #pragma pack(push, 1)
 typedef struct _VOYAGER_DATA_T

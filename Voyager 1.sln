@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Voyager 1", "Voyager 1\Voya
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TheGoldenRecord", "TheGoldenRecord\TheGoldenRecord.vcxproj", "{223D1FDE-331E-4028-9083-1673A5161C99}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DeepSpaceNetwork", "DeepSpaceNetwork\DeepSpaceNetwork.vcxproj", "{09B41831-3164-48AD-8660-23457D82B73B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -55,6 +57,18 @@ Global
 		{223D1FDE-331E-4028-9083-1673A5161C99}.Release|x86.ActiveCfg = Release|Win32
 		{223D1FDE-331E-4028-9083-1673A5161C99}.Release|x86.Build.0 = Release|Win32
 		{223D1FDE-331E-4028-9083-1673A5161C99}.Release|x86.Deploy.0 = Release|Win32
+		{09B41831-3164-48AD-8660-23457D82B73B}.Debug|ARM.ActiveCfg = Debug|Win32
+		{09B41831-3164-48AD-8660-23457D82B73B}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{09B41831-3164-48AD-8660-23457D82B73B}.Debug|x64.ActiveCfg = Debug|x64
+		{09B41831-3164-48AD-8660-23457D82B73B}.Debug|x64.Build.0 = Debug|x64
+		{09B41831-3164-48AD-8660-23457D82B73B}.Debug|x86.ActiveCfg = Debug|Win32
+		{09B41831-3164-48AD-8660-23457D82B73B}.Debug|x86.Build.0 = Debug|Win32
+		{09B41831-3164-48AD-8660-23457D82B73B}.Release|ARM.ActiveCfg = Release|Win32
+		{09B41831-3164-48AD-8660-23457D82B73B}.Release|ARM64.ActiveCfg = Release|Win32
+		{09B41831-3164-48AD-8660-23457D82B73B}.Release|x64.ActiveCfg = Release|x64
+		{09B41831-3164-48AD-8660-23457D82B73B}.Release|x64.Build.0 = Release|x64
+		{09B41831-3164-48AD-8660-23457D82B73B}.Release|x86.ActiveCfg = Release|Win32
+		{09B41831-3164-48AD-8660-23457D82B73B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

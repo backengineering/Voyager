@@ -106,11 +106,13 @@ VOID MakeVoyagerData
 		.text:FFFFF80000237445                 jmp     loc_FFFFF80000237100
 	*/
 
+
 	UINT64 VmExitHandlerCall = ((UINT64)VmExitHandler) + 19; // + 19 bytes to -> call vmexit_c_handler
 	UINT64 VmExitHandlerCallRip = (UINT64)VmExitHandlerCall + 5; // + 5 bytes because "call vmexit_c_handler" is 5 bytes
 	UINT64 VmExitFunction = VmExitHandlerCallRip + *(INT32*)((UINT64)(VmExitHandlerCall + 1)); // + 1 to skip E8 (call) and read 4 bytes (RVA)
 	VoyagerData->VmExitHandlerRva = ((UINT64)GetGoldenRecordEntry(GoldenRecordAlloc)) - (UINT64)VmExitFunction;
 
+	DBG_PRINT("VmExitHandler -> 0x%p\n", VmExitHandler);
 	DBG_PRINT("VmExitHandlerRva -> 0x%x\n", VoyagerData->VmExitHandlerRva);
 	DBG_PRINT("VmExitFunction -> 0x%p\n", VmExitFunction);
 	DBG_PRINT("VmExitHandlerCallRip -> 0x%p\n", VmExitHandlerCallRip);

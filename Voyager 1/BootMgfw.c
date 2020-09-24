@@ -62,8 +62,8 @@ EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE BootMgfwPath)
 		FindPattern(
 			BootMgfw->ImageBase, 
 			BootMgfw->ImageSize,
-			START_BOOT_APPLICATION, 
-			"xxxxxxxxxxxxxxxxxxxxxxxx"
+			START_BOOT_APPLICATION_SIG, 
+			START_BOOT_APPLICATION_MASK
 		);
 
 	Print(L"ArchStartBootApplication -> 0x%p\n", ArchStartBootApplication);
@@ -80,7 +80,7 @@ EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, 
 			ImageBase,
 			ImageSize,
 			ALLOCATE_IMAGE_BUFFER_SIG,
-			"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+			ALLOCATE_IMAGE_BUFFER_MASK
 		);
 
 	Print(L"PE PayLoad Size -> 0x%x\n", GetGoldenRecordSize());
