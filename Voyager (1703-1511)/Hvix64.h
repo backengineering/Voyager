@@ -1,14 +1,8 @@
 #pragma once
 #include "PayLoad.h"
-
 #define HV_ALLOC_SIZE 0x1400000
-#if WINVER == 1703
-#define VMEXIT_HANDLER_SIG "\xD0\x80\x3D\x74\xCC\x47\x00\x00\x0F\x84\x00\x00\x00\x00\x48\x8B\x54\x24\x00\xE8\x00\x00\x00\x00\xE9"
-#define VMEXIT_HANDLER_MASK "xxxxxx??xx????xxxx?x????x"
-#elif WINVER == 1607
-#define VMEXIT_HANDLER_SIG "\xD0\x80\x3D\xB4\x9F\x49\x00\x00\x0F\x84\x00\x00\x00\x00\x48\x8B\x54\x24\x00\xE8\x00\x00\x00\x00\xE9"
-#define VMEXIT_HANDLER_MASK "xxxxxx??xx????xxxx?x????x"
-#endif
+#define VMEXIT_HANDLER_SIG "\xD0\x80\x00\x00\x00\x00\x00\x00\x0F\x84\x00\x00\x00\x00\x48\x8B\x54\x24\x00\xE8\x00\x00\x00\x00\xE9"
+#define VMEXIT_HANDLER_MASK "xx????x?xx????xxxx?x????x"
 
 static_assert(sizeof(VMEXIT_HANDLER_SIG) == sizeof(VMEXIT_HANDLER_MASK), "signature does not match mask size!");
 static_assert(sizeof(VMEXIT_HANDLER_SIG) == 26, "signature is invalid length!");

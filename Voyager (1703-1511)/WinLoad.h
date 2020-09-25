@@ -8,7 +8,7 @@ extern SHITHOOK WinLoadImageShitHook;
 #if WINVER == 1703
 #define LOAD_PE_IMG_SIG "\xE8\x00\x00\x00\x00\x85\xC0\x79\x45"
 #define LOAD_PE_IMG_MASK "x????xxxx"
-#elif WINVER == 1607
+#elif WINVER <= 1607 // works for 1511
 #define LOAD_PE_IMG_SIG "\xE8\x00\x00\x00\x00\x48\x8B\x7D\xF7"
 #define LOAD_PE_IMG_MASK "x????xxxx"
 #endif

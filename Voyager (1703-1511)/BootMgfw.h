@@ -13,10 +13,8 @@
 #include <Guid/GlobalVariable.h>
 #include "WinLoad.h"
 
-#if WINVER >= 1607
 #define START_BOOT_APPLICATION_SIG "\xE8\x00\x00\x00\x00\x48\x8B\xCE\x8B\xD8\xE8\x00\x00\x00\x00\x41\x8B\xCF"
 #define START_BOOT_APPLICATION_MASK "x????xxxxxx????xxx"
-#endif
 
 static_assert(sizeof(START_BOOT_APPLICATION_SIG) == sizeof(START_BOOT_APPLICATION_MASK), "signature and mask size's dont match...");
 #define WINDOWS_BOOTMGR_PATH L"\\efi\\microsoft\\boot\\bootmgfw.efi"
