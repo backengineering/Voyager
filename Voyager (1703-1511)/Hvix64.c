@@ -33,7 +33,7 @@ VOID* MapModule(PVOYAGER_DATA_T VoyagerData, UINT8* ImageBase)
 		if (AsciiStrStr(VoyagerData->ModuleBase + Name[i], "voyager_context"))
 		{
 			*(VOYAGER_DATA_T*)(VoyagerData->ModuleBase + Address[Ordinal[i]]) = *VoyagerData;
-			break; // DO NOT REMOVE? :|
+			break;
 		}
 	}
 
@@ -110,12 +110,6 @@ VOID MakeVoyagerData
 	UINT64 VmExitHandlerCallRip = (UINT64)VmExitHandlerCall + 5; // + 5 bytes because "call vmexit_c_handler" is 5 bytes
 	UINT64 VmExitFunction = VmExitHandlerCallRip + *(INT32*)((UINT64)(VmExitHandlerCall + 1)); // + 1 to skip E8 (call) and read 4 bytes (RVA)
 	VoyagerData->VmExitHandlerRva = ((UINT64)PayLoadEntry(PayLoadBase)) - (UINT64)VmExitFunction;
-
-	DBG_PRINT("VmExitHandler -> 0x%p\n", VmExitHandler);
-	DBG_PRINT("VmExitHandlerRva -> 0x%x\n", VoyagerData->VmExitHandlerRva);
-	DBG_PRINT("VmExitFunction -> 0x%p\n", VmExitFunction);
-	DBG_PRINT("VmExitHandlerCallRip -> 0x%p\n", VmExitHandlerCallRip);
-	DBG_PRINT("VmExitHandlerCall -> 0x%p\n", VmExitHandlerCall);
 }
 
 VOID* HookVmExit(VOID* HypervBase, VOID* HypervSize, VOID* VmExitHook)
@@ -140,6 +134,5 @@ VOID* HookVmExit(VOID* HypervBase, VOID* HypervSize, VOID* VmExitHook)
 	UINT64 VmExitFunction = VmExitHandlerCallRip + *(INT32*)((UINT64)(VmExitHandlerCall + 1)); // + 1 to skip E8 (call) and read 4 bytes (RVA)
 	INT32 NewVmExitRVA = ((INT64)VmExitHook) - VmExitHandlerCallRip;
 	*(INT32*)((UINT64)(VmExitHandlerCall + 1)) = NewVmExitRVA;
-	DBG_PRINT("NewVmExitRVA -> 0x%x\n", NewVmExitRVA);
 	return VmExitFunction;
 }

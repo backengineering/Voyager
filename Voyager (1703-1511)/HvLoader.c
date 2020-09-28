@@ -5,7 +5,6 @@ SHITHOOK HvLoadImageBufferHook;
 SHITHOOK HvLoadAllocImageHook;
 BOOLEAN ExtendedAllocation = FALSE;
 BOOLEAN HookedHyperV = FALSE;
-CHAR8 ModulePathCString[0x100];
 
 EFI_STATUS EFIAPI HvBlImgLoadPEImageFromSourceBuffer(VOID* a1, VOID* a2, VOID* a3, VOID* a4, UINT64* ImageBase,
 	UINT32* ImageSize, VOID* a7, VOID* a8, VOID* a9, VOID* a10, VOID* a11, VOID* a12, VOID* a13, VOID* a14, VOID* a15)
@@ -72,10 +71,6 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageFromSourceBuffer(VOID* a1, VOID* a2, VOID* a
 EFI_STATUS EFIAPI HvBlImgLoadPEImageEx(VOID* DeviceId, VOID* MemoryType, CHAR16* Path, UINT64* ImageBase, UINT32* ImageSize,
 	VOID* Hash, VOID* Flags, VOID* a8, VOID* a9, VOID* a10, VOID* a11, VOID* a12, VOID* a13)
 {
-	UnicodeStrToAsciiStr(Path, ModulePathCString);
-	DBG_PRINT("LOADING FROM HVLOADER: ");
-	DBG_PRINT(ModulePathCString);
-
 	DisableShitHook(&HvLoadImageHook);
 	EFI_STATUS Result = ((HV_LDR_LOAD_IMAGE)HvLoadImageHook.Address)(DeviceId, MemoryType, Path, ImageBase, ImageSize, Hash, Flags, a8,
 		a9, a10, a11, a12, a13);

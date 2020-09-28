@@ -28,6 +28,6 @@ static_assert(sizeof(START_BOOT_APPLICATION_SIG) == sizeof(START_BOOT_APPLICATIO
 #define WINDOWS_BOOTMGR_PATH L"\\efi\\microsoft\\boot\\bootmgfw.efi"
 extern SHITHOOK BootMgfwShitHook;
 typedef EFI_STATUS(EFIAPI* IMG_ARCH_START_BOOT_APPLICATION)(VOID*, VOID*, UINT32, UINT8, VOID*);
-EFI_DEVICE_PATH* EFIAPI GetBootMgfwPath(VOID);
+EFI_STATUS EFIAPI GetBootMgfwPath(EFI_DEVICE_PATH_PROTOCOL** BootMgfwPathProtocol);
 EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE BootMgfwPath);
 EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, UINT32 ImageSize, UINT8 BootOption, VOID* ReturnArgs);

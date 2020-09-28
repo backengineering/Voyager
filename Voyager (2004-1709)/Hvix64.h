@@ -22,7 +22,6 @@
 #elif WINVER == 1703
 #define VMEXIT_HANDLER_SIG "\xD0\x80\x3D\x74\xCC\x47\x00\x00\x0F\x84\x00\x00\x00\x00\x48\x8B\x54\x24\x00\xE8\x00\x00\x00\x00\xE9"
 #define VMEXIT_HANDLER_MASK "xxxxxx??xx????xxxx?x????x"
-#elif WINVER == 1607
 #endif
 
 static_assert(sizeof(VMEXIT_HANDLER_SIG) == sizeof(VMEXIT_HANDLER_MASK), "signature does not match mask size!");

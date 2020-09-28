@@ -20,7 +20,6 @@ void vmexit_handler(pcontext_t context, void* unknown)
 	{
 		if (guest_registers->rcx == VMEXIT_KEY)
 		{
-			DBG_PRINT("got cpuid call...\n");
 			guest_registers->rax = 0xC0FFEE;
 
 			// advance rip, no one better execute cpuid instruction
