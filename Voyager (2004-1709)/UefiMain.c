@@ -1,5 +1,4 @@
 #include "BootMgfw.h"
-#include <Library/ShellLib.h>
 
 CHAR8* gEfiCallerBaseName = "Voyager";
 const UINT32 _gUefiDriverRevision = 0x200;
@@ -7,7 +6,9 @@ const UINT32 _gUefiDriverRevision = 0x200;
 EFI_STATUS EFIAPI UefiUnload(
     IN EFI_HANDLE ImageHandle
 )
-{ return EFI_SUCCESS; }
+{
+    return EFI_SUCCESS;
+}
 
 EFI_STATUS EFIAPI UefiMain
 (
@@ -16,31 +17,17 @@ EFI_STATUS EFIAPI UefiMain
 )
 {
     EFI_STATUS Result;
-    EFI_HANDLE BootMgfwHandle;
-    EFI_DEVICE_PATH* BootMgfwPath;
-
-    if (EFI_ERROR((Result = GetBootMgfwPath(&BootMgfwPath))))
+    EFI_DEVICE_PATH_PROTOCOL* BootMgfwPath;
+    if (EFI_ERROR((Result = RestoreBootMgfw())))
     {
-        Print(L"unable to get bootmgfw file path... reason -> %r\n", Result);
-        return EFI_NOT_FOUND;
+        DBG_PRINT("unable to get bootmgfw path... reason -> %r\n", Result);
+        return Result;
     }
 
-    if (EFI_ERROR((Result = gBS->LoadImage(TRUE, ImageHandle, BootMgfwPath, NULL, 0, &BootMgfwHandle))))
+    if (EFI_ERROR((Result = InstallBootMgfwHooks(ImageHandle))))
     {
-        Print(L"failed to load bootmgfw.efi...\n");
-        return EFI_ABORTED;
-    }
-
-    if (EFI_ERROR(InstallBootMgfwHooks(BootMgfwHandle)))
-    {
-        Print(L"Failed to install bootmgfw hooks...\n");
-        return EFI_ABORTED;
-    }
-
-    if (EFI_ERROR(gBS->StartImage(BootMgfwHandle, NULL, NULL)))
-    {
-        Print(L"Failed to start bootmgfw.efi...\n");
-        return EFI_ABORTED;
+        DBG_PRINT("Failed to install bootmgfw hooks... reason -> %r\n", Result);
+        return Result;
     }
     return EFI_SUCCESS;
 }

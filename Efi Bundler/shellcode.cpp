@@ -16,7 +16,7 @@ namespace shellcode
 			auto reloc = reinterpret_cast<PIMAGE_BASE_RELOCATION>(module_base + base_reloc_dir->VirtualAddress);
 			for (auto current_size = 0u; current_size < base_reloc_dir->Size; )
 			{
-				auto reloc_count = (reloc->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(UINT16);
+				std::uint32_t reloc_count = (reloc->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(UINT16);
 				auto reloc_data = reinterpret_cast<std::uint16_t*>((UINT8*)reloc + sizeof(IMAGE_BASE_RELOCATION));
 				auto reloc_base = reinterpret_cast<std::uint8_t*>(module_base) + reloc->VirtualAddress;
 
@@ -28,6 +28,8 @@ namespace shellcode
 
 					switch (type)
 					{
+					case IMAGE_REL_BASED_ABSOLUTE:
+						break;
 					case IMAGE_REL_BASED_DIR64:
 					{
 						auto rva = reinterpret_cast<std::uintptr_t*>(reloc_base + offset);

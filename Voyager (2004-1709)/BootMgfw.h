@@ -11,6 +11,7 @@
 #include <Protocol/LoadedImage.h>
 #include <IndustryStandard/PeImage.h>
 #include <Guid/GlobalVariable.h>
+#include <Library/ShellLib.h>
 #include "WinLoad.h"
 
 #if WINVER > 1709
@@ -25,9 +26,11 @@
 #endif
 
 static_assert(sizeof(START_BOOT_APPLICATION_SIG) == sizeof(START_BOOT_APPLICATION_MASK), "signature and mask size's dont match...");
-#define WINDOWS_BOOTMGR_PATH L"\\efi\\microsoft\\boot\\bootmgfw.efi"
+#define WINDOWS_BOOTMGFW_PATH L"\\efi\\microsoft\\boot\\bootmgfw.efi"
+#define WINDOWS_BOOTMGFW_BACKUP_PATH L"\\efi\\microsoft\\boot\\bootmgfw.efi.backup"
+
 extern SHITHOOK BootMgfwShitHook;
 typedef EFI_STATUS(EFIAPI* IMG_ARCH_START_BOOT_APPLICATION)(VOID*, VOID*, UINT32, UINT8, VOID*);
-EFI_STATUS EFIAPI GetBootMgfwPath(EFI_DEVICE_PATH_PROTOCOL** BootMgfwPathProtocol);
+EFI_STATUS EFIAPI RestoreBootMgfw(VOID);
 EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE BootMgfwPath);
 EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, UINT32 ImageSize, UINT8 BootOption, VOID* ReturnArgs);

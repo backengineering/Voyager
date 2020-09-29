@@ -15,31 +15,17 @@ EFI_STATUS EFIAPI UefiMain
 )
 {
     EFI_STATUS Result;
-    EFI_HANDLE BootMgfwHandle;
-    EFI_DEVICE_PATH* BootMgfwPath;
-
-    if (EFI_ERROR((Result = GetBootMgfwPath(&BootMgfwPath))))
+    EFI_DEVICE_PATH_PROTOCOL* BootMgfwPath;
+    if (EFI_ERROR((Result = RestoreBootMgfw())))
     {
-        Print(L"unable to get bootmgfw file path... reason -> %r\n", Result);
-        return EFI_NOT_FOUND;
+        DBG_PRINT("unable to get bootmgfw path... reason -> %r\n", Result);
+        return Result;
     }
 
-    if (EFI_ERROR((Result = gBS->LoadImage(TRUE, ImageHandle, BootMgfwPath, NULL, 0, &BootMgfwHandle))))
+    if (EFI_ERROR((Result = InstallBootMgfwHooks(ImageHandle))))
     {
-        Print(L"failed to load bootmgfw.efi... reason -> %r\n", Result);
-        return EFI_ABORTED;
-    }
-
-    if (EFI_ERROR((Result = InstallBootMgfwHooks(BootMgfwHandle))))
-    {
-        Print(L"Failed to install bootmgfw hooks... reason -> %r\n", Result);
-        return EFI_ABORTED;
-    }
-
-    if (EFI_ERROR((Result = gBS->StartImage(BootMgfwHandle, NULL, NULL))))
-    {
-        Print(L"Failed to start bootmgfw.efi...\n");
-        return EFI_ABORTED;
+        DBG_PRINT("Failed to install bootmgfw hooks... reason -> %r\n", Result);
+        return Result;
     }
     return EFI_SUCCESS;
 }
