@@ -1,3 +1,3 @@
-# Voyager - A Hyper-v Hacking Framework For Windows 10-x64 (2004-1511)
+# Voyager - A Hyper-v Hacking Framework For Windows 10 x64 (AMD & Intel)
 
 compromising hyper-v at boot using an efi driver...
