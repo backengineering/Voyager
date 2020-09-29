@@ -18,7 +18,7 @@ EFI_STATUS EFIAPI UefiMain
     EFI_DEVICE_PATH_PROTOCOL* BootMgfwPath;
     if (EFI_ERROR((Result = RestoreBootMgfw())))
     {
-        DBG_PRINT("unable to get bootmgfw path... reason -> %r\n", Result);
+        DBG_PRINT("unable to restore bootmgfw... reason -> %r\n", Result);
         return Result;
     }
 

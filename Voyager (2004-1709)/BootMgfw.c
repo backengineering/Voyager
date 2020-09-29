@@ -6,20 +6,17 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 	UINTN HandleCount = NULL;
 	EFI_STATUS Result;
 	EFI_HANDLE* Handles = NULL;
-	EFI_DEVICE_PATH* DevicePath = NULL;
 	EFI_FILE_HANDLE VolumeHandle;
 	EFI_FILE_HANDLE BootMgfwHandle;
 	EFI_FILE_IO_INTERFACE* FileSystem = NULL;
 
-	// get all the handles to file systems...
 	if (EFI_ERROR((Result = gBS->LocateHandleBuffer(ByProtocol, &gEfiSimpleFileSystemProtocolGuid, NULL, &HandleCount, &Handles))))
 	{
 		DBG_PRINT("error getting file system handles -> 0x%p\n", Result);
 		return Result;
 	}
 
-	// for each handle to the file system, open a protocol with it...
-	for (UINT32 Idx = 0u; Idx < HandleCount && !FileSystem; ++Idx)
+	for (UINT32 Idx = 0u; Idx < HandleCount; ++Idx)
 	{
 		if (EFI_ERROR((Result = gBS->OpenProtocol(Handles[Idx], &gEfiSimpleFileSystemProtocolGuid, (VOID**)&FileSystem, gImageHandle, NULL, EFI_OPEN_PROTOCOL_GET_PROTOCOL))))
 		{
@@ -33,11 +30,13 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 			return Result;
 		}
 
-		if (!EFI_ERROR(VolumeHandle->Open(VolumeHandle, &BootMgfwHandle, WINDOWS_BOOTMGFW_PATH, EFI_FILE_MODE_READ, EFI_FILE_READ_ONLY)))
+		if (!EFI_ERROR((Result = VolumeHandle->Open(VolumeHandle, &BootMgfwHandle, WINDOWS_BOOTMGFW_PATH, EFI_FILE_MODE_READ, EFI_FILE_READ_ONLY))))
 		{
+			VolumeHandle->Close(VolumeHandle);
 			EFI_FILE_PROTOCOL* BootMgfwFile = NULL;
 			EFI_DEVICE_PATH* BootMgfwPathProtocol = FileDevicePath(Handles[Idx], WINDOWS_BOOTMGFW_PATH);
 
+			// open bootmgfw as read/write then delete it...
 			if (EFI_ERROR((Result = EfiOpenFileByDevicePath(&BootMgfwPathProtocol, &BootMgfwFile, EFI_FILE_MODE_WRITE | EFI_FILE_MODE_READ, NULL))))
 			{
 				DBG_PRINT("error opening bootmgfw... reason -> %r\n", Result);
@@ -50,6 +49,7 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 				return Result;
 			}
 
+			// open bootmgfw.efi.backup
 			BootMgfwPathProtocol = FileDevicePath(Handles[Idx], WINDOWS_BOOTMGFW_BACKUP_PATH);
 			if (EFI_ERROR((Result = EfiOpenFileByDevicePath(&BootMgfwPathProtocol, &BootMgfwFile, EFI_FILE_MODE_WRITE | EFI_FILE_MODE_READ, NULL))))
 			{
@@ -59,6 +59,8 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 
 			EFI_FILE_INFO* FileInfoPtr = NULL;
 			UINTN FileInfoSize = NULL;
+
+			// get the size of bootmgfw.efi.backup...
 			if (EFI_ERROR((Result = BootMgfwFile->GetInfo(BootMgfwFile, &gEfiFileInfoGuid, &FileInfoSize, NULL))))
 			{
 				if (Result == EFI_BUFFER_TOO_SMALL)
@@ -76,22 +78,26 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 					return Result;
 				}
 			}
+
 			VOID* BootMgfwBuffer = NULL;
+			UINTN BootMgfwSize = FileInfoPtr->FileSize;
 			gBS->AllocatePool(EfiBootServicesData, FileInfoPtr->FileSize, &BootMgfwBuffer);
 
-			UINTN BootMgfwSize = FileInfoPtr->FileSize;
+			// read the backup file into an allocated pool...
 			if (EFI_ERROR((Result = BootMgfwFile->Read(BootMgfwFile, &BootMgfwSize, BootMgfwBuffer))))
 			{
 				DBG_PRINT("Failed to read backup file into buffer... reason -> %r\n", Result);
 				return Result;
 			}
 
+			// delete the backup file...
 			if (EFI_ERROR((Result = BootMgfwFile->Delete(BootMgfwFile))))
 			{
 				DBG_PRINT("unable to delete backup file... reason -> %r\n", Result);
 				return Result;
 			}
 
+			// create a new bootmgfw file...
 			BootMgfwPathProtocol = FileDevicePath(Handles[Idx], WINDOWS_BOOTMGFW_PATH);
 			if (EFI_ERROR((Result = EfiOpenFileByDevicePath(&BootMgfwPathProtocol, &BootMgfwFile, EFI_FILE_MODE_CREATE | EFI_FILE_MODE_WRITE | EFI_FILE_MODE_READ, EFI_FILE_SYSTEM))))
 			{
@@ -99,6 +105,7 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 				return Result;
 			}
 
+			// write the data from the backup file to the new bootmgfw file...
 			BootMgfwSize = FileInfoPtr->FileSize;
 			if (EFI_ERROR((Result = BootMgfwFile->Write(BootMgfwFile, &BootMgfwSize, BootMgfwBuffer))))
 			{
@@ -106,7 +113,6 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 				return Result;
 			}
 
-			VolumeHandle->Close(VolumeHandle);
 			BootMgfwFile->Close(BootMgfwFile);
 			gBS->FreePool(FileInfoPtr);
 			gBS->FreePool(BootMgfwBuffer);
@@ -119,6 +125,8 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 			return Result;
 		}
 	}
+
+	gBS->FreePool(Handles);
 	return EFI_ABORTED;
 }
 
@@ -160,7 +168,7 @@ EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, 
 			ALLOCATE_IMAGE_BUFFER_MASK
 		);
 
-	Print(L"PE PayLoad Size -> 0x%x\n", PayLoadSize());
+	Print(L"Hyper-V PayLoad Size -> 0x%x\n", PayLoadSize());
 	Print(L"winload base -> 0x%p\n", ImageBase);
 	Print(L"winload size -> 0x%x\n", ImageSize);
 	Print(L"winload.BlLdrLoadImage -> 0x%p\n", LdrLoadImage);

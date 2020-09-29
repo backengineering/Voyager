@@ -3,7 +3,7 @@
 #include <xmmintrin.h>
 #include <cstddef>
 #define PORT_NUM 0x2F8
-#define WINVER 1709
+#define WINVER 2004
 #define DBG_PRINT(arg) \
 	__outbytestring(PORT_NUM, (unsigned char*)arg, sizeof arg);
 

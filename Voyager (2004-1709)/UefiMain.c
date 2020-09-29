@@ -6,9 +6,7 @@ const UINT32 _gUefiDriverRevision = 0x200;
 EFI_STATUS EFIAPI UefiUnload(
     IN EFI_HANDLE ImageHandle
 )
-{
-    return EFI_SUCCESS;
-}
+{ return EFI_SUCCESS; }
 
 EFI_STATUS EFIAPI UefiMain
 (
@@ -18,9 +16,10 @@ EFI_STATUS EFIAPI UefiMain
 {
     EFI_STATUS Result;
     EFI_DEVICE_PATH_PROTOCOL* BootMgfwPath;
+
     if (EFI_ERROR((Result = RestoreBootMgfw())))
     {
-        DBG_PRINT("unable to get bootmgfw path... reason -> %r\n", Result);
+        DBG_PRINT("unable to restore bootmgfw... reason -> %r\n", Result);
         return Result;
     }
 
