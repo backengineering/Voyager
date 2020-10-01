@@ -9,7 +9,7 @@
 
 namespace bundler
 {
-	std::pair<std::uint32_t, std::uint32_t> add_section(std::vector<std::uint8_t>& image, const char* name, std::size_t size, std::uint32_t protect);
-	std::uint32_t map_module(std::uint8_t* module_base, std::vector<std::uint8_t>& map_from);
-	void bundle(std::vector<std::uint8_t>& bundle_into, std::vector<std::uint8_t>& bundle_module);
+	std::pair<std::u32_t, std::u32_t> add_section(std::vector<std::u8_t>& image, const char* name, std::size_t size, std::u32_t protect);
+	std::u32_t map_module(std::u8_t* module_base, std::vector<std::u8_t>& map_from);
+	void bundle(std::vector<std::u8_t>& bundle_into, std::vector<std::u8_t>& bundle_module);
 }

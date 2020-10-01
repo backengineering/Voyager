@@ -2,9 +2,9 @@
 
 namespace bundler
 {
-	std::pair<std::uint32_t, std::uint32_t> add_section(std::vector<std::uint8_t>& image, const char* name, std::size_t size, std::uint32_t protect)
+	std::pair<std::u32_t, std::u32_t> add_section(std::vector<std::u8_t>& image, const char* name, std::size_t size, std::u32_t protect)
 	{
-		auto align = [](std::uint32_t size, std::uint32_t align, std::uint32_t addr) -> std::uint32_t
+		auto align = [](std::u32_t size, std::u32_t align, std::u32_t addr) -> std::u32_t
 		{
 			if (!(size % align))
 				return addr + size;
@@ -12,7 +12,7 @@ namespace bundler
 		};
 
 		auto section_header = reinterpret_cast<PIMAGE_SECTION_HEADER>(
-			((UINT64)&NT_HEADER(image.data())->OptionalHeader) +
+			((u64)&NT_HEADER(image.data())->OptionalHeader) +
 				NT_HEADER(image.data())->FileHeader.SizeOfOptionalHeader);
 
 		auto new_section = &section_header[NT_HEADER(image.data())->FileHeader.NumberOfSections];
@@ -51,12 +51,12 @@ namespace bundler
 	}
 
 	// module_base is .efi section base in this case...
-	std::uint32_t map_module(std::uint8_t* module_base, std::vector<std::uint8_t>& map_from)
+	std::u32_t map_module(std::u8_t* module_base, std::vector<std::u8_t>& map_from)
 	{
 		// copy nt headers...
 		memcpy(module_base, map_from.data(), NT_HEADER(map_from.data())->OptionalHeader.SizeOfHeaders);
 		auto sections = reinterpret_cast<PIMAGE_SECTION_HEADER>(
-			(UINT8*)&NT_HEADER(map_from.data())->OptionalHeader +
+			(u8*)&NT_HEADER(map_from.data())->OptionalHeader +
 				NT_HEADER(map_from.data())->FileHeader.SizeOfOptionalHeader);
 
 		// copy sections...
@@ -69,7 +69,7 @@ namespace bundler
 		return NT_HEADER(map_from.data())->OptionalHeader.AddressOfEntryPoint;
 	}
 
-	void bundle(std::vector<std::uint8_t>& bundle_into, std::vector<std::uint8_t>& bundle_module)
+	void bundle(std::vector<std::u8_t>& bundle_into, std::vector<std::u8_t>& bundle_module)
 	{
 		auto [trp_section_disk, trp_section_virt] = add_section(bundle_into, ".trp", sizeof shellcode::stub, SECTION_RWX);
 		auto [mod_section_disk, mod_section_virt] = add_section(bundle_into, ".efi", bundle_module.size(), SECTION_RWX);

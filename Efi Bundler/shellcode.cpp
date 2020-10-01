@@ -16,15 +16,15 @@ namespace shellcode
 			auto reloc = reinterpret_cast<PIMAGE_BASE_RELOCATION>(module_base + base_reloc_dir->VirtualAddress);
 			for (auto current_size = 0u; current_size < base_reloc_dir->Size; )
 			{
-				std::uint32_t reloc_count = (reloc->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(UINT16);
-				auto reloc_data = reinterpret_cast<std::uint16_t*>((UINT8*)reloc + sizeof(IMAGE_BASE_RELOCATION));
-				auto reloc_base = reinterpret_cast<std::uint8_t*>(module_base) + reloc->VirtualAddress;
+				std::u32_t reloc_count = (reloc->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(u16);
+				auto reloc_data = reinterpret_cast<std::u16_t*>((u8*)reloc + sizeof(IMAGE_BASE_RELOCATION));
+				auto reloc_base = reinterpret_cast<std::u8_t*>(module_base) + reloc->VirtualAddress;
 
 				for (auto i = 0u; i < reloc_count; ++i, ++reloc_data)
 				{
-					std::uint16_t data = *reloc_data;
-					std::uint16_t type = data >> 12;
-					std::uint16_t offset = data & 0xFFF;
+					std::u16_t data = *reloc_data;
+					std::u16_t type = data >> 12;
+					std::u16_t offset = data & 0xFFF;
 
 					switch (type)
 					{

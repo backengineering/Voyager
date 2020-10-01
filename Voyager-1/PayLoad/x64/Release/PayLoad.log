@@ -1,0 +1,7 @@
+﻿  Building 'PayLoad' with toolset 'WindowsKernelModeDriver10.0' and the 'Universal' target platform.
+  vmexit_handler.cpp
+     Creating library C:\Users\xerox\Desktop\voyager\Voyager-1\x64\Release\PayLoad.lib and object C:\Users\xerox\Desktop\voyager\Voyager-1\x64\Release\PayLoad.exp
+  PayLoad.vcxproj -> C:\Users\xerox\Desktop\voyager\Voyager-1\x64\Release\PayLoad.dll
+  Driver is 'Universal'.
+  Inf2Cat task was skipped as there were no inf files to process
+  
