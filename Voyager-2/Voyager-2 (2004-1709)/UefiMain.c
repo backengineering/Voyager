@@ -22,11 +22,14 @@ EFI_STATUS EFIAPI UefiMain
         DBG_PRINT("unable to restore bootmgfw... reason -> %r\n", Result);
         return Result;
     }
+    DBG_PRINT("restored bootmgfw on disk...\n");
 
     if (EFI_ERROR((Result = InstallBootMgfwHooks(ImageHandle))))
     {
         DBG_PRINT("Failed to install bootmgfw hooks... reason -> %r\n", Result);
         return Result;
     }
+
+    DBG_PRINT("installed bootmgfw hooks...\n");
     return EFI_SUCCESS;
 }

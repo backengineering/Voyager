@@ -138,8 +138,8 @@ EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE BootMgfwPath)
 	if (EFI_ERROR((Result = gBS->HandleProtocol(BootMgfwPath, &gEfiLoadedImageProtocolGuid, (VOID**)&BootMgfw))))
 		return Result;
 
-	Print(L"Image Base -> 0x%p\n", BootMgfw->ImageBase);
-	Print(L"Image Size -> 0x%x\n", BootMgfw->ImageSize);
+	DBG_PRINT("Image Base -> 0x%p\n", BootMgfw->ImageBase);
+	DBG_PRINT("Image Size -> 0x%x\n", BootMgfw->ImageSize);
 	VOID* ArchStartBootApplication = 
 		FindPattern(
 			BootMgfw->ImageBase, 
@@ -148,10 +148,7 @@ EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE BootMgfwPath)
 			START_BOOT_APPLICATION_MASK
 		);
 
-	if (!ArchStartBootApplication)
-		return EFI_ABORTED;
-
-	DBG_PRINT(L"ArchStartBootApplication -> 0x%p\n", ArchStartBootApplication);
+	DBG_PRINT("ArchStartBootApplication -> 0x%p\n", ArchStartBootApplication);
 	MakeShitHook(&BootMgfwShitHook, ArchStartBootApplication, &ArchStartBootApplicationHook, TRUE);
 	return Result;
 }
@@ -181,6 +178,7 @@ EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, 
 	}
 	else
 	{
+		DBG_PRINT("some signature for winload found nothing (0), aborting...\n");
 		Print(L"nullptr detected, aborting...\n");
 		Print(L"Please submit a screenshot of this...\n");
 	}

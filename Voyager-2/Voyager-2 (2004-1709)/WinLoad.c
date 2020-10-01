@@ -48,7 +48,7 @@ EFI_STATUS EFIAPI BlLdrLoadImage(VOID* Arg1, CHAR16* ModulePath, CHAR16* ModuleN
 		{
 			if (!AsciiStrCmp(&pSection->Name, ".reloc"))
 			{
-				voyager_t VoyagerData;
+				VOYAGER_T VoyagerData;
 				MakeVoyagerData
 				(
 					&VoyagerData,
@@ -59,24 +59,19 @@ EFI_STATUS EFIAPI BlLdrLoadImage(VOID* Arg1, CHAR16* ModulePath, CHAR16* ModuleN
 				);
 
 				DBG_PRINT(".reloc section base address -> 0x%p\n", TableEntry->ModuleBase + pSection->VirtualAddress);
-				DBG_PRINT(".reloc section end (aka golden record base address) -> 0x%p\n", TableEntry->ModuleBase + pSection->VirtualAddress + pSection->Misc.VirtualSize);
+				DBG_PRINT(".reloc section end (aka payload base address) -> 0x%p\n", TableEntry->ModuleBase + pSection->VirtualAddress + pSection->Misc.VirtualSize);
 
-				VOID* VmExitHook = MapModule(&VoyagerData, PayLoad);
-				if (!VmExitHook) 
-					return Result;
-
-				VOID* VmExitFunction = HookVmExit
+				VOID* VCpuRunHook = MapModule(&VoyagerData, PayLoad);
+				VOID* VmExitFunction = HookVCpuRun
 				(
 					VoyagerData.HypervModuleBase,
 					VoyagerData.HypervModuleSize,
-					VmExitHook
+					VCpuRunHook
 				);
-				if (!VmExitFunction) 
-					return Result;
 
 				pSection->Characteristics = SECTION_RWX;
 				pSection->Misc.VirtualSize += PayLoadSize();
-				DBG_PRINT("VmExitHook (PayLoad Entry Point) -> 0x%p\n", VmExitHook);
+				DBG_PRINT("vcpu_run hook (payload entry point) -> 0x%p\n", VCpuRunHook);
 			}
 		}
 

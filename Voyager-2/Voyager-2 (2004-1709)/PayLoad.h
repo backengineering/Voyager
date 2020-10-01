@@ -3,14 +3,14 @@
 extern unsigned char PayLoad[3072];
 
 #pragma pack(push, 1)
-typedef struct _voyager_t
+typedef struct _VOYAGER_T
 {
-	UINT64 VmExitHandlerRva;
+	UINT64 VCpuRunHandlerRVA;
 	UINT64 HypervModuleBase;
 	UINT64 HypervModuleSize;
 	UINT64 ModuleBase;
 	UINT64 ModuleSize;
-} voyager_t, * pvoyager_t;
+} VOYAGER_T, *PVOYAGER_T;
 #pragma pack(pop)
 
 UINT32 PayLoadSize(VOID);

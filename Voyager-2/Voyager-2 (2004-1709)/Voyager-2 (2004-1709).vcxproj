@@ -24,7 +24,7 @@
     <ProjectGuid>{540d433f-c2df-49a6-895c-f5c74b014777}</ProjectGuid>
     <RootNamespace>HyperMe</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Voyager-1 (2004-1709)</ProjectName>
+    <ProjectName>Voyager-2 (2004-1709)</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -175,7 +175,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BootMgfw.c" />
-    <ClCompile Include="Hvix64.c" />
+    <ClCompile Include="Hvax64.c" />
     <ClCompile Include="ShitHook.c" />
     <ClCompile Include="PayLoad.c" />
     <ClCompile Include="UefiMain.c" />
@@ -184,7 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BootMgfw.h" />
-    <ClInclude Include="Hvix64.h" />
+    <ClInclude Include="Hvax64.h" />
     <ClInclude Include="ShitHook.h" />
     <ClInclude Include="PayLoad.h" />
     <ClInclude Include="Utils.h" />

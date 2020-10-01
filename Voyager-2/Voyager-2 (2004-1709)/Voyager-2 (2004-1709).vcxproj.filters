@@ -26,10 +26,10 @@
     <ClCompile Include="Utils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hvix64.c">
+    <ClCompile Include="PayLoad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PayLoad.c">
+    <ClCompile Include="Hvax64.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -40,9 +40,6 @@
     <ClInclude Include="WinLoad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hvix64.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ShitHook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -50,6 +47,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PayLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hvax64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

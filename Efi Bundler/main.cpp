@@ -8,8 +8,8 @@ int __cdecl main(int argc, char** argv)
 		return -1;
 	}
 
-	std::vector<std::u8_t> efi_module;
-	std::vector<std::u8_t> bootmgfw;
+	std::vector<std::uint8_t> efi_module;
+	std::vector<std::uint8_t> bootmgfw;
 
 	impl::open_binary_file(argv[1], bootmgfw);
 	impl::open_binary_file(argv[2], efi_module);

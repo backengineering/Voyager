@@ -1,6 +1,6 @@
-#include "Hvix64.h"
+#include "Hvax64.h"
 
-VOID* MapModule(pvoyager_t VoyagerData, UINT8* ImageBase)
+VOID* MapModule(PVOYAGER_T VoyagerData, UINT8* ImageBase)
 {
 	if (!VoyagerData || !ImageBase)
 		return NULL;
@@ -44,7 +44,7 @@ VOID* MapModule(pvoyager_t VoyagerData, UINT8* ImageBase)
 	{
 		if (AsciiStrStr(VoyagerData->ModuleBase + Name[i], "voyager_context"))
 		{
-			*(voyager_t*)(VoyagerData->ModuleBase + Address[Ordinal[i]]) = *VoyagerData;
+			*(VOYAGER_T*)(VoyagerData->ModuleBase + Address[Ordinal[i]]) = *VoyagerData;
 			break; // DO NOT REMOVE? #Stink Code 2020...
 		}
 	}
@@ -91,69 +91,52 @@ VOID* MapModule(pvoyager_t VoyagerData, UINT8* ImageBase)
 
 VOID MakeVoyagerData
 (
-	pvoyager_t VoyagerData,
+	PVOYAGER_T VoyagerData,
 	VOID* HypervAlloc,
 	UINT64 HypervAllocSize,
 	VOID* PayLoadBase,
 	UINT64 PayLoadSize
 )
 {
-	if (!VoyagerData || !HypervAlloc || !HypervAllocSize || !PayLoadBase || !PayLoadSize)
-		return;
-
 	VoyagerData->HypervModuleBase = HypervAlloc;
 	VoyagerData->HypervModuleSize = HypervAllocSize;
 	VoyagerData->ModuleBase = PayLoadBase;
 	VoyagerData->ModuleSize = PayLoadSize;
 
-	VOID* VmExitHandler =
+	VOID* VCpuRunCall =
 		FindPattern(
 			HypervAlloc,
 			HypervAllocSize,
-			VMEXIT_HANDLER_SIG,
-			VMEXIT_HANDLER_MASK
+			VCPU_RUN_HANDLER_SIG,
+			VCPU_RUN_HANDLER_MASK
 		);
 
-	/*
-		.text:FFFFF80000237436                 mov     rcx, [rsp+arg_18] ; rcx = pointer to stack that contians all register values
-		.text:FFFFF8000023743B                 mov     rdx, [rsp+arg_28]
-		.text:FFFFF80000237440                 call    vmexit_c_handler	 ; RIP relative call
-		.text:FFFFF80000237445                 jmp     loc_FFFFF80000237100
-	*/
+	UINT64 VCpuRunCallRip = (UINT64)VCpuRunCall + 5; // + 5 bytes because "call vmexit_c_handler" is 5 bytes
+	UINT64 VCpuRunFunction = VCpuRunCallRip + *(INT32*)((UINT64)VCpuRunCall + 1); // + 1 to skip E8 (call) and read 4 bytes (RVA)
+	VoyagerData->VCpuRunHandlerRVA = ((UINT64)PayLoadEntry(PayLoadBase)) - VCpuRunFunction;
 
-	UINT64 VmExitHandlerCall = ((UINT64)VmExitHandler) + 19; // + 19 bytes to -> call vmexit_c_handler
-	UINT64 VmExitHandlerCallRip = (UINT64)VmExitHandlerCall + 5; // + 5 bytes because "call vmexit_c_handler" is 5 bytes
-	UINT64 VmExitFunction = VmExitHandlerCallRip + *(INT32*)((UINT64)(VmExitHandlerCall + 1)); // + 1 to skip E8 (call) and read 4 bytes (RVA)
-	VoyagerData->VmExitHandlerRva = ((UINT64)PayLoadEntry(PayLoadBase)) - (UINT64)VmExitFunction;
+	DBG_PRINT("VCpuRunCallRip -> 0x%p\n", VCpuRunCallRip);
+	DBG_PRINT("VCpuRunFunction -> 0x%p\n", VCpuRunFunction);
+	DBG_PRINT("VoyagerData->VCpuRunHandlerRVA -> 0x%p\n", VoyagerData->VCpuRunHandlerRVA);
 }
 
-VOID* HookVmExit(VOID* HypervBase, VOID* HypervSize, VOID* VmExitHook)
+VOID* HookVCpuRun(VOID* HypervBase, VOID* HypervSize, VOID* VCpuRunHook)
 {
-	if (!HypervBase || !HypervSize || !VmExitHook)
-		return NULL;
-
-	VOID* VmExitHandler =
+	VOID* VCpuRunCall =
 		FindPattern(
 			HypervBase,
 			HypervSize,
-			VMEXIT_HANDLER_SIG,
-			VMEXIT_HANDLER_MASK
+			VCPU_RUN_HANDLER_SIG,
+			VCPU_RUN_HANDLER_MASK
 		);
 
-	if (!VmExitHandler)
-		return NULL;
+	UINT64 VCpuRunCallRip = (UINT64)VCpuRunCall + 5; // + 5 bytes to next instructions address...
+	UINT64 VCpuRunFunction = VCpuRunCallRip + *(INT32*)((UINT64)VCpuRunCall + 1); // + 1 to skip E8 (call) and read 4 bytes (RVA)
+	INT32 NewVCpuRunRVA = ((INT64)VCpuRunHook) - VCpuRunCallRip;
+	*(INT32*)((UINT64)VCpuRunCall + 1) = NewVCpuRunRVA;
 
-	/*
-		.text:FFFFF80000237436                 mov     rcx, [rsp+arg_18] ; rcx = pointer to stack that contians all register values
-		.text:FFFFF8000023743B                 mov     rdx, [rsp+arg_28]
-		.text:FFFFF80000237440                 call    vmexit_c_handler	 ; RIP relative call
-		.text:FFFFF80000237445                 jmp     loc_FFFFF80000237100
-	*/
-
-	UINT64 VmExitHandlerCall = ((UINT64)VmExitHandler) + 19; // + 19 bytes to -> call vmexit_c_handler
-	UINT64 VmExitHandlerCallRip = (UINT64)VmExitHandlerCall + 5; // + 5 bytes because "call vmexit_c_handler" is 5 bytes
-	UINT64 VmExitFunction = VmExitHandlerCallRip + *(INT32*)((UINT64)(VmExitHandlerCall + 1)); // + 1 to skip E8 (call) and read 4 bytes (RVA)
-	INT32 NewVmExitRVA = ((INT64)VmExitHook) - VmExitHandlerCallRip;
-	*(INT32*)((UINT64)(VmExitHandlerCall + 1)) = NewVmExitRVA;
-	return VmExitFunction;
+	DBG_PRINT("VCpuRunCallRip -> 0x%p\n", VCpuRunCallRip);
+	DBG_PRINT("VCpuRunFunction -> 0x%p\n", VCpuRunFunction);
+	DBG_PRINT("NewVCpuRunRVA -> 0x%p\n", NewVCpuRunRVA);
+	return VCpuRunFunction;
 }
