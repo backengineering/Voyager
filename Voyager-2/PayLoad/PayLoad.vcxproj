@@ -153,7 +153,7 @@
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
-      <EntryPointSymbol>vcpu_run</EntryPointSymbol>
+      <EntryPointSymbol>vmexit_handler</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -164,7 +164,7 @@
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
-      <EntryPointSymbol>vcpu_run</EntryPointSymbol>
+      <EntryPointSymbol>vmexit_handler</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -1,11 +1,8 @@
 #pragma once
 #include "PayLoad.h"
 
-#if WINVER == 2004
-#define VCPU_RUN_HANDLER_SIG "\xE8\x00\x00\x00\x00\x0F\x01\xDC"
-#define VCPU_RUN_HANDLER_MASK "x????xxx"
-#endif
-
+#define VCPU_RUN_HANDLER_SIG "\xE8\x00\x00\x00\x00\x48\x89\x04\x24\xE9"
+#define VCPU_RUN_HANDLER_MASK "x????xxxxx"
 static_assert(sizeof(VCPU_RUN_HANDLER_SIG) == sizeof(VCPU_RUN_HANDLER_MASK), "signature does not match mask size!");
 
 //

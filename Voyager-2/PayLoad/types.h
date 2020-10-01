@@ -5,7 +5,7 @@
 #include <ntstatus.h>
 #include <basetsd.h>
 #define PORT_NUM 0x2F8
-
+#define VMEXIT_KEY 0xDEADBEEFDEADBEEF
 #define DBG_PRINT(arg) \
 	__outbytestring(PORT_NUM, (unsigned char*)arg, sizeof arg);
 
@@ -359,7 +359,7 @@ namespace svm
 		u64 lastexcepto;                 // +0x290
 	} vmcb, *pvmcb;
 
-	using vcpu_run_t = pgs_base_struct (__fastcall*)(guest_context*);
+	using vcpu_run_t = pgs_base_struct (__fastcall*)(void*, guest_context*);
 	#pragma pack(push, 1)
 	typedef struct _voyager_t
 	{

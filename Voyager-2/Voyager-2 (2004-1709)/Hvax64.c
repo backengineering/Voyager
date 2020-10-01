@@ -115,6 +115,7 @@ VOID MakeVoyagerData
 	UINT64 VCpuRunFunction = VCpuRunCallRip + *(INT32*)((UINT64)VCpuRunCall + 1); // + 1 to skip E8 (call) and read 4 bytes (RVA)
 	VoyagerData->VCpuRunHandlerRVA = ((UINT64)PayLoadEntry(PayLoadBase)) - VCpuRunFunction;
 
+	DBG_PRINT("VCpuRunCall -> 0x%p\n", VCpuRunCall);
 	DBG_PRINT("VCpuRunCallRip -> 0x%p\n", VCpuRunCallRip);
 	DBG_PRINT("VCpuRunFunction -> 0x%p\n", VCpuRunFunction);
 	DBG_PRINT("VoyagerData->VCpuRunHandlerRVA -> 0x%p\n", VoyagerData->VCpuRunHandlerRVA);
@@ -130,11 +131,12 @@ VOID* HookVCpuRun(VOID* HypervBase, VOID* HypervSize, VOID* VCpuRunHook)
 			VCPU_RUN_HANDLER_MASK
 		);
 
-	UINT64 VCpuRunCallRip = (UINT64)VCpuRunCall + 5; // + 5 bytes to next instructions address...
-	UINT64 VCpuRunFunction = VCpuRunCallRip + *(INT32*)((UINT64)VCpuRunCall + 1); // + 1 to skip E8 (call) and read 4 bytes (RVA)
+	UINT64 VCpuRunCallRip = ((UINT64)VCpuRunCall) + 5; // + 5 bytes to next instructions address...
+	UINT64 VCpuRunFunction = VCpuRunCallRip + *(INT32*)(((UINT64)VCpuRunCall) + 1); // + 1 to skip E8 (call) and read 4 bytes (RVA)
 	INT32 NewVCpuRunRVA = ((INT64)VCpuRunHook) - VCpuRunCallRip;
 	*(INT32*)((UINT64)VCpuRunCall + 1) = NewVCpuRunRVA;
 
+	DBG_PRINT("VCpuRunCall -> 0x%p\n", VCpuRunCall);
 	DBG_PRINT("VCpuRunCallRip -> 0x%p\n", VCpuRunCallRip);
 	DBG_PRINT("VCpuRunFunction -> 0x%p\n", VCpuRunFunction);
 	DBG_PRINT("NewVCpuRunRVA -> 0x%p\n", NewVCpuRunRVA);
