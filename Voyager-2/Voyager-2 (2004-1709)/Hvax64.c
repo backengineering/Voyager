@@ -103,7 +103,7 @@ VOID MakeVoyagerData
 	VoyagerData->ModuleBase = PayLoadBase;
 	VoyagerData->ModuleSize = PayLoadSize;
 
-	VOID* VCpuRunCall =
+	VOID* VmExitHandlerCall =
 		FindPattern(
 			HypervAlloc,
 			HypervAllocSize,
@@ -111,19 +111,14 @@ VOID MakeVoyagerData
 			VCPU_RUN_HANDLER_MASK
 		);
 
-	UINT64 VCpuRunCallRip = (UINT64)VCpuRunCall + 5; // + 5 bytes because "call vmexit_c_handler" is 5 bytes
-	UINT64 VCpuRunFunction = VCpuRunCallRip + *(INT32*)((UINT64)VCpuRunCall + 1); // + 1 to skip E8 (call) and read 4 bytes (RVA)
-	VoyagerData->VCpuRunHandlerRVA = ((UINT64)PayLoadEntry(PayLoadBase)) - VCpuRunFunction;
-
-	DBG_PRINT("VCpuRunCall -> 0x%p\n", VCpuRunCall);
-	DBG_PRINT("VCpuRunCallRip -> 0x%p\n", VCpuRunCallRip);
-	DBG_PRINT("VCpuRunFunction -> 0x%p\n", VCpuRunFunction);
-	DBG_PRINT("VoyagerData->VCpuRunHandlerRVA -> 0x%p\n", VoyagerData->VCpuRunHandlerRVA);
+	UINT64 VmExitHandlerCallRip = (UINT64)VmExitHandlerCall + 5; // + 5 bytes because "call vmexit_c_handler" is 5 bytes
+	UINT64 VmExitHandlerFunc = VmExitHandlerCallRip + *(INT32*)((UINT64)VmExitHandlerCall + 1); // + 1 to skip E8 (call) and read 4 bytes (RVA)
+	VoyagerData->VmExitHandlerRVA = ((UINT64)PayLoadEntry(PayLoadBase)) - VmExitHandlerFunc;
 }
 
-VOID* HookVCpuRun(VOID* HypervBase, VOID* HypervSize, VOID* VCpuRunHook)
+VOID* HookVmExitHandler(VOID* HypervBase, VOID* HypervSize, VOID* VCpuRunHook)
 {
-	VOID* VCpuRunCall =
+	VOID* VmExitHandlerCall =
 		FindPattern(
 			HypervBase,
 			HypervSize,
@@ -131,14 +126,9 @@ VOID* HookVCpuRun(VOID* HypervBase, VOID* HypervSize, VOID* VCpuRunHook)
 			VCPU_RUN_HANDLER_MASK
 		);
 
-	UINT64 VCpuRunCallRip = ((UINT64)VCpuRunCall) + 5; // + 5 bytes to next instructions address...
-	UINT64 VCpuRunFunction = VCpuRunCallRip + *(INT32*)(((UINT64)VCpuRunCall) + 1); // + 1 to skip E8 (call) and read 4 bytes (RVA)
-	INT32 NewVCpuRunRVA = ((INT64)VCpuRunHook) - VCpuRunCallRip;
-	*(INT32*)((UINT64)VCpuRunCall + 1) = NewVCpuRunRVA;
-
-	DBG_PRINT("VCpuRunCall -> 0x%p\n", VCpuRunCall);
-	DBG_PRINT("VCpuRunCallRip -> 0x%p\n", VCpuRunCallRip);
-	DBG_PRINT("VCpuRunFunction -> 0x%p\n", VCpuRunFunction);
-	DBG_PRINT("NewVCpuRunRVA -> 0x%p\n", NewVCpuRunRVA);
-	return VCpuRunFunction;
+	UINT64 VmExitHandlerCallRip = ((UINT64)VmExitHandlerCall) + 5; // + 5 bytes to next instructions address...
+	UINT64 VmExitHandlerFunc = VmExitHandlerCallRip + *(INT32*)(((UINT64)VmExitHandlerCall) + 1); // + 1 to skip E8 (call) and read 4 bytes (RVA)
+	INT32 NewVmExitHandlerRVA = ((INT64)VCpuRunHook) - VmExitHandlerCallRip;
+	*(INT32*)((UINT64)VmExitHandlerCall + 1) = NewVmExitHandlerRVA;
+	return VmExitHandlerFunc;
 }

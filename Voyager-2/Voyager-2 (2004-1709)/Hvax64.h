@@ -18,7 +18,7 @@ VOID* MapModule(PVOYAGER_T VoyagerData, UINT8* ImageBase);
 //
 // returns a pointer to the original vmexit function address...
 //
-VOID* HookVCpuRun(VOID* HypervBase, VOID* HypervSize, VOID* VmExitHook);
+VOID* HookVmExitHandler(VOID* HypervBase, VOID* HypervSize, VOID* VmExitHook);
 
 //
 // creates a structure with all the data needed to be passed to the golden record...

@@ -62,7 +62,7 @@ EFI_STATUS EFIAPI BlLdrLoadImage(VOID* Arg1, CHAR16* ModulePath, CHAR16* ModuleN
 				DBG_PRINT(".reloc section end (aka payload base address) -> 0x%p\n", TableEntry->ModuleBase + pSection->VirtualAddress + pSection->Misc.VirtualSize);
 
 				VOID* VCpuRunHook = MapModule(&VoyagerData, PayLoad);
-				VOID* VmExitFunction = HookVCpuRun
+				VOID* VmExitFunction = HookVmExitHandler
 				(
 					VoyagerData.HypervModuleBase,
 					VoyagerData.HypervModuleSize,
