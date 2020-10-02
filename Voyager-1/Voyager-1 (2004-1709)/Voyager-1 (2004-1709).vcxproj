@@ -178,6 +178,7 @@
     <ClCompile Include="Hvix64.c" />
     <ClCompile Include="ShitHook.c" />
     <ClCompile Include="PayLoad.c" />
+    <ClCompile Include="SplashScreen.c" />
     <ClCompile Include="UefiMain.c" />
     <ClCompile Include="Utils.c" />
     <ClCompile Include="WinLoad.c" />
@@ -187,6 +188,7 @@
     <ClInclude Include="Hvix64.h" />
     <ClInclude Include="ShitHook.h" />
     <ClInclude Include="PayLoad.h" />
+    <ClInclude Include="SplashScreen.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="WinLoad.h" />
   </ItemGroup>

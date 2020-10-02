@@ -1,4 +1,5 @@
 #include "BootMgfw.h"
+#include "SplashScreen.h"
 
 SHITHOOK BootMgfwShitHook;
 EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
@@ -138,9 +139,8 @@ EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE ImageHandle)
 	if (EFI_ERROR(Result = gBS->HandleProtocol(ImageHandle, &gEfiLoadedImageProtocolGuid, (VOID**)&BootMgfw)))
 		return Result;
 
-	DBG_PRINT("Module base -> 0x%p\n", BootMgfw->ImageBase);
-	DBG_PRINT("Module size -> 0x%x\n", BootMgfw->ImageSize);
-
+	Print(L"BootMgfw Image Base -> 0x%p\n", BootMgfw->ImageBase);
+	Print(L"BootMgfw Image Size -> 0x%x\n", BootMgfw->ImageSize);
 	VOID* ArchStartBootApplication = 
 		FindPattern(
 			BootMgfw->ImageBase,
@@ -152,7 +152,7 @@ EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE ImageHandle)
 	if (!ArchStartBootApplication)
 		return EFI_ABORTED;
 
-	DBG_PRINT("ArchStartBootApplication -> 0x%p\n", RESOLVE_RVA(ArchStartBootApplication, 5, 1));
+	Print(L"BootMgfw.ArchStartBootApplication -> 0x%p\n", ArchStartBootApplication);
 	MakeShitHook(&BootMgfwShitHook, RESOLVE_RVA(ArchStartBootApplication, 5, 1), &ArchStartBootApplicationHook, TRUE);
 	return EFI_SUCCESS;
 }
@@ -168,9 +168,10 @@ EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, 
 			LOAD_PE_IMG_MASK
 		);
 
+	gST->ConOut->ClearScreen(gST->ConOut);
+	gST->ConOut->OutputString(gST->ConOut, AsciiArt);
+	Print(L"\n");
 	Print(L"PE PayLoad Size -> 0x%x\n", PayLoadSize());
-	Print(L"winload base -> 0x%p\n", ImageBase);
-	Print(L"winload size -> 0x%x\n", ImageSize);
 	Print(L"winload.BlImgLoadPEImageEx -> 0x%p\n", RESOLVE_RVA(ImgLoadPEImageEx, 5, 1));
 
 	MakeShitHook(&WinLoadImageShitHook, RESOLVE_RVA(ImgLoadPEImageEx, 5, 1), &BlImgLoadPEImageEx, TRUE);

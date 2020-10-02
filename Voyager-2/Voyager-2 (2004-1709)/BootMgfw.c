@@ -1,4 +1,5 @@
 #include "BootMgfw.h"
+#include "SplashScreen.h"
 
 SHITHOOK BootMgfwShitHook;
 EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
@@ -138,8 +139,8 @@ EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE BootMgfwPath)
 	if (EFI_ERROR((Result = gBS->HandleProtocol(BootMgfwPath, &gEfiLoadedImageProtocolGuid, (VOID**)&BootMgfw))))
 		return Result;
 
-	DBG_PRINT("Image Base -> 0x%p\n", BootMgfw->ImageBase);
-	DBG_PRINT("Image Size -> 0x%x\n", BootMgfw->ImageSize);
+	Print(L"Image Base -> 0x%p\n", BootMgfw->ImageBase);
+	Print(L"Image Size -> 0x%x\n", BootMgfw->ImageSize);
 	VOID* ArchStartBootApplication = 
 		FindPattern(
 			BootMgfw->ImageBase, 
@@ -148,7 +149,7 @@ EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE BootMgfwPath)
 			START_BOOT_APPLICATION_MASK
 		);
 
-	DBG_PRINT("ArchStartBootApplication -> 0x%p\n", ArchStartBootApplication);
+	Print(L"ArchStartBootApplication -> 0x%p\n", ArchStartBootApplication);
 	MakeShitHook(&BootMgfwShitHook, ArchStartBootApplication, &ArchStartBootApplicationHook, TRUE);
 	return Result;
 }
@@ -165,22 +166,15 @@ EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, 
 			ALLOCATE_IMAGE_BUFFER_MASK
 		);
 
+	gST->ConOut->ClearScreen(gST->ConOut);
+	gST->ConOut->OutputString(gST->ConOut, AsciiArt);
+	Print(L"\n");
+
 	Print(L"Hyper-V PayLoad Size -> 0x%x\n", PayLoadSize());
-	Print(L"winload base -> 0x%p\n", ImageBase);
-	Print(L"winload size -> 0x%x\n", ImageSize);
 	Print(L"winload.BlLdrLoadImage -> 0x%p\n", LdrLoadImage);
 	Print(L"winload.BlImgAllocateImageBuffer -> 0x%p\n", ImgAllocateImageBuffer);
 
-	if (ImgAllocateImageBuffer && LdrLoadImage)
-	{
-		MakeShitHook(&WinLoadImageShitHook, LdrLoadImage, &BlLdrLoadImage, TRUE);
-		MakeShitHook(&WinLoadAllocateImageHook, ImgAllocateImageBuffer, &BlImgAllocateImageBuffer, TRUE);
-	}
-	else
-	{
-		DBG_PRINT("some signature for winload found nothing (0), aborting...\n");
-		Print(L"nullptr detected, aborting...\n");
-		Print(L"Please submit a screenshot of this...\n");
-	}
+	MakeShitHook(&WinLoadImageShitHook, LdrLoadImage, &BlLdrLoadImage, TRUE);
+	MakeShitHook(&WinLoadAllocateImageHook, ImgAllocateImageBuffer, &BlImgAllocateImageBuffer, TRUE);
 	return ((IMG_ARCH_START_BOOT_APPLICATION)BootMgfwShitHook.Address)(AppEntry, ImageBase, ImageSize, BootOption, ReturnArgs);
 }

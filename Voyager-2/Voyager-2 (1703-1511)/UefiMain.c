@@ -1,6 +1,7 @@
 #include "BootMgfw.h"
+#include "SplashScreen.h"
 
-CHAR8* gEfiCallerBaseName = "Voyager";
+CHAR8* gEfiCallerBaseName = "Voyager 2";
 const UINT32 _gUefiDriverRevision = 0x200;
 
 EFI_STATUS EFIAPI UefiUnload(
@@ -16,16 +17,23 @@ EFI_STATUS EFIAPI UefiMain
 {
     EFI_STATUS Result;
     EFI_DEVICE_PATH_PROTOCOL* BootMgfwPath;
+
+    gST->ConOut->ClearScreen(gST->ConOut);
+    gST->ConOut->OutputString(gST->ConOut, AsciiArt);
+    Print(L"\n");
+
     if (EFI_ERROR((Result = RestoreBootMgfw())))
     {
-        DBG_PRINT("unable to restore bootmgfw... reason -> %r\n", Result);
+        Print(L"unable to restore bootmgfw... reason -> %r\n", Result);
         return Result;
     }
 
     if (EFI_ERROR((Result = InstallBootMgfwHooks(ImageHandle))))
     {
-        DBG_PRINT("Failed to install bootmgfw hooks... reason -> %r\n", Result);
+        Print(L"Failed to install bootmgfw hooks... reason -> %r\n", Result);
         return Result;
     }
+
+    gBS->Stall(5 * 1000000);
     return EFI_SUCCESS;
 }

@@ -1,4 +1,5 @@
 #include "BootMgfw.h"
+#include "SplashScreen.h"
 
 SHITHOOK BootMgfwShitHook;
 EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
@@ -12,7 +13,7 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 
 	if (EFI_ERROR((Result = gBS->LocateHandleBuffer(ByProtocol, &gEfiSimpleFileSystemProtocolGuid, NULL, &HandleCount, &Handles))))
 	{
-		DBG_PRINT("error getting file system handles -> 0x%p\n", Result);
+		Print(L"error getting file system handles -> 0x%p\n", Result);
 		return Result;
 	}
 
@@ -20,13 +21,13 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 	{
 		if (EFI_ERROR((Result = gBS->OpenProtocol(Handles[Idx], &gEfiSimpleFileSystemProtocolGuid, (VOID**)&FileSystem, gImageHandle, NULL, EFI_OPEN_PROTOCOL_GET_PROTOCOL))))
 		{
-			DBG_PRINT("error opening protocol -> 0x%p\n", Result);
+			Print(L"error opening protocol -> 0x%p\n", Result);
 			return Result;
 		}
 
 		if (EFI_ERROR((Result = FileSystem->OpenVolume(FileSystem, &VolumeHandle))))
 		{
-			DBG_PRINT("error opening file system -> 0x%p\n", Result);
+			Print(L"error opening file system -> 0x%p\n", Result);
 			return Result;
 		}
 
@@ -39,13 +40,13 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 			// open bootmgfw as read/write then delete it...
 			if (EFI_ERROR((Result = EfiOpenFileByDevicePath(&BootMgfwPathProtocol, &BootMgfwFile, EFI_FILE_MODE_WRITE | EFI_FILE_MODE_READ, NULL))))
 			{
-				DBG_PRINT("error opening bootmgfw... reason -> %r\n", Result);
+				Print(L"error opening bootmgfw... reason -> %r\n", Result);
 				return Result;
 			}
 
 			if (EFI_ERROR((Result = BootMgfwFile->Delete(BootMgfwFile))))
 			{
-				DBG_PRINT("error deleting bootmgfw... reason -> %r\n", Result);
+				Print(L"error deleting bootmgfw... reason -> %r\n", Result);
 				return Result;
 			}
 
@@ -53,7 +54,7 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 			BootMgfwPathProtocol = FileDevicePath(Handles[Idx], WINDOWS_BOOTMGFW_BACKUP_PATH);
 			if (EFI_ERROR((Result = EfiOpenFileByDevicePath(&BootMgfwPathProtocol, &BootMgfwFile, EFI_FILE_MODE_WRITE | EFI_FILE_MODE_READ, NULL))))
 			{
-				DBG_PRINT("failed to open backup file... reason -> %r\n", Result);
+				Print(L"failed to open backup file... reason -> %r\n", Result);
 				return Result;
 			}
 
@@ -68,13 +69,13 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 					gBS->AllocatePool(EfiBootServicesData, FileInfoSize, &FileInfoPtr);
 					if (EFI_ERROR(Result = BootMgfwFile->GetInfo(BootMgfwFile, &gEfiFileInfoGuid, &FileInfoSize, FileInfoPtr)))
 					{
-						DBG_PRINT("get backup file information failed... reason -> %r\n", Result);
+						Print(L"get backup file information failed... reason -> %r\n", Result);
 						return Result;
 					}
 				}
 				else
 				{
-					DBG_PRINT("Failed to get file information... reason -> %r\n", Result);
+					Print(L"Failed to get file information... reason -> %r\n", Result);
 					return Result;
 				}
 			}
@@ -86,14 +87,14 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 			// read the backup file into an allocated pool...
 			if (EFI_ERROR((Result = BootMgfwFile->Read(BootMgfwFile, &BootMgfwSize, BootMgfwBuffer))))
 			{
-				DBG_PRINT("Failed to read backup file into buffer... reason -> %r\n", Result);
+				Print(L"Failed to read backup file into buffer... reason -> %r\n", Result);
 				return Result;
 			}
 
 			// delete the backup file...
 			if (EFI_ERROR((Result = BootMgfwFile->Delete(BootMgfwFile))))
 			{
-				DBG_PRINT("unable to delete backup file... reason -> %r\n", Result);
+				Print(L"unable to delete backup file... reason -> %r\n", Result);
 				return Result;
 			}
 
@@ -101,7 +102,7 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 			BootMgfwPathProtocol = FileDevicePath(Handles[Idx], WINDOWS_BOOTMGFW_PATH);
 			if (EFI_ERROR((Result = EfiOpenFileByDevicePath(&BootMgfwPathProtocol, &BootMgfwFile, EFI_FILE_MODE_CREATE | EFI_FILE_MODE_WRITE | EFI_FILE_MODE_READ, EFI_FILE_SYSTEM))))
 			{
-				DBG_PRINT("unable to create new bootmgfw on disk... reason -> %r\n", Result);
+				Print(L"unable to create new bootmgfw on disk... reason -> %r\n", Result);
 				return Result;
 			}
 
@@ -109,7 +110,7 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 			BootMgfwSize = FileInfoPtr->FileSize;
 			if (EFI_ERROR((Result = BootMgfwFile->Write(BootMgfwFile, &BootMgfwSize, BootMgfwBuffer))))
 			{
-				DBG_PRINT("unable to write to newly created bootmgfw.efi... reason -> %r\n", Result);
+				Print(L"unable to write to newly created bootmgfw.efi... reason -> %r\n", Result);
 				return Result;
 			}
 
@@ -121,7 +122,7 @@ EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 
 		if (EFI_ERROR((Result = gBS->CloseProtocol(Handles[Idx], &gEfiSimpleFileSystemProtocolGuid, gImageHandle, NULL))))
 		{
-			DBG_PRINT("error closing protocol -> 0x%p\n", Result);
+			Print(L"error closing protocol -> 0x%p\n", Result);
 			return Result;
 		}
 	}
@@ -138,8 +139,8 @@ EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE BootMgfwPath)
 	if (EFI_ERROR((Result = gBS->HandleProtocol(BootMgfwPath, &gEfiLoadedImageProtocolGuid, (VOID**)&BootMgfw))))
 		return Result;
 
-	Print(L"Image Base -> 0x%p\n", BootMgfw->ImageBase);
-	Print(L"Image Size -> 0x%x\n", BootMgfw->ImageSize);
+	Print(L"BootMgfw Image Base -> 0x%p\n", BootMgfw->ImageBase);
+	Print(L"BootMgfw Image Size -> 0x%x\n", BootMgfw->ImageSize);
 	VOID* ArchStartBootApplication = 
 		FindPattern(
 			BootMgfw->ImageBase, 
@@ -151,7 +152,7 @@ EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE BootMgfwPath)
 	if (!ArchStartBootApplication)
 		return EFI_ABORTED;
 
-	DBG_PRINT(L"ArchStartBootApplication -> 0x%p\n", ArchStartBootApplication);
+	Print(L"BootMgfw.ArchStartBootApplication -> 0x%p\n", ArchStartBootApplication);
 	MakeShitHook(&BootMgfwShitHook, ArchStartBootApplication, &ArchStartBootApplicationHook, TRUE);
 	return Result;
 }
@@ -168,21 +169,14 @@ EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, 
 			ALLOCATE_IMAGE_BUFFER_MASK
 		);
 
+	gST->ConOut->ClearScreen(gST->ConOut);
+	gST->ConOut->OutputString(gST->ConOut, AsciiArt);
+	Print(L"\n");
 	Print(L"Hyper-V PayLoad Size -> 0x%x\n", PayLoadSize());
-	Print(L"winload base -> 0x%p\n", ImageBase);
-	Print(L"winload size -> 0x%x\n", ImageSize);
 	Print(L"winload.BlLdrLoadImage -> 0x%p\n", LdrLoadImage);
 	Print(L"winload.BlImgAllocateImageBuffer -> 0x%p\n", ImgAllocateImageBuffer);
 
-	if (ImgAllocateImageBuffer && LdrLoadImage)
-	{
-		MakeShitHook(&WinLoadImageShitHook, LdrLoadImage, &BlLdrLoadImage, TRUE);
-		MakeShitHook(&WinLoadAllocateImageHook, ImgAllocateImageBuffer, &BlImgAllocateImageBuffer, TRUE);
-	}
-	else
-	{
-		Print(L"nullptr detected, aborting...\n");
-		Print(L"Please submit a screenshot of this...\n");
-	}
+	MakeShitHook(&WinLoadImageShitHook, LdrLoadImage, &BlLdrLoadImage, TRUE);
+	MakeShitHook(&WinLoadAllocateImageHook, ImgAllocateImageBuffer, &BlImgAllocateImageBuffer, TRUE);
 	return ((IMG_ARCH_START_BOOT_APPLICATION)BootMgfwShitHook.Address)(AppEntry, ImageBase, ImageSize, BootOption, ReturnArgs);
 }
