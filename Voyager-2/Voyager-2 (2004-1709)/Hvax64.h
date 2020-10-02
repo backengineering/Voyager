@@ -3,6 +3,7 @@
 
 #define VCPU_RUN_HANDLER_SIG "\xE8\x00\x00\x00\x00\x48\x89\x04\x24\xE9"
 #define VCPU_RUN_HANDLER_MASK "x????xxxxx"
+
 static_assert(sizeof(VCPU_RUN_HANDLER_SIG) == sizeof(VCPU_RUN_HANDLER_MASK), "signature does not match mask size!");
 
 //

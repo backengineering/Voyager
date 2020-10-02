@@ -1,6 +1,6 @@
 #pragma once
 #include "Utils.h"
-extern unsigned char PayLoad[3072];
+extern unsigned char PayLoad[2560];
 
 #pragma pack(push, 1)
 typedef struct _VOYAGER_T

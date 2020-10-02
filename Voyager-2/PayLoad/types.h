@@ -1,13 +1,42 @@
-#pragma once
+﻿#pragma once
 #include <intrin.h>
 #include <xmmintrin.h>
 #include <cstddef>
 #include <ntstatus.h>
 #include <basetsd.h>
-#define PORT_NUM 0x2F8
+
+#define WINVER 1709
 #define VMEXIT_KEY 0xDEADBEEFDEADBEEF
+
+#define PORT_NUM 0x2F8
 #define DBG_PRINT(arg) \
 	__outbytestring(PORT_NUM, (unsigned char*)arg, sizeof arg);
+
+#if WINVER == 2004
+#define offset_vmcb_base 0x103B0
+#define offset_vmcb_link 0x198
+#define offset_vmcb 0xE80
+#elif WINVER == 1909
+#define offset_vmcb_base 0x83B0
+#define offset_vmcb_link 0x190
+#define offset_vmcb 0xD00
+#elif WINVER == 1903
+#define offset_vmcb_base 0x83B0
+#define offset_vmcb_link 0x190
+#define offset_vmcb 0xD00
+#elif WINVER == 1809
+#define offset_vmcb_base 0x83B0
+#define offset_vmcb_link 0x198
+#define offset_vmcb 0xD00
+#elif WINVER == 1803
+#define offset_vmcb_base 0x82F0
+#define offset_vmcb_link 0x168
+#define offset_vmcb 0xCC0
+#elif WINVER == 1709
+#define offset_vmcb_base 0x82F0
+#define offset_vmcb_link 0x88
+#define offset_vmcb 0xC80
+#endif
 
 using u8 = unsigned char;
 using u16 = unsigned short;
@@ -325,11 +354,11 @@ namespace svm
 		u16 trattrib;                    // +0x092
 		u32 trlimit;                     // +0x094
 		u64 trbase;                      // +0x098
-		u8  reserved_1[0x0cb - 0x0a0];    // +0x0a0
+		u8  reserved_1[0x0cb - 0x0a0];   // +0x0a0
 		u8  cpl;                         // +0x0cb
-		u32 reserved_2;                   // +0x0cc
+		u32 reserved_2;                  // +0x0cc
 		u64 efer;                        // +0x0d0
-		u8  reserved_3[0x148 - 0x0d8];    // +0x0d8
+		u8  reserved_3[0x148 - 0x0d8];   // +0x0d8
 		u64 cr4;                         // +0x148
 		u64 cr3;                         // +0x150
 		u64 cr0;                         // +0x158
@@ -337,7 +366,7 @@ namespace svm
 		u64 dr6;                         // +0x168
 		u64 rflags;                      // +0x170
 		u64 rip;                         // +0x178
-		u8  reserved_4[0x1d8 - 0x180];    // +0x180
+		u8  reserved_4[0x1d8 - 0x180];   // +0x180
 		u64 rsp;                         // +0x1d8
 		u8  reserved5[0x1f8 - 0x1e0];    // +0x1e0
 		u64 rax;                         // +0x1f8

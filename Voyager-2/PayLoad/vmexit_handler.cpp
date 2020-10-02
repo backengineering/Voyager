@@ -2,11 +2,11 @@
 
 svm::pgs_base_struct vmexit_handler(void* unknown, svm::pguest_context context)
 {
-	// gs:0 + 0x103B0 ] + 0x198 ] + 0xE80 ] = pointer to vmcb...
 	const auto vmcb = *reinterpret_cast<svm::pvmcb*>(
-		*reinterpret_cast<uintptr_t*>(
-			*reinterpret_cast<uintptr_t*>(
-				__readgsqword(0) + 0x103B0) + 0x198) + 0xE80);
+		*reinterpret_cast<u64*>(
+			*reinterpret_cast<u64*>(
+				__readgsqword(0) + offset_vmcb_base) 
+					+ offset_vmcb_link) + offset_vmcb);
 
 	if (vmcb->exitcode == VMEXIT_CPUID && context->rcx == VMEXIT_KEY)
 	{
@@ -16,6 +16,6 @@ svm::pgs_base_struct vmexit_handler(void* unknown, svm::pguest_context context)
 	}
 
 	return reinterpret_cast<svm::vcpu_run_t>(
-		reinterpret_cast<uintptr_t>(&vmexit_handler) -
+		reinterpret_cast<u64>(&vmexit_handler) -
 			svm::voyager_context.vcpu_run_rva)(unknown, context);
 }
