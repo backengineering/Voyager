@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PayLoad", "PayLoad\PayLoad.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Voyager-2 (2004-1709)", "Voyager-2 (2004-1709)\Voyager-2 (2004-1709).vcxproj", "{540D433F-C2DF-49A6-895C-F5C74B014777}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Voyager-2 (1703-1511)", "Voyager-2 (1703-1511)\Voyager-1 (1703-1511).vcxproj", "{C4B6B437-62DF-4166-9023-44CFC8A52258}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Voyager-2 (1703-1511)", "Voyager-2 (1703-1511)\Voyager-2 (1703-1511).vcxproj", "{C4B6B437-62DF-4166-9023-44CFC8A52258}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
