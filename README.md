@@ -7,6 +7,11 @@
     <img src="https://githacks.org/xerox/voyager/-/raw/master/img/2004--1511-supported-green.svg"/>
 </div>
 
+# Credit
+    - <a href="http://blog.cr4.sh/">cr4sh (legend)</a>
+    - <a href="https://github.com/btbd">btbd</a>
+    - <a href="https://github.com/tianocore/edk2">edk2</a>
+    
 # Voyager - A Hyper-V Hacking Framework For Windows 10 x64 (AMD & Intel)
 
 Voyager is a project designed to offer module injection and vmexit hooking for both AMD & Intel versions of Hyper-V. This project works on all versions of Windows 10-x64 (2004-1511).
