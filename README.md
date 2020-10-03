@@ -9,13 +9,13 @@ The project is currently split into two individual projects, one for Intel and a
 
 | winver | AMD     | intel | VM | Metal |
 |--------|---------|-------|----|-------|
-| 2004   | :heavy_check_mark: |       |    |       |
-| 1909   |         |       |    |       |
-| 1903   |         |       |    |       |
-| 1809   |         |       |    |       |
-| 1807   |         |       |    |       |
-| 1803   |         |       |    |       |
-| 1709   |         |       |    |       |
-| 1703   |         |       |    |       |
-| 1607   |         |       |    |       |
-| 1511   |         |       |    |       |
+| 2004   | :heavy_check_mark: | :heavy_check_mark:      |    |       |
+| 1909   | :heavy_check_mark:        | :heavy_check_mark:      |    |       |
+| 1903   | :heavy_check_mark:        | :heavy_check_mark:      |    |       |
+| 1809   | :heavy_check_mark:        | :heavy_check_mark:      |    |       |
+| 1807   | :heavy_check_mark:        |  :heavy_check_mark:     |    |       |
+| 1803   | :heavy_check_mark:        | :heavy_check_mark:      |    |       |
+| 1709   | :heavy_check_mark:       | :heavy_check_mark:      |    |       |
+| 1703   | :heavy_check_mark:        | :heavy_check_mark:      |    |       |
+| 1607   | :heavy_check_mark:        | :heavy_check_mark:      |    |       |
+| 1511   | :heavy_check_mark:        | :heavy_check_mark:      |    |       |
