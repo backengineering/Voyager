@@ -27,8 +27,6 @@ Voyager 2 contains all the code associated with the AMD part of this project. Si
 the linear virtual address of the VMCB for every version of windows. GS register contains a pointer to a structure defined by MS, this structure contains alot of stuff.
 Deep in this structure is a linear virtual address to the current cores VMCB.
 
-The payload for AMD is also just a cpuid interception example. 
-
 ```
 #if WINVER == 2004
 #define offset_vmcb_base 0x103B0
