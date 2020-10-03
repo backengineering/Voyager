@@ -18,7 +18,7 @@ The project is currently split into two individual projects, one for Intel and a
 :heavy_check_mark: -> tested & working.
 :x: -> tested & not working.
 
-| winver | AMD     | intel | VM | Metal |
+| Winver | AMD     | Intel | VM | Bare Metal |
 |--------|---------|-------|----|-------|
 | 2004   | :heavy_check_mark: | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |
 | 1909   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
