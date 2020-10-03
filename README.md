@@ -9,7 +9,7 @@ The project is currently split into two individual projects, one for Intel and a
 
 | winver | AMD     | intel | VM | Metal |
 |--------|---------|-------|----|-------|
-| 2004   | :check: |       |    |       |
+| 2004   | :heavy_check_mark: |       |    |       |
 | 1909   |         |       |    |       |
 | 1903   |         |       |    |       |
 | 1809   |         |       |    |       |
