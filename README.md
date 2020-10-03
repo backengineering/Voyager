@@ -20,28 +20,6 @@ and interception can commence.
 The payload solution contains a small CPUID interception example. I plan on expanding my examples to include EPT hooking and module injection/module shadowing. I also
 need to locate the self referencing pml4e in hyper-v's pml4 :|....
 
-```cpp
-svm::pgs_base_struct vmexit_handler(void* unknown, svm::pguest_context context)
-{
-	const auto vmcb = *reinterpret_cast<svm::pvmcb*>(
-		*reinterpret_cast<u64*>(
-			*reinterpret_cast<u64*>(
-				__readgsqword(0) + offset_vmcb_base) 
-					+ offset_vmcb_link) + offset_vmcb);
-
-	if (vmcb->exitcode == VMEXIT_CPUID && context->rcx == VMEXIT_KEY)
-	{
-		vmcb->rax = 0xC0FFEE;
-		vmcb->rip = vmcb->nrip;
-		return reinterpret_cast<svm::pgs_base_struct>(__readgsqword(0));
-	}
-
-	return reinterpret_cast<svm::vcpu_run_t>(
-		reinterpret_cast<u64>(&vmexit_handler) -
-			svm::voyager_context.vcpu_run_rva)(unknown, context);
-}
-```
-
 <img src="https://imgur.com/xchpi9B.png"/>
 
 # Voyager 2 - AMD
@@ -49,48 +27,6 @@ svm::pgs_base_struct vmexit_handler(void* unknown, svm::pguest_context context)
 Voyager 2 contains all the code associated with the AMD part of this project. Since AMD has no vmread/vmwrite operation, only vmsave/vmload I had to locate
 the linear virtual address of the VMCB for every version of windows. GS register contains a pointer to a structure defined by MS, this structure contains alot of stuff.
 Deep in this structure is a linear virtual address to the current cores VMCB.
-
-```
-#if WINVER == 2004
-#define offset_vmcb_base 0x103B0
-#define offset_vmcb_link 0x198
-#define offset_vmcb 0xE80
-#elif WINVER == 1909
-#define offset_vmcb_base 0x83B0
-#define offset_vmcb_link 0x190
-#define offset_vmcb 0xD00
-#elif WINVER == 1903
-#define offset_vmcb_base 0x83B0
-#define offset_vmcb_link 0x190
-#define offset_vmcb 0xD00
-#elif WINVER == 1809
-#define offset_vmcb_base 0x83B0
-#define offset_vmcb_link 0x198
-#define offset_vmcb 0xD00
-#elif WINVER == 1803
-#define offset_vmcb_base 0x82F0
-#define offset_vmcb_link 0x168
-#define offset_vmcb 0xCC0
-#elif WINVER == 1709
-#define offset_vmcb_base 0x82F0
-#define offset_vmcb_link 0x88
-#define offset_vmcb 0xC80
-#elif WINVER == 1703
-#define offset_vmcb_base 0x82F0
-#define offset_vmcb_link 0x80
-#define offset_vmcb 0xBC0
-#elif WINVER == 1607
-#define offset_vmcb_base 0x82F0
-#define offset_vmcb_link 0x90
-#define offset_vmcb 0xBC0
-#elif WINVER == 1511
-#define offset_vmcb_base 0x82F0
-#define offset_vmcb_link 0x90
-#define offset_vmcb 0xC40
-#endif
-```
-
-Ill probably end up sig scanning for these offsets/resolving them at runtime when i condense this project down to a single solution.
 
 # Versions & Support
 
