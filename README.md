@@ -29,6 +29,48 @@ Deep in this structure is a linear virtual address to the current cores VMCB.
 
 The payload for AMD is also just a cpuid interception example. 
 
+```
+#if WINVER == 2004
+#define offset_vmcb_base 0x103B0
+#define offset_vmcb_link 0x198
+#define offset_vmcb 0xE80
+#elif WINVER == 1909
+#define offset_vmcb_base 0x83B0
+#define offset_vmcb_link 0x190
+#define offset_vmcb 0xD00
+#elif WINVER == 1903
+#define offset_vmcb_base 0x83B0
+#define offset_vmcb_link 0x190
+#define offset_vmcb 0xD00
+#elif WINVER == 1809
+#define offset_vmcb_base 0x83B0
+#define offset_vmcb_link 0x198
+#define offset_vmcb 0xD00
+#elif WINVER == 1803
+#define offset_vmcb_base 0x82F0
+#define offset_vmcb_link 0x168
+#define offset_vmcb 0xCC0
+#elif WINVER == 1709
+#define offset_vmcb_base 0x82F0
+#define offset_vmcb_link 0x88
+#define offset_vmcb 0xC80
+#elif WINVER == 1703
+#define offset_vmcb_base 0x82F0
+#define offset_vmcb_link 0x80
+#define offset_vmcb 0xBC0
+#elif WINVER == 1607
+#define offset_vmcb_base 0x82F0
+#define offset_vmcb_link 0x90
+#define offset_vmcb 0xBC0
+#elif WINVER == 1511
+#define offset_vmcb_base 0x82F0
+#define offset_vmcb_link 0x90
+#define offset_vmcb 0xC40
+#endif
+```
+
+Ill probably end up sig scanning for these offsets/resolving them at runtime when i condense this project down to a single solution.
+
 # Versions & Support
 
 :o: -> unknown/not tested.
