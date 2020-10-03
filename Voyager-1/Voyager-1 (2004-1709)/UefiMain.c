@@ -27,7 +27,7 @@ EFI_STATUS EFIAPI UefiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable
         return Result;
     }
 
-    // the payload is sitting on disk... we are going to load it into memory...
+    // the payload is sitting on disk... we are going to load it into memory then delete it...
     if (EFI_ERROR((Result = LoadPayLoadFromDisk(&PayLoad))))
     {
         Print(L"failed to read payload from disk... reason -> %r\n", Result);
