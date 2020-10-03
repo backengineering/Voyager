@@ -8,9 +8,9 @@
 </div>
 
 # Credit
-    - <a href="http://blog.cr4.sh/">cr4sh (legend)</a>
-    - <a href="https://github.com/btbd">btbd</a>
-    - <a href="https://github.com/tianocore/edk2">edk2</a>
+    - [cr4sh (legend)](http://blog.cr4.sh/)
+    - [btbd](https://github.com/btbd)
+    - [edk2](https://github.com/tianocore/edk2)
     
 # Voyager - A Hyper-V Hacking Framework For Windows 10 x64 (AMD & Intel)
 
