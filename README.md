@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://imgur.com/nvmaJnJ.png"/>
+    <img src="https://githacks.org/xerox/voyager/-/raw/bc07837aae126ed06130f7524e3f8464d2b3ca13/img/unknown.png"/>
 </div>
 
 # Voyager - A Hyper-V Hacking Framework For Windows 10 x64 (AMD & Intel)
