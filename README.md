@@ -31,8 +31,9 @@ The project is currently split into two individual projects, one for Intel and a
 | 1607   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
 | 1511   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
 
-# Compiling
+# Compiling & Deploying
 
-To compile Voyager for your desired Windows 10 version, please change the `WINVER` macro in both the `types.h` (found in the PayLoad solution), and `WINVER` in `Utils.h`. After
-compiling the payload, you are going to need to put it inside of whatever Voyager version you are using. There is an array inside of `PayLoad.c` were you are going to need to put
-the array of bytes for your module.
+To compile Voyager for your desired Windows 10 version, please change the `WINVER` macro in both the `types.h` (found in the PayLoad solution), and `WINVER` in `Utils.h`. Then use
+HXD to export the payload as a C array. Replace the array found in `PayLoad.c` with your payload.
+
+To deploy this you must replace bootmgfw inside of your EFI partition. First you are going to mount the partition with `mountvol X: /S`, X: being the label you want to mount your EFI partition too.
