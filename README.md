@@ -38,6 +38,7 @@ HXD to export the payload as a C array. Replace the array found in `PayLoad.c` w
 To deploy this you must replace bootmgfw inside of your EFI partition. First you are going to mount the partition with `mountvol X: /S`, X: being the label you want to mount your EFI partition too.
 Then rename bootmgfw.efi found in: EFI\Microsoft\Boot to bootmgfw.efi.backup.
 
+### Launch.bat
 ```batch
 mountvol X: /S
 move X:\EFI\Microsoft\Boot\bootmgfw.efi X:\EFI\Microsoft\Boot\bootmgfw.efi.backup
