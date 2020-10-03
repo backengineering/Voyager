@@ -87,10 +87,3 @@ if %errorLevel% == 0 (
     pause
 )
 ```
-
-
-# Disclaimer
-
-If you brick your system I am not responsible... Do not run this if your system does not support UEFI.
-
-This website [githacks.org], and its respective articles, are completely and solely for educational purposes, and its author, [_xeroxz], is neither personally responsible nor liable for neither malpractice nor unlawful behaviour based on this website’s contents. The owner of this website operates in a country where such laws as industrial-secrets-laws prohibit any legal action against any person reverse-engineering any publicly-available product, as long as it is not for monetary gain. The author [_xeroxz] of this website has not signed any written contracts that are juridically binding, as neither terms-of-services nor EULA’s are proper contracts in their respective country, essentially protecting this website completely for legal action. No content on this website infringes any copyrighted material or innovations, as reverse-engineered code goes under fair use as long as it is not being used for monetary gain.
