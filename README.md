@@ -30,11 +30,3 @@ The project is currently split into two individual projects, one for Intel and a
 | 1703   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
 | 1607   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
 | 1511   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
-
-
-# Compiling & Deploying
-
-To compile Voyager for your desired Windows 10 version, please change the `WINVER` macro in both the `types.h` (found in the PayLoad solution), and `WINVER` in `Utils.h`. Then use
-HXD to export the payload as a C array. Replace the array found in `PayLoad.c` with your payload. Next you are going to want to bundle the bootmgfw file with the newly compiled Voyager.efi file. Using the bundler I made: `efi-bundler.exe bootmgfw.efi voyager.efi`. 
-To deploy this you must replace bootmgfw inside of your EFI partition. First you are going to mount the partition with `mountvol X: /S`, X: being the label you want to mount your EFI partition too.
-Then rename bootmgfw.efi found in: EFI\Microsoft\Boot to bootmgfw.efi.backup.
