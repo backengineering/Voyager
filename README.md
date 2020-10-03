@@ -9,6 +9,8 @@ The project is currently split into two individual projects, one for Intel and a
 
 # Versions & Support
 
+All versions of this project have been tested and proven to work in a VM. Only 2004 has been tested on baremetal so far.
+
 :o: -> unknown/not tested.
 :heavy_check_mark: -> tested & working.
 :x: -> tested & not working.
