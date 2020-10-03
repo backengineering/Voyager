@@ -7,11 +7,11 @@
     <img src="https://githacks.org/xerox/voyager/-/raw/master/img/2004--1511-supported-green.svg"/>
 </div>
 
-# Credit
+### Credit
 
 * [cr4sh](https://blog.cr4.sh/) - cr4sh has done something like this a few years back. A link to it can be found [here](https://github.com/Cr4sh/s6_pcie_microblaze/tree/master/python/payloads/DmaBackdoorHv).
-* [btbd](https://github.com/btbd) 
-* [edk2](https://github.com/tianocore/edk2)
+* [btbd](https://github.com/btbd) - used utils.c/.h, also helped debug/fix issues, provided suggestions.
+* [edk2](https://github.com/tianocore/edk2) - uefi library...
 
 # Voyager - A Hyper-V Hacking Framework For Windows 10 x64 (AMD & Intel)
 
