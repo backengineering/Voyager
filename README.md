@@ -8,7 +8,7 @@
 </div>
 
 # Credit
-    [cr4sh (legend)](http://blog.cr4.sh/)
+    [cr4sh](http://blog.cr4.sh/)
     [btbd](https://github.com/btbd)
     [edk2](https://github.com/tianocore/edk2)
     
