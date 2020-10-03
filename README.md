@@ -31,7 +31,7 @@ The project is currently split into two individual projects, one for Intel and a
 | 1607   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
 | 1511   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
 
-<div align="right">
+<div align="right"><pre>
              ______
           ,'"       "-._
         ,'              "-._ _._
@@ -53,4 +53,4 @@ The project is currently split into two individual projects, one for Intel and a
              /_  |   __. `-._ 
              `.  `-.-''  __,-'
                `.   _,-'"
-</div>
+</pre></div>
