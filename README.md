@@ -28,3 +28,22 @@ the linear virtual address of the VMCB for every version of windows. GS register
 Deep in this structure is a linear virtual address to the current cores VMCB.
 
 The payload for AMD is also just a cpuid interception example. 
+
+# Versions & Support
+
+:o: -> unknown/not tested.
+:heavy_check_mark: -> tested & working.
+:x: -> tested & not working.
+
+| Winver | AMD     | Intel | VM | Bare Metal |
+|--------|---------|-------|----|-------|
+| 2004   | :heavy_check_mark: | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |
+| 1909   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
+| 1903   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
+| 1809   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
+| 1807   | :heavy_check_mark:        |  :heavy_check_mark:     | :heavy_check_mark:   | :o:      |
+| 1803   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
+| 1709   | :heavy_check_mark:       | :heavy_check_mark:      | :heavy_check_mark:   |  :o:     |
+| 1703   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
+| 1607   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
+| 1511   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
