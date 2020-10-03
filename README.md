@@ -33,4 +33,6 @@ The project is currently split into two individual projects, one for Intel and a
 
 # Compiling
 
-To compile Voyager for your desired Windows 10 version, please change the `WINVER` macro in both the `types.h` (found in the PayLoad solution), and `WINVER` in `Utils.h`.
+To compile Voyager for your desired Windows 10 version, please change the `WINVER` macro in both the `types.h` (found in the PayLoad solution), and `WINVER` in `Utils.h`. After
+compiling the payload, you are going to need to put it inside of whatever Voyager version you are using. There is an array inside of `PayLoad.c` were you are going to need to put
+the array of bytes for your module.
