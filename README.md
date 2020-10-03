@@ -41,8 +41,13 @@ Then rename bootmgfw.efi found in: EFI\Microsoft\Boot to bootmgfw.efi.backup.
 
 ### Launch.bat
 ```batch
-mountvol X: /S
-move X:\EFI\Microsoft\Boot\bootmgfw.efi X:\EFI\Microsoft\Boot\bootmgfw.efi.backup
-move bootmgfw.efi X:\EFI\Microsoft\Boot\
-shutdown /r
+NET SESSION >nul 2>&1
+IF %ERRORLEVEL% EQU 0 (
+    mountvol X: /S
+    move X:\EFI\Microsoft\Boot\bootmgfw.efi X:\EFI\Microsoft\Boot\bootmgfw.efi.backup
+    move bootmgfw.efi X:\EFI\Microsoft\Boot\
+    shutdown /r
+) ELSE (
+    Please run as admin!
+)
 ```
