@@ -30,3 +30,7 @@ The project is currently split into two individual projects, one for Intel and a
 | 1703   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
 | 1607   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
 | 1511   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
+
+# Compiling
+
+To compile Voyager for your desired Windows 10 version, please change the `WINVER` macro in both the `types.h` (found in the PayLoad solution), and `WINVER` in `Utils.h`.
