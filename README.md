@@ -57,7 +57,7 @@ Deep in this structure is a linear virtual address to the current cores VMCB.
 Currently the project is configured in such a way where you replace bootmgfw.efi on your EFI partition with Voyager. This requires secure boot to be disabled. If by any chance 
 Voyager crashes/something goes wrong simply reboot your computer since bootmgfw.efi is restored instantly. If there are any issues please let me know!
 
-Simply run `launch.bat` as admin. Once it has executed, your pc will reboot.
+Ensure voyager is renamed to `bootmgfw.efi` and `payload.dll` are all in the same folder as `launch.bat`. Simply run `launch.bat` as admin. Once it has executed, your pc will reboot.
 
 ```batch
 @echo off
