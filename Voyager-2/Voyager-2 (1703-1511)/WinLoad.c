@@ -43,7 +43,7 @@ EFI_STATUS EFIAPI BlImgLoadPEImageEx(VOID* a1, VOID* a2, CHAR16* ImagePath, UINT
 
 #if WINVER == 1703
 		MakeShitHook(&HvLoadImageBufferHook, RESOLVE_RVA(LoadImage, 5, 1), &HvBlImgLoadPEImageFromSourceBuffer, TRUE);
-#elif WINVER <= 1607 // 1511 is the same...
+#elif WINVER <= 1607 
 		MakeShitHook(&HvLoadImageHook, RESOLVE_RVA(LoadImage, 5, 1), &HvBlImgLoadPEImageEx, TRUE);
 #endif
 

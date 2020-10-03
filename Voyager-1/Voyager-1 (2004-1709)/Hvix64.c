@@ -1,6 +1,6 @@
 #include "Hvix64.h"
 
-VOID* MapModule(pvoyager_t VoyagerData, UINT8* ImageBase)
+VOID* MapModule(PVOYAGER_T VoyagerData, UINT8* ImageBase)
 {
 	if (!VoyagerData || !ImageBase)
 		return NULL;
@@ -44,7 +44,7 @@ VOID* MapModule(pvoyager_t VoyagerData, UINT8* ImageBase)
 	{
 		if (AsciiStrStr(VoyagerData->ModuleBase + Name[i], "voyager_context"))
 		{
-			*(voyager_t*)(VoyagerData->ModuleBase + Address[Ordinal[i]]) = *VoyagerData;
+			*(VOYAGER_T*)(VoyagerData->ModuleBase + Address[Ordinal[i]]) = *VoyagerData;
 			break; // DO NOT REMOVE? #Stink Code 2020...
 		}
 	}
@@ -91,7 +91,7 @@ VOID* MapModule(pvoyager_t VoyagerData, UINT8* ImageBase)
 
 VOID MakeVoyagerData
 (
-	pvoyager_t VoyagerData,
+	PVOYAGER_T VoyagerData,
 	VOID* HypervAlloc,
 	UINT64 HypervAllocSize,
 	VOID* PayLoadBase,
@@ -139,9 +139,6 @@ VOID* HookVmExit(VOID* HypervBase, VOID* HypervSize, VOID* VmExitHook)
 			VMEXIT_HANDLER_SIG,
 			VMEXIT_HANDLER_MASK
 		);
-
-	if (!VmExitHandler)
-		return NULL;
 
 	/*
 		.text:FFFFF80000237436                 mov     rcx, [rsp+arg_18] ; rcx = pointer to stack that contians all register values

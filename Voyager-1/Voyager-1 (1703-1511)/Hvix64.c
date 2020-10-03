@@ -1,6 +1,6 @@
 #include "Hvix64.h"
 
-VOID* MapModule(pvoyager_t VoyagerData, UINT8* ImageBase)
+VOID* MapModule(PVOYAGER_T VoyagerData, UINT8* ImageBase)
 {
 	EFI_IMAGE_DOS_HEADER* dosHeaders = (EFI_IMAGE_DOS_HEADER*)ImageBase;
 	if (dosHeaders->e_magic != EFI_IMAGE_DOS_SIGNATURE)
@@ -32,7 +32,7 @@ VOID* MapModule(pvoyager_t VoyagerData, UINT8* ImageBase)
 	{
 		if (AsciiStrStr(VoyagerData->ModuleBase + Name[i], "voyager_context"))
 		{
-			*(voyager_t*)(VoyagerData->ModuleBase + Address[Ordinal[i]]) = *VoyagerData;
+			*(VOYAGER_T*)(VoyagerData->ModuleBase + Address[Ordinal[i]]) = *VoyagerData;
 			break;
 		}
 	}
@@ -79,7 +79,7 @@ VOID* MapModule(pvoyager_t VoyagerData, UINT8* ImageBase)
 
 VOID MakeVoyagerData
 (
-	pvoyager_t VoyagerData,
+	PVOYAGER_T VoyagerData,
 	VOID* HypervAlloc,
 	UINT64 HypervAllocSize,
 	VOID* PayLoadBase,

@@ -2,8 +2,9 @@
 #include <intrin.h>
 #include <xmmintrin.h>
 #include <cstddef>
+
 #define PORT_NUM 0x2F8
-#define WINVER 2004
+#define WINVER 1511
 #define DBG_PRINT(arg) \
 	__outbytestring(PORT_NUM, (unsigned char*)arg, sizeof arg);
 
@@ -50,5 +51,4 @@ typedef struct _voyager_t
 	uintptr_t record_size;
 } voyager_t, *pvoyager_t;
 #pragma pack(pop)
-
 __declspec(dllexport) inline voyager_t voyager_context;

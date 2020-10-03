@@ -33,7 +33,7 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageFromSourceBuffer(VOID* a1, VOID* a2, VOID* a
 		{
 			if (!AsciiStrCmp(&pSection->Name, ".reloc"))
 			{
-				voyager_t VoyagerData;
+				VOYAGER_T VoyagerData;
 				MakeVoyagerData
 				(
 					&VoyagerData,
@@ -53,6 +53,9 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageFromSourceBuffer(VOID* a1, VOID* a2, VOID* a
 					VoyagerData.HypervModuleSize,
 					VmExitHook
 				);
+
+				gBS->SetMem(PayLoad, sizeof PayLoad, NULL);
+				gBS->FreePool(PayLoad);
 
 				pSection->Characteristics = SECTION_RWX;
 				pSection->Misc.VirtualSize += PayLoadSize();
@@ -95,7 +98,7 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageEx(VOID* DeviceId, VOID* MemoryType, CHAR16*
 		{
 			if (!AsciiStrCmp(&pSection->Name, ".reloc"))
 			{
-				voyager_t VoyagerData;
+				VOYAGER_T VoyagerData;
 				MakeVoyagerData
 				(
 					&VoyagerData,
@@ -115,6 +118,9 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageEx(VOID* DeviceId, VOID* MemoryType, CHAR16*
 					VoyagerData.HypervModuleSize,
 					VmExitHook
 				);
+
+				gBS->SetMem(PayLoad, sizeof PayLoad, NULL);
+				gBS->FreePool(PayLoad);
 
 				pSection->Characteristics = SECTION_RWX;
 				pSection->Misc.VirtualSize += PayLoadSize();

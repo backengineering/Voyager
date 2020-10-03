@@ -35,12 +35,6 @@ EFI_STATUS EFIAPI BlImgLoadPEImageEx(VOID* a1, VOID* a2, CHAR16* ImagePath, UINT
 				ALLOCATE_IMAGE_BUFFER_MASK
 			);
 
-		if (!LoadImage || !AllocImage)
-		{
-			DBG_PRINT("Signatures FAILED!\n");
-			return Result;
-		}
-
 #if WINVER == 1703
 		MakeShitHook(&HvLoadImageBufferHook, RESOLVE_RVA(LoadImage, 5, 1), &HvBlImgLoadPEImageFromSourceBuffer, TRUE);
 #elif WINVER <= 1607 // 1511 is the same...

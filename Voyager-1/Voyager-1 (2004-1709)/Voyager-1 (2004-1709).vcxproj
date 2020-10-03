@@ -132,6 +132,8 @@
       <StringPooling>true</StringPooling>
       <ExceptionHandling>SyncCThrow</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>EFI Application</SubSystem>
@@ -150,13 +152,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>SyncCThrow</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>EFI Application</SubSystem>

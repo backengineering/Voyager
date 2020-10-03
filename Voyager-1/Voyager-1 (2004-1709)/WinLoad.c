@@ -48,7 +48,7 @@ EFI_STATUS EFIAPI BlLdrLoadImage(VOID* Arg1, CHAR16* ModulePath, CHAR16* ModuleN
 		{
 			if (!AsciiStrCmp(&pSection->Name, ".reloc"))
 			{
-				voyager_t VoyagerData;
+				VOYAGER_T VoyagerData;
 				MakeVoyagerData
 				(
 					&VoyagerData,
@@ -62,17 +62,12 @@ EFI_STATUS EFIAPI BlLdrLoadImage(VOID* Arg1, CHAR16* ModulePath, CHAR16* ModuleN
 				DBG_PRINT(".reloc section end (aka golden record base address) -> 0x%p\n", TableEntry->ModuleBase + pSection->VirtualAddress + pSection->Misc.VirtualSize);
 
 				VOID* VmExitHook = MapModule(&VoyagerData, PayLoad);
-				if (!VmExitHook) 
-					return Result;
-
 				VOID* VmExitFunction = HookVmExit
 				(
 					VoyagerData.HypervModuleBase,
 					VoyagerData.HypervModuleSize,
 					VmExitHook
 				);
-				if (!VmExitFunction) 
-					return Result;
 
 				pSection->Characteristics = SECTION_RWX;
 				pSection->Misc.VirtualSize += PayLoadSize();

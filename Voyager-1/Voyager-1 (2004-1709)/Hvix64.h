@@ -31,7 +31,7 @@ static_assert(sizeof(VMEXIT_HANDLER_SIG) == 26, "signature is invalid length!");
 // AllocBase is the base address of the extra memory allocated below where hyper-v is
 // AllocSize is the size of the extra allocated memory... This size == module size...
 //
-VOID* MapModule(pvoyager_t VoyagerData, UINT8* ImageBase);
+VOID* MapModule(PVOYAGER_T VoyagerData, UINT8* ImageBase);
 
 //
 // sig scan hv.exe for vmexit call and replace the relative call (RVA) with 
@@ -46,7 +46,7 @@ VOID* HookVmExit(VOID* HypervBase, VOID* HypervSize, VOID* VmExitHook);
 //
 VOID MakeVoyagerData
 (
-	pvoyager_t VoyagerData,
+	PVOYAGER_T VoyagerData,
 	VOID* HypervAlloc,
 	UINT64 HypervAllocSize,
 	VOID* PayLoadBase,
