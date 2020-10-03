@@ -38,7 +38,7 @@ EFI_STATUS EFIAPI UefiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable
     EFI_DEVICE_PATH* BootMgfwPath = GetBootMgfwPath();
     if (EFI_ERROR((Result = gBS->LoadImage(TRUE, ImageHandle, BootMgfwPath, NULL, NULL, &BootMgfwHandle))))
     {
-        Print(L"failed to load bootmgfw.efi...\n");
+        Print(L"failed to load bootmgfw.efi... reason -> %r\n", Result);
         gBS->Stall(5 * 1000000);
         return EFI_ABORTED;
     }
@@ -50,9 +50,9 @@ EFI_STATUS EFIAPI UefiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable
         return Result;
     }
 
-    if (EFI_ERROR(gBS->StartImage(BootMgfwHandle, NULL, NULL)))
+    if (EFI_ERROR((Result = gBS->StartImage(BootMgfwHandle, NULL, NULL))))
     {
-        Print(L"Failed to start bootmgfw.efi...\n");
+        Print(L"Failed to start bootmgfw.efi... reason -> %r\n", Result);
         gBS->Stall(5 * 1000000);
         return EFI_ABORTED;
     }
