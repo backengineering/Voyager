@@ -5,7 +5,6 @@
     <img src="https://githacks.org/xerox/voyager/-/raw/master/img/amd_badge.svg"/>
     <img src="https://githacks.org/xerox/voyager/-/raw/master/img/Intel-supported-green.svg"/>
     <img src="https://githacks.org/xerox/voyager/-/raw/master/img/2004--1511-supported-green.svg"/>
-    <img src="https://githacks.org/xerox/voyager/-/raw/master/bare_metal-only_2004_tested-yellow.svg"/>
 </div>
 
 # Voyager - A Hyper-V Hacking Framework For Windows 10 x64 (AMD & Intel)
