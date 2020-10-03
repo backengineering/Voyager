@@ -43,7 +43,7 @@ Deep in this structure is a linear virtual address to the current cores VMCB.
 | 2004   | :heavy_check_mark: | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |
 | 1909   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |
 | 1903   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
-| 1809   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
+| 1809   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :heavy_check_mark:      |
 | 1807   | :heavy_check_mark:        |  :heavy_check_mark:     | :heavy_check_mark:   | :o:      |
 | 1803   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
 | 1709   | :heavy_check_mark:       | :heavy_check_mark:      | :heavy_check_mark:   |  :o:     |
