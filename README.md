@@ -30,27 +30,3 @@ The project is currently split into two individual projects, one for Intel and a
 | 1703   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
 | 1607   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
 | 1511   | :heavy_check_mark:        | :heavy_check_mark:      | :heavy_check_mark:   | :o:      |
-
-<pre>
-             ______
-          ,'"       "-._
-        ,'              "-._ _._
-        ;              __,-'/   |
-       ;|           ,-' _,'"'._,.
-       |:            _,'      |\ `.
-       : \       _,-'         | \  `.
-        \ \   ,-'             |  \   \
-         \ '.         .-.     |       \
-          \  \         "      |        :
-           `. `.              |        |
-             `. "-._          |        ;
-             / |`._ `-._      L       /
-            /  | \ `._   "-.___    _,'
-           /   |  \_.-"-.___   """"
-           \   :            /"""
-            `._\_       __.'
-              _ ' "--'''' \_ 
-             /_  |   __. `-._ 
-             `.  `-.-''  __,-'
-               `.   _,-'"
-</pre>
