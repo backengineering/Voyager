@@ -20,8 +20,6 @@ and interception can commence.
 The payload solution contains a small CPUID interception example. I plan on expanding my examples to include EPT hooking and module injection/module shadowing. I also
 need to locate the self referencing pml4e in hyper-v's pml4 :|....
 
-<img src="https://imgur.com/xchpi9B.png"/>
-
 # Voyager 2 - AMD
 
 Voyager 2 contains all the code associated with the AMD part of this project. Since AMD has no vmread/vmwrite operation, only vmsave/vmload I had to locate
