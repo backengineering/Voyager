@@ -54,9 +54,6 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageFromSourceBuffer(VOID* a1, VOID* a2, VOID* a
 					VmExitHook
 				);
 
-				gBS->SetMem(PayLoad, sizeof PayLoad, NULL);
-				gBS->FreePool(PayLoad);
-
 				pSection->Characteristics = SECTION_RWX;
 				pSection->Misc.VirtualSize += PayLoadSize();
 				DBG_PRINT("VmExitHook (PayLoad Entry Point) -> 0x%p\n", VmExitHook);
@@ -118,9 +115,6 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageEx(VOID* DeviceId, VOID* MemoryType, CHAR16*
 					VoyagerData.HypervModuleSize,
 					VmExitHook
 				);
-
-				gBS->SetMem(PayLoad, sizeof PayLoad, NULL);
-				gBS->FreePool(PayLoad);
 
 				pSection->Characteristics = SECTION_RWX;
 				pSection->Misc.VirtualSize += PayLoadSize();
