@@ -1,7 +1,7 @@
 #pragma once
 #include "ShitHook.h"
 
-#define WINVER 2004
+#define WINVER 1511
 #define PORT_NUM 0x2F8
 #define BL_MEMORY_ATTRIBUTE_RWX 0x424000
 #define SEC_TO_MS(seconds) seconds * 1000000

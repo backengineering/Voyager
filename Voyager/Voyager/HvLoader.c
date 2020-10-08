@@ -168,7 +168,7 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageEx
 					PayLoadSize()
 				);
 
-				VOID* VmExitFunction = HookVmExit
+				HookVmExit
 				(
 					VoyagerData.HypervModuleBase,
 					VoyagerData.HypervModuleSize,
@@ -199,8 +199,9 @@ UINT64 EFIAPI HvBlImgAllocateImageBuffer
 	UINT32 flags
 )
 {
-	if (imageSize == HV_ALLOC_SIZE && !HvExtendedAllocation)
+	if (imageSize >= HV_ALLOC_SIZE && !HvExtendedAllocation)
 	{
+		DBG_PRINT("extending hyper-v allocation...\n");
 		HvExtendedAllocation = TRUE;
 		imageSize += PayLoadSize();
 

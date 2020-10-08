@@ -5,7 +5,7 @@
 #include <ntstatus.h>
 #include <basetsd.h>
 
-#define WINVER 2004
+#define WINVER 1511
 #define VMEXIT_KEY 0xDEADBEEFDEADBEEF
 
 #define PORT_NUM 0x2F8

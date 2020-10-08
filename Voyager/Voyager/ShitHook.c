@@ -2,9 +2,6 @@
 
 VOID MakeShitHook(PSHITHOOK Hook, VOID* HookFrom, VOID* HookTo, BOOLEAN Install)
 {
-	if (!Hook || !HookFrom || !HookTo)
-		return;
-
 	unsigned char JmpCode[14] =
 	{
 		0xff, 0x25, 0x0, 0x0, 0x0, 0x0,		// jmp    QWORD PTR[rip + 0x0]

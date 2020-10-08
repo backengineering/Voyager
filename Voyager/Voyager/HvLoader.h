@@ -2,8 +2,8 @@
 #include "PayLoad.h"
 #include "Hv.h"
 
-#define HV_ALLOCATE_IMAGE_BUFFER_SIG "\xE8\x00\x00\x00\x00\x8B\xD8\x85\xC0\x78\x7C\x21\x7C\x24\x00\x45\x33\xC0"
-#define HV_ALLOCATE_IMAGE_BUFFER_MASK "x????xxxxxxxxx?xxx"
+#define HV_ALLOCATE_IMAGE_BUFFER_SIG "\xE8\x00\x00\x00\x00\x8B\xF8\x85\xC0\x79\x0A"
+#define HV_ALLOCATE_IMAGE_BUFFER_MASK "x????xxxxxx"
 
 #define HV_LOAD_PE_IMG_SIG "\x48\x89\x44\x24\x00\xE8\x00\x00\x00\x00\x44\x8B\xF0\x85\xC0\x0F\x88"
 #define HV_LOAD_PE_IMG_MASK "xxxx?x????xxxxxxx"
