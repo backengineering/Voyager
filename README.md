@@ -10,8 +10,6 @@
 ### Credit
 
 * [cr4sh](https://blog.cr4.sh/) - cr4sh has done something like this a few years back. A link to it can be found [here](https://github.com/Cr4sh/s6_pcie_microblaze/tree/master/python/payloads/DmaBackdoorHv).
-* [btbd](https://github.com/btbd) - used utils.c/.h, also helped debug/fix issues, provided suggestions.
-* [edk2](https://github.com/tianocore/edk2) - uefi library...
 
 # Voyager - A Hyper-V Hacking Framework For Windows 10 x64 (AMD & Intel)
 
@@ -42,9 +40,34 @@ The project is currently split into two individual projects, one for Intel and a
 
 Currently the project is configured in such a way where you replace bootmgfw.efi on your EFI partition with Voyager. This requires secure boot to be disabled. If by any chance 
 Voyager crashes/something goes wrong simply reboot your computer since bootmgfw.efi is restored instantly. If there are any issues please let me know!
+
 Ensure voyager is renamed to `bootmgfw.efi` and `payload.dll` are all in the same folder as `launch.bat`. Simply run `launch.bat` as admin. Once it has executed, your pc will reboot.
 
-# EFI Bundler
+```batch
+@echo off
+net session >nul 2>&1
+if %errorLevel% == 0 (
+    :: mount the efi partition to X: drive...
+    mountvol X: /S
+    
+    :: bootmgfw is a system file so we are going to strip those attributes away...
+    attrib -s -h X:\EFI\Microsoft\Boot\bootmgfw.efi
+    
+    :: backup bootmgfw.efi (this is needed for voyager to work since voyager restores bootmgfw.efi)
+    move X:\EFI\Microsoft\Boot\bootmgfw.efi X:\EFI\Microsoft\Boot\bootmgfw.efi.backup
+    
+    :: copy payload and bootmgfw.efi to EFI partition...
+    xcopy %~dp0bootmgfw.efi X:\EFI\Microsoft\Boot\
+    xcopy %~dp0payload.dll  X:\EFI\Microsoft\Boot\
 
-This code is used to bundled two EFI Modules together into a single module. The entry point of the second module is called first, then the first module's entry point is executed. Not sure what to do with this code so im just putting
-it in this repo for now. Might make another project for it. 
+    echo press enter to reboot...
+    pause
+    
+    :: enable hyper-v and reboot now...
+    BCDEDIT /Set {current} hypervisorlaunchtype auto
+    shutdown /r /t 0
+) else (
+    echo Failure: Please run as admin.
+    pause
+)
+```
