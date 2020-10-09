@@ -10,6 +10,7 @@
 ### Credit
 
 * [cr4sh](https://blog.cr4.sh/) - cr4sh has done something like this a few years back. A link to it can be found [here](https://github.com/Cr4sh/s6_pcie_microblaze/tree/master/python/payloads/DmaBackdoorHv).
+* [btbd](https://github.com/btbd) - offering suggestions and providing input... also stole utils.c/utils.h :thumbsup:
 
 # Voyager - A Hyper-V Hacking Framework For Windows 10 x64 (AMD & Intel)
 
