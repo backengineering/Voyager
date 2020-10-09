@@ -161,7 +161,6 @@ EFI_STATUS EFIAPI BlImgLoadPEImageEx
 				HV_LOAD_PE_IMG_FROM_BUFFER_SIG,
 				HV_LOAD_PE_IMG_FROM_BUFFER_MASK
 			);
-
 #elif WINVER <= 1607 
 		VOID* LoadImage =
 			FindPattern(
@@ -171,7 +170,6 @@ EFI_STATUS EFIAPI BlImgLoadPEImageEx
 				HV_LOAD_PE_IMG_MASK
 			);
 #endif
-
 		VOID* AllocImage =
 			FindPattern(
 				*ImageBasePtr,

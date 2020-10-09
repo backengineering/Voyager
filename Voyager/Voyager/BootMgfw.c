@@ -186,6 +186,7 @@ EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE ImageHandle)
 
 	Print(L"BootMgfw Image Base -> 0x%p\n", BootMgfw->ImageBase);
 	Print(L"BootMgfw Image Size -> 0x%x\n", BootMgfw->ImageSize);
+
 	VOID* ArchStartBootApplication =
 		FindPattern(
 			BootMgfw->ImageBase,
@@ -198,10 +199,10 @@ EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE ImageHandle)
 		return EFI_NOT_FOUND;
 
 #if WINVER >= 1703
-	Print(L"BootMgfw.ArchStartBootApplication -> 0x%p\n", ArchStartBootApplication);
+	Print(L"BootMgfw.BlImgStartBootApplication -> 0x%p\n", ArchStartBootApplication);
 	MakeShitHook(&BootMgfwShitHook, ArchStartBootApplication, &ArchStartBootApplicationHook, TRUE);
 #else
-	Print(L"BootMgfw.ArchStartBootApplication -> 0x%p\n", RESOLVE_RVA(ArchStartBootApplication, 5, 1));
+	Print(L"BootMgfw.BlImgStartBootApplication -> 0x%p\n", RESOLVE_RVA(ArchStartBootApplication, 5, 1));
 	MakeShitHook(&BootMgfwShitHook, RESOLVE_RVA(ArchStartBootApplication, 5, 1), &ArchStartBootApplicationHook, TRUE);
 #endif
 	return EFI_SUCCESS;

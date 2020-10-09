@@ -5,7 +5,7 @@
 #include <ntstatus.h>
 #include <basetsd.h>
 
-#define WINVER 1511
+#define WINVER 1507
 #define VMEXIT_KEY 0xDEADBEEFDEADBEEF
 
 #define PORT_NUM 0x2F8
@@ -48,6 +48,10 @@
 #define offset_vmcb_base 0x82F0
 #define offset_vmcb_link 0x90
 #define offset_vmcb 0xC40
+#elif WINVER == 1507
+#define offset_vmcb_base 0x82F0
+#define offset_vmcb_link 0x88
+#define offset_vmcb 0xBC0
 #endif
 
 using u8 = unsigned char;
