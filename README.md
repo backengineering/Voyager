@@ -19,6 +19,7 @@ Voyager is a project designed to offer module injection and vmexit hooking for b
 # Usage 
 
 Please enable hyper-v in "turn windows features on or off". Then run launch.bat as admin, this will mount the EFI partition and move some files around then reboot you.
+Voyager is designed to recover from a crash. The first thing Voyager will do when executed is restore bootmgfw on disk. If any complications occur during boot you can simply reboot.
 
 <div align="center">
 <img src="https://imgur.com/uOpcCp7.png"/>
