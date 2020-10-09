@@ -151,13 +151,18 @@ EFI_STATUS EFIAPI BlImgLoadPEImageEx
 	if (!InstalledHvLoaderHook)
 		EnableShitHook(&WinLoadImageShitHook);
 
-	CHAR8 ModuleName[0x100];
-	UnicodeStrToAsciiStr(ImagePath, ModuleName);
-	DBG_PRINT("module loading -> %s\n", ModuleName);
-
 	if (StrStr(ImagePath, L"hvloader.efi"))
 	{
-		DBG_PRINT("hvloader loaded into memory...\n");
+#if WINVER == 1703
+		VOID* LoadImage =
+			FindPattern(
+				*ImageBasePtr,
+				*ImageSize,
+				HV_LOAD_PE_IMG_FROM_BUFFER_SIG,
+				HV_LOAD_PE_IMG_FROM_BUFFER_MASK
+			);
+
+#elif WINVER <= 1607 
 		VOID* LoadImage =
 			FindPattern(
 				*ImageBasePtr,
@@ -165,6 +170,7 @@ EFI_STATUS EFIAPI BlImgLoadPEImageEx
 				HV_LOAD_PE_IMG_SIG,
 				HV_LOAD_PE_IMG_MASK
 			);
+#endif
 
 		VOID* AllocImage =
 			FindPattern(
@@ -174,11 +180,8 @@ EFI_STATUS EFIAPI BlImgLoadPEImageEx
 				HV_ALLOCATE_IMAGE_BUFFER_MASK
 			);
 
-		DBG_PRINT("LoadImage -> 0x%p\n", LoadImage);
-		DBG_PRINT("AllocImage -> 0x%p\n", AllocImage);
-
 #if WINVER == 1703
-		MakeShitHook(&HvLoadImageBufferHook, RESOLVE_RVA(LoadImage, 10, 6), &HvBlImgLoadPEImageFromSourceBuffer, TRUE);
+		MakeShitHook(&HvLoadImageBufferHook, RESOLVE_RVA(LoadImage, 5, 1), &HvBlImgLoadPEImageFromSourceBuffer, TRUE);
 #elif WINVER <= 1607 
 		MakeShitHook(&HvLoadImageHook, RESOLVE_RVA(LoadImage, 10, 6), &HvBlImgLoadPEImageEx, TRUE);
 #endif

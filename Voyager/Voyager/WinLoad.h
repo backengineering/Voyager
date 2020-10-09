@@ -13,7 +13,7 @@ extern SHITHOOK WinLoadAllocateImageHook;
 // for 1703-1511, we are going to want to hook BlImgAllocateImageBuffer inside of hvloader.efi
 // not winload. We will have to scan for BlImgLoadPEImageEx in winload and then wait for hvloader
 // to be loaded to install hooks in hvloader...
-#define LOAD_PE_IMG_SIG "\x48\x89\x44\x24\x00\xE8\x00\x00\x00\x00\x44\x8B\xF0\x85\xC0\x0F\x88"
+#define LOAD_PE_IMG_SIG "\x48\x89\x44\x24\x00\xE8\x00\x00\x00\x00\x44\x8B\xF0\x85\xC0\x79\x11"
 #define LOAD_PE_IMG_MASK "xxxx?x????xxxxxxx"
 
 static_assert(sizeof(ALLOCATE_IMAGE_BUFFER_SIG) == sizeof(ALLOCATE_IMAGE_BUFFER_MASK), "signature and mask do not match size!");

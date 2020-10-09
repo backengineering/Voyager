@@ -4,7 +4,7 @@
 #include <cstddef>
 
 #define PORT_NUM 0x2F8
-#define WINVER 1703
+#define WINVER 1511
 #define DBG_PRINT(arg) \
 	__outbytestring(PORT_NUM, (unsigned char*)arg, sizeof arg);
 

@@ -201,7 +201,6 @@ UINT64 EFIAPI HvBlImgAllocateImageBuffer
 {
 	if (imageSize >= HV_ALLOC_SIZE && !HvExtendedAllocation)
 	{
-		DBG_PRINT("extending hyper-v allocation...\n");
 		HvExtendedAllocation = TRUE;
 		imageSize += PayLoadSize();
 
