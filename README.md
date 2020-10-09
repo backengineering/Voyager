@@ -4,7 +4,7 @@
     </div>
     <img src="https://githacks.org/xerox/voyager/-/raw/master/img/amd_badge.svg"/>
     <img src="https://githacks.org/xerox/voyager/-/raw/master/img/Intel-supported-green.svg"/>
-    <img src="https://githacks.org/xerox/voyager/-/raw/master/img/2004--1511-supported-green.svg"/>
+    <img src="https://githacks.org/xerox/voyager/-/raw/master/img/2004--1507-supported-green.svg"/>
 </div>
 
 ### Credit
