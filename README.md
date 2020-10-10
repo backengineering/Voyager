@@ -17,6 +17,28 @@
 Voyager is a project designed to offer module injection and vmexit hooking for both AMD & Intel versions of Hyper-V. 
 This project works on all versions of Windows 10-x64 (2004-1507).
 
+### bootmgfw.efi
+
+`bootmgfw.ImgArchStartBootApplication` between windows versions 2004-1709 is invoked to start winload.efi. A hook is place on this function in order to install hooks in winload.efi before
+winload.efi starts execution.
+
+On windows 1703-1511 the symbol/name is different but parameters and return type are the same: `bootmgfw.BlImgStartBootApplication`.
+
+### winload.efi
+
+winload.efi between Windows 10-x64 versions 2004-1709 export a bunch of functions. Some of those functions are then imported by hvloader.dll such as `BlLdrLoadImage`. 
+Older versions of windows 10-x64 (1703-1507) have another efi file by the name of hvloader.efi. Hvloader.efi contains alot of the same functions that are inside of winload. 
+You can see that Microsoft simplified hvloader.efi in later versions of Windows 10-x64 by making winload export the functions that were also defined in hvloader.efi.
+
+If you look at the project you will see hvloader.c/hvloader.h, these contain the hooks that are placed inside of hvloader and are installed from a hook inside of winload. 1703-1507
+requires an extra set of hooks to get to where Hyper-v is loaded into memory.
+
+### hvloader.efi
+
+Hvloader.efi contains alot of the same functions that can be found inside of winload.efi as explained in the section above. In Windows 10-x64 versions spanning 1703-1507, 
+Hyper-v is not loaded from a function found in winload.efi but instead of the same function found inside of hvloader.efi. These functions are `hvloader.BlImgLoadPEImageEx` 
+and `hvloader.BlImgLoadPEImageFromSourceBuffer`. 
+
 # Usage 
 
 Please enable hyper-v in "turn windows features on or off". Then run launch.bat as admin, this will mount the EFI partition and move some files around then reboot you.
