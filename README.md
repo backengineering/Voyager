@@ -7,6 +7,8 @@
     <img src="https://githacks.org/xerox/voyager/-/raw/master/img/2004--1507-supported-green.svg"/>
 </div>
 
+***
+
 ### Credit
 
 * [cr4sh](https://blog.cr4.sh/) - cr4sh has done something like this a few years back. A link to it can be found [here](https://github.com/Cr4sh/s6_pcie_microblaze/tree/master/python/payloads/DmaBackdoorHv).
@@ -20,6 +22,8 @@ This project works on all versions of Windows 10-x64 (2004-1507).
 # HookChain - information and order of hooks...
 
 <img src="https://imgur.com/upt3l66.png"/>
+
+***
 
 ### bootmgfw.efi
 
