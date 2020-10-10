@@ -20,9 +20,7 @@ This project works on all versions of Windows 10-x64 (2004-1507).
 ### bootmgfw.efi
 
 `bootmgfw.ImgArchStartBootApplication` between windows versions 2004-1709 is invoked to start winload.efi. A hook is place on this function in order to install hooks in winload.efi before
-winload.efi starts execution.
-
-On windows 1703-1511 the symbol/name is different but parameters and return type are the same: `bootmgfw.BlImgStartBootApplication`.
+winload.efi starts execution. On windows 1703-1511 the symbol/name is different but parameters and return type are the same: `bootmgfw.BlImgStartBootApplication`.
 
 ### winload.efi
 
@@ -35,9 +33,16 @@ requires an extra set of hooks to get to where Hyper-v is loaded into memory.
 
 ### hvloader.efi
 
-Hvloader.efi contains alot of the same functions that can be found inside of winload.efi as explained in the section above. In Windows 10-x64 versions spanning 1703-1507, 
+Hvloader.efi (found in windows versions 1703-1507) contains alot of the same functions that can be found inside of winload.efi as explained in the section above. In Windows 10-x64 versions spanning 1703-1507, 
 Hyper-v is not loaded from a function found in winload.efi but instead of the same function found inside of hvloader.efi. These functions are `hvloader.BlImgLoadPEImageEx` 
-and `hvloader.BlImgLoadPEImageFromSourceBuffer`. 
+and `hvloader.BlImgLoadPEImageFromSourceBuffer` for 1703 specifically.
+
+### hvix64.exe (Intel)
+
+hvix64.exe is the intel version of hyper-v. This module along with hvax64.exe does not have any symbols. To find the vmexit handler I simply signature scanned for `0F 78` (vmread instruction)
+and then xreferenced the functions that contained this instruction to see if they were called from a stub of code that pushes all registers including xmm's. It took me a little to find the correct
+function but once I found the stub (vmexit handler) and c/c++ vmexit handler I was able to make a good enough signature to find the vmexit handler on all of the other Intel
+versions of hyper-v.
 
 # Usage 
 
