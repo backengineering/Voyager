@@ -59,6 +59,26 @@ EFI_STATUS EFIAPI BlLdrLoadImage
 	if (!HookedHyperV)
 		EnableShitHook(&WinLoadImageShitHook);
 
+	if (StrStr(ModulePath, L"hvloader.dll"))
+	{
+		PLDR_DATA_TABLE_ENTRY TableEntry = *lplpTableEntry;
+		VOID* HvlpTransferToHypervisor =
+			FindPattern(
+				TableEntry->ModuleBase,
+				TableEntry->SizeOfImage,
+				TRANS_TO_HV_SIG,
+				TRANS_TO_HV_MASK
+			);
+
+		MakeShitHook
+		(
+			&TransferControlShitHook,
+			RESOLVE_RVA(HvlpTransferToHypervisor, 13, 9),
+			&TransferToHyperV, 
+			TRUE
+		);
+	}
+
 	if (!StrCmp(ModuleName, L"hv.exe"))
 	{
 		HookedHyperV = TRUE;
@@ -161,6 +181,7 @@ EFI_STATUS EFIAPI BlImgLoadPEImageEx
 				HV_LOAD_PE_IMG_FROM_BUFFER_SIG,
 				HV_LOAD_PE_IMG_FROM_BUFFER_MASK
 			);
+
 #elif WINVER <= 1607 
 		VOID* LoadImage =
 			FindPattern(
@@ -169,6 +190,7 @@ EFI_STATUS EFIAPI BlImgLoadPEImageEx
 				HV_LOAD_PE_IMG_SIG,
 				HV_LOAD_PE_IMG_MASK
 			);
+
 #endif
 		VOID* AllocImage =
 			FindPattern(

@@ -1,7 +1,17 @@
 #pragma once
-#include "ShitHook.h"
+#include <Uefi.h>
+#include <Library/UefiLib.h>
+#include <Library/DebugLib.h>
+#include <Library/MemoryAllocationLib.h>
+#include <Library/UefiBootServicesTableLib.h>
+#include <Library/UefiRuntimeServicesTableLib.h>
+#include <Library/DevicePathLib.h>
+#include <Library/PrintLib.h>
+#include <Protocol/SimpleFileSystem.h>
+#include <Protocol/LoadedImage.h>
+#include <IndustryStandard/PeImage.h>
+#include <Guid/GlobalVariable.h>
 
-#define WINVER 1507
 #define PORT_NUM 0x2F8
 #define BL_MEMORY_ATTRIBUTE_RWX 0x424000
 #define SEC_TO_MS(seconds) seconds * 1000000

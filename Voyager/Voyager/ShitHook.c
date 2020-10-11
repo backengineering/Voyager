@@ -14,20 +14,20 @@ VOID MakeShitHook(PSHITHOOK Hook, VOID* HookFrom, VOID* HookTo, BOOLEAN Install)
 	// save original bytes, and hook related addresses....
 	Hook->Address = HookFrom;
 	Hook->HookAddress = HookTo;
-	gBS->CopyMem(Hook->Code, HookFrom, sizeof Hook->Code);
+	MemCopy(Hook->Code, HookFrom, sizeof Hook->Code);
 
 	// setup hook...
-	gBS->CopyMem(JmpCode + 6, &HookTo, sizeof HookTo);
-	gBS->CopyMem(Hook->JmpCode, JmpCode, sizeof JmpCode);
+	MemCopy(JmpCode + 6, &HookTo, sizeof HookTo);
+	MemCopy(Hook->JmpCode, JmpCode, sizeof JmpCode);
 	if (Install) EnableShitHook(Hook);
 }
 
 VOID EnableShitHook(PSHITHOOK Hook)
 {
-	gBS->CopyMem(Hook->Address, Hook->JmpCode, sizeof Hook->JmpCode);
+	MemCopy(Hook->Address, Hook->JmpCode, sizeof Hook->JmpCode);
 }
 
 VOID DisableShitHook(PSHITHOOK Hook)
 {
-	gBS->CopyMem(Hook->Address, Hook->Code, sizeof Hook->Code);
+	MemCopy(Hook->Address, Hook->Code, sizeof Hook->Code);
 }

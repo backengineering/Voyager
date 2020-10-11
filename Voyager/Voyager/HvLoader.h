@@ -1,6 +1,12 @@
 #pragma once
 #include "PayLoad.h"
 #include "Hv.h"
+#include "ShitHook.h"
+
+extern SHITHOOK HvLoadImageHook;
+extern SHITHOOK HvLoadAllocImageHook;
+extern SHITHOOK HvLoadImageBufferHook;
+extern SHITHOOK TransferControlShitHook;
 
 #define HV_ALLOCATE_IMAGE_BUFFER_SIG "\xE8\x00\x00\x00\x00\x8B\xF8\x85\xC0\x79\x0A"
 #define HV_ALLOCATE_IMAGE_BUFFER_MASK "x????xxxxxx"
@@ -14,6 +20,22 @@ static_assert(sizeof(HV_LOAD_PE_IMG_FROM_BUFFER_SIG) == sizeof(HV_LOAD_PE_IMG_FR
 #define HV_LOAD_PE_IMG_MASK "xxxx?x????xxxxxxx????xxx"
 static_assert(sizeof(HV_LOAD_PE_IMG_SIG) == sizeof(HV_LOAD_PE_IMG_MASK), "signature and mask do not match size...");
 
+#define MAP_PHYSICAL_SIG "\xE8\x00\x00\x00\x00\x85\xC0\x0F\x88\x00\x00\x00\x00\x48\x8B\xBC\x24"
+#define MAP_PHYSICAL_MASK "x????xxxx????xxxx"
+static_assert(sizeof(MAP_PHYSICAL_SIG) == sizeof(MAP_PHYSICAL_MASK), "signature and mask do not patch sizes...\n");
+
+// 1703-1511
+//
+// winload.HvlpTransferToHypervisor is used to transfer control to hyper-v...
+// on 2004-1709, this function is going to be inside of hvloader.dll...
+#define TRANS_TO_HV_SIG "\x48\x8B\x51\x10\x48\x8B\x49\x18\xE8"
+#define TRANS_TO_HV_MASK "xxxxxxxxx"
+static_assert(sizeof(TRANS_TO_HV_SIG) == sizeof(TRANS_TO_HV_MASK), "signature and mask do not match size...");
+
+typedef EFI_STATUS(EFIAPI* MAP_PHYSICAL)(VOID** VirtualAddress, VOID* PhysicalAddress, UINTN Size, 
+	VOID* Unknown1, VOID* Unknown2);
+
+extern MAP_PHYSICAL MmMapPhysicalMemory;
 
 typedef EFI_STATUS(EFIAPI* ALLOCATE_IMAGE_BUFFER)(VOID** imageBuffer, UINTN imageSize, UINT32 memoryType, 
 	UINT32 attributes, VOID* unused, UINT32 flags);
@@ -119,6 +141,16 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageFromSourceBuffer
 	VOID* a15
 );
 
-extern SHITHOOK HvLoadImageHook;
-extern SHITHOOK HvLoadAllocImageHook;
-extern SHITHOOK HvLoadImageBufferHook;
+/// <summary>
+/// called when the hypervisor is started... 
+/// </summary>
+/// <param name="Pml4PhysicalAddress">the physical address of hyper-v's pml4...</param>
+/// <param name="Unknown"></param>
+/// <param name="AssemblyStub">assembly stub to set CR3...</param>
+VOID TransferToHyperV
+(
+	VOID* Pml4PhysicalAddress, 
+	VOID* Unknown,
+	VOID* AssemblyStub,
+	VOID* Unknown2
+);

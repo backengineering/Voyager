@@ -5,9 +5,7 @@
 #include <ntstatus.h>
 #include <basetsd.h>
 
-#define WINVER 1507
 #define VMEXIT_KEY 0xDEADBEEFDEADBEEF
-
 #define PORT_NUM 0x2F8
 #define DBG_PRINT(arg) \
 	__outbytestring(PORT_NUM, (unsigned char*)arg, sizeof arg);

@@ -3,7 +3,9 @@
 SHITHOOK HvLoadImageHook;
 SHITHOOK HvLoadImageBufferHook;
 SHITHOOK HvLoadAllocImageHook;
+SHITHOOK TransferControlShitHook;
 
+MAP_PHYSICAL MmMapPhysicalMemory;
 BOOLEAN HvExtendedAllocation = FALSE;
 BOOLEAN HvHookedHyperV = FALSE;
 
@@ -225,4 +227,22 @@ UINT64 EFIAPI HvBlImgAllocateImageBuffer
 		EnableShitHook(&HvLoadAllocImageHook);
 
 	return Result;
+}
+
+VOID TransferToHyperV(VOID* Pml4PhysicalAddress, VOID* Unknown, VOID* AssemblyStub, VOID* Unknown2)
+{
+	// TODO setup paging tables for the payload...
+	VOID* Pml4VirtualAddress = NULL;
+	MmMapPhysicalMemory(&Pml4VirtualAddress, Pml4PhysicalAddress, 0x1000, NULL, NULL);
+	DBG_PRINT("Hyper-V Pml4PhysicalAddress -> 0x%p\n", Pml4PhysicalAddress);
+	DBG_PRINT("Hyper-V Pml4VirtualAddress -> 0x%p\n", Pml4VirtualAddress);
+
+	DisableShitHook(&TransferControlShitHook);
+	((VOID(__fastcall*)(VOID*, VOID*, VOID*, VOID*))TransferControlShitHook.Address)
+	(
+			Pml4PhysicalAddress,
+			Unknown,
+			AssemblyStub,
+			Unknown2
+	);
 }

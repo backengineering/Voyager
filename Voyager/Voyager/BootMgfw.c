@@ -216,6 +216,14 @@ EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, 
 	// on 1703 and below, winload does not export any functions
 	if (!GetExport(ImageBase, "BlLdrLoadImage"))
 	{
+		VOID* HvlpTransferToHypervisor =
+			FindPattern(
+				ImageBase,
+				ImageSize,
+				TRANS_TO_HV_SIG,
+				TRANS_TO_HV_MASK
+			);
+
 		VOID* ImgLoadPEImageEx =
 			FindPattern(
 				ImageBase,
@@ -224,17 +232,30 @@ EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, 
 				LOAD_PE_IMG_MASK
 			);
 
+		MmMapPhysicalMemory = RESOLVE_RVA(
+			FindPattern(
+				ImageBase,
+				ImageSize,
+				MAP_PHYSICAL_SIG,
+				MAP_PHYSICAL_MASK
+			), 5, 1);
+
 		gST->ConOut->ClearScreen(gST->ConOut);
 		gST->ConOut->OutputString(gST->ConOut, AsciiArt);
 		Print(L"\n");
 
 		Print(L"Hyper-V PayLoad Size -> 0x%x\n", PayLoadSize());
 		Print(L"winload.BlImgLoadPEImageEx -> 0x%p\n", RESOLVE_RVA(ImgLoadPEImageEx, 10, 6));
+		Print(L"winload.HvlpTransferToHypervisor -> 0x%p\n", RESOLVE_RVA(HvlpTransferToHypervisor, 13, 9));
+
+		MakeShitHook(&TransferControlShitHook, RESOLVE_RVA(HvlpTransferToHypervisor, 13, 9), &TransferToHyperV, TRUE);
 		MakeShitHook(&WinLoadImageShitHook, RESOLVE_RVA(ImgLoadPEImageEx, 10, 6), &BlImgLoadPEImageEx, TRUE);
 	}
 	else // else the installed windows version is between 2004 and 1709
 	{
 		VOID* LdrLoadImage = GetExport(ImageBase, "BlLdrLoadImage");
+		MmMapPhysicalMemory = GetExport(ImageBase, "BlMmMapPhysicalAddressEx");
+
 		VOID* ImgAllocateImageBuffer =
 			FindPattern(
 				ImageBase,

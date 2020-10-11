@@ -22,5 +22,8 @@
     <ClInclude Include="ia32.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="pg_table.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
