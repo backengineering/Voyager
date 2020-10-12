@@ -66,3 +66,10 @@ Voyager is designed to recover from a crash. The first thing Voyager will do whe
 <div align="center">
 <img src="https://imgur.com/uOpcCp7.png"/>
 </div>
+
+
+### Compiling
+
+Simply select the windows version you want to compile for and then compile the entire solution... Rename `Voyager.efi` to `bootmgfw.efi`, do the same for `Payload (xxx).dll`, 
+rename it to `payload.dll`. Put both `bootmgfw.efi` (Voyager.efi rename), and `payload.dll` in the same folder as `launch.bat`. 
+<img src="https://githacks.org/xerox/voyager/uploads/fb3b24b28282a0cfe4c1b0440246844f/image.png"/>
