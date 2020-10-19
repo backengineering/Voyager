@@ -6,6 +6,7 @@
     <img src="https://githacks.org/xerox/voyager/-/raw/master/img/Intel-supported-green.svg"/>
     <img src="https://githacks.org/xerox/voyager/-/raw/master/img/2004--1507-supported-green.svg"/>
     <img src="https://githacks.org/xerox/voyager/-/raw/10f786da01b35d23de7abfcfecd6e54ed1efca0f/img/Secure%20Boot-Unsupported-red.svg"/>
+    <img src="https://githacks.org/xerox/voyager/-/raw/master/img/Legacy_BIOS-Unsupported-red.svg"/>
 </div>
 
 ***
