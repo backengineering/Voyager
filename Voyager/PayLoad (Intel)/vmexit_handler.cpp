@@ -1,7 +1,4 @@
-#include "types.h"
-#include "ia32.hpp"
-
-#define VMEXIT_KEY 0xDEADBEEFDEADBEEF
+#include "pg_table.h"
 
 #if WINVER > 1803
 void vmexit_handler(pcontext_t* context, void* unknown)
@@ -21,10 +18,15 @@ void vmexit_handler(pcontext_t context, void* unknown)
 	{
 		if (guest_registers->rcx == VMEXIT_KEY)
 		{
-			guest_registers->rax = 0xC0FFEE;
+			switch ((vmexit_command_t)(guest_registers->rdx))
+			{
+			case vmexit_command_t::init_paging_tables:
+				guest_registers->rax = pg_table::init_pg_tables();
+				break;
+			default:
+				break;
+			}
 
-			// advance rip, no one better execute cpuid instruction
-			// with 0xDEADBEEFDEADBEEF in RCX...
 			size_t rip, exec_len;
 			__vmx_vmread(VMCS_GUEST_RIP, &rip);
 			__vmx_vmread(VMCS_VMEXIT_INSTRUCTION_LENGTH, &exec_len);
@@ -33,9 +35,9 @@ void vmexit_handler(pcontext_t context, void* unknown)
 		}
 	}
 
-	// when hyper-v gets remapped out of winload's context
-	// the linear virtual addresses change... thus an adjustment is required...
+	// since there are alot of contexts being created and switched about,
+	// all hooks are done relative inside of hyper-v...
 	reinterpret_cast<vmexit_handler_t>(
 		reinterpret_cast<u64>(&vmexit_handler) -
-			voyager_context.vcpu_run_rva)(context, unknown);
+			voyager_context.vmexit_handler_rva)(context, unknown);
 }

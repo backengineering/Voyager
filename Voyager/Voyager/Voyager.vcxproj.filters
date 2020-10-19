@@ -64,5 +64,8 @@
     <ClInclude Include="Hv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PagingTables.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

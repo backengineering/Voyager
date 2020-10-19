@@ -5,9 +5,9 @@ SHITHOOK HvLoadImageBufferHook;
 SHITHOOK HvLoadAllocImageHook;
 SHITHOOK TransferControlShitHook;
 
-MAP_PHYSICAL MmMapPhysicalMemory;
 BOOLEAN HvExtendedAllocation = FALSE;
 BOOLEAN HvHookedHyperV = FALSE;
+MAP_PHYSICAL MmMapPhysicalMemory;
 
 EFI_STATUS EFIAPI HvBlImgLoadPEImageFromSourceBuffer
 (
@@ -72,12 +72,18 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageFromSourceBuffer
 			if (!AsciiStrCmp(&pSection->Name, ".reloc"))
 			{
 				VOYAGER_T VoyagerData;
+
+				//
+				// the payload's base address needs to be page aligned in 
+				// order for the paging table sections to be page aligned...
+				//
+				UINT32 PageRemainder = (0x1000 - (((*ImageBase + pSection->VirtualAddress + pSection->Misc.VirtualSize) << 52) >> 52));
 				MakeVoyagerData
 				(
 					&VoyagerData,
 					*ImageBase,
 					*ImageSize,
-					*ImageBase + pSection->VirtualAddress + pSection->Misc.VirtualSize,
+					*ImageBase + pSection->VirtualAddress + pSection->Misc.VirtualSize + PageRemainder,
 					PayLoadSize()
 				);
 
@@ -161,12 +167,18 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageEx
 			if (!AsciiStrCmp(&pSection->Name, ".reloc"))
 			{
 				VOYAGER_T VoyagerData;
+
+				//
+				// the payload's base address needs to be page aligned in 
+				// order for the paging table sections to be page aligned...
+				//
+				UINT32 PageRemainder = (0x1000 - (((*ImageBase + pSection->VirtualAddress + pSection->Misc.VirtualSize) << 52) >> 52));
 				MakeVoyagerData
 				(
 					&VoyagerData,
 					*ImageBase,
 					*ImageSize,
-					*ImageBase + pSection->VirtualAddress + pSection->Misc.VirtualSize,
+					*ImageBase + pSection->VirtualAddress + pSection->Misc.VirtualSize + PageRemainder,
 					PayLoadSize()
 				);
 
@@ -198,7 +210,7 @@ UINT64 EFIAPI HvBlImgAllocateImageBuffer
 	UINT32 memoryType,
 	UINT32 attributes,
 	VOID* unused, 
-	UINT32 flags
+	UINT32 Value
 )
 {
 	if (imageSize >= HV_ALLOC_SIZE && !HvExtendedAllocation)
@@ -219,7 +231,7 @@ UINT64 EFIAPI HvBlImgAllocateImageBuffer
 		memoryType,
 		attributes,
 		unused, 
-		flags
+		Value
 	);
 
 	// continue shithooking this function until we have extended the allocation of hyper-v...
@@ -229,20 +241,25 @@ UINT64 EFIAPI HvBlImgAllocateImageBuffer
 	return Result;
 }
 
-VOID TransferToHyperV(VOID* Pml4PhysicalAddress, VOID* Unknown, VOID* AssemblyStub, VOID* Unknown2)
+VOID TransferToHyperV(UINT64 Pml4PhysicalAddress, VOID* Unknown, VOID* AssemblyStub, VOID* Unknown2)
 {
-	// TODO setup paging tables for the payload...
-	VOID* Pml4VirtualAddress = NULL;
-	MmMapPhysicalMemory(&Pml4VirtualAddress, Pml4PhysicalAddress, 0x1000, NULL, NULL);
-	DBG_PRINT("Hyper-V Pml4PhysicalAddress -> 0x%p\n", Pml4PhysicalAddress);
-	DBG_PRINT("Hyper-V Pml4VirtualAddress -> 0x%p\n", Pml4VirtualAddress);
+	PML4E_T SelfRefEntry;
+	PPML4E_T Pml4 = NULL;
+	MmMapPhysicalMemory(&Pml4, Pml4PhysicalAddress, 0x1000, NULL, NULL);
+
+	// setup self referencing paging table entry...
+	Pml4[255].Value = NULL;
+	Pml4[255].Present = TRUE;
+	Pml4[255].Pfn = Pml4PhysicalAddress >> 12;
+	Pml4[255].UserSuperVisor = FALSE;
+	Pml4[255].ReadWrite = TRUE;
 
 	DisableShitHook(&TransferControlShitHook);
 	((VOID(__fastcall*)(VOID*, VOID*, VOID*, VOID*))TransferControlShitHook.Address)
 	(
-			Pml4PhysicalAddress,
-			Unknown,
-			AssemblyStub,
-			Unknown2
+		Pml4PhysicalAddress,
+		Unknown,
+		AssemblyStub,
+		Unknown2
 	);
 }

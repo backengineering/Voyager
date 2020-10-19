@@ -552,6 +552,7 @@
     <ClInclude Include="BootMgfw.h" />
     <ClInclude Include="Hv.h" />
     <ClInclude Include="HvLoader.h" />
+    <ClInclude Include="PagingTables.h" />
     <ClInclude Include="ShitHook.h" />
     <ClInclude Include="PayLoad.h" />
     <ClInclude Include="SplashScreen.h" />

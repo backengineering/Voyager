@@ -662,6 +662,7 @@
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="pg_table.cpp" />
     <ClCompile Include="vmexit_handler.cpp" />
   </ItemGroup>
   <ItemGroup>

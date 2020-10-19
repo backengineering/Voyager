@@ -232,13 +232,14 @@ EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, 
 				LOAD_PE_IMG_MASK
 			);
 
-		MmMapPhysicalMemory = RESOLVE_RVA(
-			FindPattern(
-				ImageBase,
-				ImageSize,
-				MAP_PHYSICAL_SIG,
-				MAP_PHYSICAL_MASK
-			), 5, 1);
+		MmMapPhysicalMemory =
+			RESOLVE_RVA(
+				FindPattern(
+					ImageBase,
+					ImageSize,
+					MAP_PHYSICAL_SIG,
+					MAP_PHYSICAL_MASK),
+				5, 1);
 
 		gST->ConOut->ClearScreen(gST->ConOut);
 		gST->ConOut->OutputString(gST->ConOut, AsciiArt);

@@ -17,9 +17,15 @@
     <ClInclude Include="pg_table.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ia32.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vmexit_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pg_table.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

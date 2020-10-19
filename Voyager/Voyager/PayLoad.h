@@ -1,7 +1,15 @@
 #pragma once
 #include "Utils.h"
+#include "PagingTables.h"
 #include <Library/ShellLib.h>
+
 extern VOID* PayLoad;
+extern PPTE_T PayLoadPt;
+extern PPDE_T PayLoadPd;
+extern PPDPTE_T PayLoadPdPt;
+extern UINT64 PayLoadPtPhysAddr;
+extern UINT64 PayLoadPdPhysAddr;
+extern UINT64 PayLoadPdPtPhysAddr;
 
 #pragma pack(push, 1)
 typedef struct _VOYAGER_T

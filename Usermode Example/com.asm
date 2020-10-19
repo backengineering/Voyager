@@ -1,7 +1,7 @@
 _text segment
-hyperv proc
+hypercall proc
 cpuid
 ret
-hyperv endp
+hypercall endp
 _text ends
 end

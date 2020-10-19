@@ -52,12 +52,6 @@
 #define offset_vmcb 0xBC0
 #endif
 
-using u8 = unsigned char;
-using u16 = unsigned short;
-using u32 = unsigned int;
-using u64 = unsigned long long;
-using u128 = __m128;
-
 #define VMEXIT_CR0_READ             0x0000
 #define VMEXIT_CR1_READ             0x0001
 #define VMEXIT_CR2_READ             0x0002
@@ -223,8 +217,20 @@ using u128 = __m128;
 #define VMEXIT_VMGEXIT              0x0403
 #define VMEXIT_INVALID              -1
 
+using u8 = unsigned char;
+using u16 = unsigned short;
+using u32 = unsigned int;
+using u64 = unsigned long long;
+using u128 = __m128;
+
 namespace svm
 {
+	enum class vmexit_command_t
+	{
+		init_paging_tables = 0x111
+		// add your commands here...
+	};
+
 	typedef struct __declspec(align(16)) _guest_context
 	{
 		u8  gap0[8];

@@ -25,7 +25,7 @@ extern SHITHOOK WinLoadAllocateImageHook;
 static_assert(sizeof(ALLOCATE_IMAGE_BUFFER_SIG) == sizeof(ALLOCATE_IMAGE_BUFFER_MASK), "signature and mask do not match size!");
 
 typedef UINT64 (EFIAPI* ALLOCATE_IMAGE_BUFFER)(VOID** imageBuffer, UINTN imageSize, UINT32 memoryType, 
-	UINT32 attributes, VOID* unused, UINT32 flags);
+	UINT32 attributes, VOID* unused, UINT32 Value);
 
 typedef EFI_STATUS(EFIAPI* LDR_LOAD_IMAGE)(VOID* a1, VOID* a2, CHAR16* ImagePath, UINT64* ImageBasePtr, UINT32* ImageSize,
 	VOID* a6, VOID* a7, VOID* a8, VOID* a9, VOID* a10, VOID* a11, VOID* a12, VOID* a13, VOID* a14);
@@ -93,7 +93,7 @@ EFI_STATUS EFIAPI BlImgAllocateImageBuffer
 	UINT32 memoryType,
 	UINT32 attributes, 
 	VOID* unused,
-	UINT32 flags
+	UINT32 Value
 );
 
 /// <summary>

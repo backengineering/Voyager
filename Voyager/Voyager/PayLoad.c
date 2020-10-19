@@ -4,6 +4,14 @@
 // to read the payload from disk and delete it after...
 VOID* PayLoad = NULL;
 
+PPTE_T PayLoadPt = NULL;
+PPDE_T PayLoadPd = NULL;
+PPDPTE_T PayLoadPdPt = NULL;
+
+UINT64 PayLoadPtPhysAddr = NULL;
+UINT64 PayLoadPdPhysAddr = NULL;
+UINT64 PayLoadPdPtPhysAddr = NULL;
+
 UINT32 PayLoadSize(VOID)
 {
 	EFI_IMAGE_DOS_HEADER* RecordDosImageHeader = PayLoad;
@@ -14,7 +22,7 @@ UINT32 PayLoadSize(VOID)
 	if (RecordNtHeaders->Signature != EFI_IMAGE_NT_SIGNATURE)
 		return NULL;
 
-	return RecordNtHeaders->OptionalHeader.SizeOfImage;
+	return RecordNtHeaders->OptionalHeader.SizeOfImage + 0x1000;
 }
 
 VOID* PayLoadEntry(VOID* ModuleBase)

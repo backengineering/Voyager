@@ -2,6 +2,7 @@
 #include "PayLoad.h"
 #include "Hv.h"
 #include "ShitHook.h"
+#include "PagingTables.h"
 
 extern SHITHOOK HvLoadImageHook;
 extern SHITHOOK HvLoadAllocImageHook;
@@ -20,10 +21,6 @@ static_assert(sizeof(HV_LOAD_PE_IMG_FROM_BUFFER_SIG) == sizeof(HV_LOAD_PE_IMG_FR
 #define HV_LOAD_PE_IMG_MASK "xxxx?x????xxxxxxx????xxx"
 static_assert(sizeof(HV_LOAD_PE_IMG_SIG) == sizeof(HV_LOAD_PE_IMG_MASK), "signature and mask do not match size...");
 
-#define MAP_PHYSICAL_SIG "\xE8\x00\x00\x00\x00\x85\xC0\x0F\x88\x00\x00\x00\x00\x48\x8B\xBC\x24"
-#define MAP_PHYSICAL_MASK "x????xxxx????xxxx"
-static_assert(sizeof(MAP_PHYSICAL_SIG) == sizeof(MAP_PHYSICAL_MASK), "signature and mask do not patch sizes...\n");
-
 // 1703-1511
 //
 // winload.HvlpTransferToHypervisor is used to transfer control to hyper-v...
@@ -32,13 +29,8 @@ static_assert(sizeof(MAP_PHYSICAL_SIG) == sizeof(MAP_PHYSICAL_MASK), "signature 
 #define TRANS_TO_HV_MASK "xxxxxxxxx"
 static_assert(sizeof(TRANS_TO_HV_SIG) == sizeof(TRANS_TO_HV_MASK), "signature and mask do not match size...");
 
-typedef EFI_STATUS(EFIAPI* MAP_PHYSICAL)(VOID** VirtualAddress, VOID* PhysicalAddress, UINTN Size, 
-	VOID* Unknown1, VOID* Unknown2);
-
-extern MAP_PHYSICAL MmMapPhysicalMemory;
-
 typedef EFI_STATUS(EFIAPI* ALLOCATE_IMAGE_BUFFER)(VOID** imageBuffer, UINTN imageSize, UINT32 memoryType, 
-	UINT32 attributes, VOID* unused, UINT32 flags);
+	UINT32 attributes, VOID* unused, UINT32 Value);
 
 typedef EFI_STATUS(EFIAPI* HV_LDR_LOAD_IMAGE_BUFFER)(VOID* a1, VOID* a2, VOID* a3, VOID* a4, UINT64* ImageBase,
 	UINT32* ImageSize, VOID* a7, VOID* a8, VOID* a9, VOID* a10, VOID* a11, VOID* a12, VOID* a13, VOID* a14, VOID* a15);
@@ -64,7 +56,7 @@ UINT64 EFIAPI HvBlImgAllocateImageBuffer
 	UINT32 memoryType,
 	UINT32 attributes, 
 	VOID* unused,
-	UINT32 flags
+	UINT32 Value
 );
 
 /// <summary>
@@ -149,7 +141,7 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageFromSourceBuffer
 /// <param name="AssemblyStub">assembly stub to set CR3...</param>
 VOID TransferToHyperV
 (
-	VOID* Pml4PhysicalAddress, 
+	UINT64 Pml4PhysicalAddress,
 	VOID* Unknown,
 	VOID* AssemblyStub,
 	VOID* Unknown2

@@ -3,6 +3,7 @@
 
 int main()
 {
-	std::printf("[+] hyper-v (CPUID) result -> 0x%x\n", hyperv(VMEXIT_KEY));
+	auto result = hypercall(VMEXIT_KEY, vmexit_command_t::init_paging_tables);
+	std::printf("[+] hyper-v (CPUID) init page table result -> %d\n", result);
 	std::getchar();
 }

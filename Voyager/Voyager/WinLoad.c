@@ -100,12 +100,17 @@ EFI_STATUS EFIAPI BlLdrLoadImage
 			if (!AsciiStrCmp(&pSection->Name, ".reloc"))
 			{
 				VOYAGER_T VoyagerData;
+				//
+				// the payload's base address needs to be page aligned in 
+				// order for the paging table sections to be page aligned...
+				//
+				UINT32 PageRemainder = (0x1000 - (((TableEntry->ModuleBase + pSection->VirtualAddress + pSection->Misc.VirtualSize) << 52) >> 52));
 				MakeVoyagerData
 				(
 					&VoyagerData,
 					TableEntry->ModuleBase,
 					TableEntry->SizeOfImage,
-					TableEntry->ModuleBase + pSection->VirtualAddress + pSection->Misc.VirtualSize,
+					TableEntry->ModuleBase + pSection->VirtualAddress + pSection->Misc.VirtualSize + PageRemainder,
 					PayLoadSize()
 				);
 
@@ -115,6 +120,7 @@ EFI_STATUS EFIAPI BlLdrLoadImage
 					VoyagerData.HypervModuleSize,
 					MapModule(&VoyagerData, PayLoad)
 				);
+
 				// make the .reloc section RWX and increase the sections size...
 				pSection->Characteristics = SECTION_RWX;
 				pSection->Misc.VirtualSize += PayLoadSize();
@@ -204,8 +210,7 @@ EFI_STATUS EFIAPI BlImgLoadPEImageEx
 		MakeShitHook(&HvLoadImageBufferHook, RESOLVE_RVA(LoadImage, 5, 1), &HvBlImgLoadPEImageFromSourceBuffer, TRUE);
 #elif WINVER <= 1607 
 		MakeShitHook(&HvLoadImageHook, RESOLVE_RVA(LoadImage, 10, 6), &HvBlImgLoadPEImageEx, TRUE);
-#endif
-
+	#endif
 		MakeShitHook(&HvLoadAllocImageHook, RESOLVE_RVA(AllocImage, 5, 1), &HvBlImgAllocateImageBuffer, TRUE);
 		InstalledHvLoaderHook = TRUE;
 	}
@@ -219,7 +224,7 @@ UINT64 EFIAPI BlImgAllocateImageBuffer
 	UINT32 memoryType, 
 	UINT32 attributes, 
 	VOID* unused, 
-	UINT32 flags
+	UINT32 Value
 )
 {
 	//
@@ -251,7 +256,7 @@ UINT64 EFIAPI BlImgAllocateImageBuffer
 		memoryType,
 		attributes, 
 		unused,
-		flags
+		Value
 	);
 
 	// keep hooking until we extend an allocation...
