@@ -19,7 +19,6 @@ svm::pgs_base_struct vmexit_handler(void* unknown, svm::pguest_context context)
 		switch ((svm::vmexit_command_t)context->rdx)
 		{
 		case svm::vmexit_command_t::init_paging_tables:
-			// AMD is a gorilla... why is RAX in the VMCB?
 			vmcb->rax = pg_table::init_pg_tables();
 			break;
 		default:
