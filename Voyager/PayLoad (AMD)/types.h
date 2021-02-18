@@ -5,10 +5,18 @@
 #include <ntstatus.h>
 #include <basetsd.h>
 
+#include <Windows.h>
+#include <ntstatus.h>
+#include "ia32.hpp"
+
 #define VMEXIT_KEY 0xDEADBEEFDEADBEEF
-#define PORT_NUM 0x2F8
+#define PAGE_4KB 0x1000
+#define PAGE_2MB PAGE_4KB * 512
+#define PAGE_1GB PAGE_2MB * 512
+
+#define PORT_NUM_3 0x3E8
 #define DBG_PRINT(arg) \
-	__outbytestring(PORT_NUM, (unsigned char*)arg, sizeof arg);
+	__outbytestring(PORT_NUM_3, (unsigned char*)arg, sizeof arg);
 
 #if WINVER == 2004
 #define offset_vmcb_base 0x103B0
@@ -223,14 +231,13 @@ using u32 = unsigned int;
 using u64 = unsigned long long;
 using u128 = __m128;
 
+using guest_virt_t = u64;
+using guest_phys_t = u64;
+using host_virt_t = u64;
+using host_phys_t = u64;
+
 namespace svm
 {
-	enum class vmexit_command_t
-	{
-		init_paging_tables = 0x111
-		// add your commands here...
-	};
-
 	typedef struct __declspec(align(16)) _guest_context
 	{
 		u8  gap0[8];
@@ -408,16 +415,86 @@ namespace svm
 		u64 lastexcepto;                 // +0x290
 	} vmcb, *pvmcb;
 
+	// AMD does not have a vmread/vmwrite instruction... only a vmload
+	// and vmsave instruction... this means I had to hunt down the damn
+	// VMCB location... this is the pointer chain to the VMCB...
+	//
+	// TODO: could sig scan for this in Voyager...
+	__forceinline auto get_vmcb() -> pvmcb
+	{
+		return *reinterpret_cast<svm::pvmcb*>(
+			*reinterpret_cast<u64*>(
+				*reinterpret_cast<u64*>(
+					__readgsqword(0) + offset_vmcb_base)
+						+ offset_vmcb_link) + offset_vmcb);
+	}
+
+	enum class vmexit_command_t
+	{
+		init_page_tables,
+		read_guest_phys,
+		write_guest_phys,
+		copy_guest_virt,
+		get_dirbase,
+		translate
+	};
+
+	enum class vmxroot_error_t
+	{
+		error_success,
+		pml4e_not_present,
+		pdpte_not_present,
+		pde_not_present,
+		pte_not_present,
+		vmxroot_translate_failure,
+		invalid_self_ref_pml4e,
+		invalid_mapping_pml4e,
+		invalid_host_virtual,
+		invalid_guest_physical,
+		invalid_guest_virtual,
+		page_table_init_failed
+	};
+
+	typedef union _command_t
+	{
+		struct _copy_phys
+		{
+			host_phys_t  phys_addr;
+			guest_virt_t buffer;
+			u64 size;
+		} copy_phys;
+
+		struct _copy_virt
+		{
+			guest_phys_t dirbase_src;
+			guest_virt_t virt_src;
+			guest_phys_t dirbase_dest;
+			guest_virt_t virt_dest;
+			u64 size;
+		} copy_virt;
+
+		struct _translate_virt
+		{
+			guest_virt_t virt_src;
+			guest_phys_t phys_addr;
+		} translate_virt;
+
+		guest_phys_t dirbase;
+
+	} command_t, * pcommand_t;
+
 	using vcpu_run_t = pgs_base_struct (__fastcall*)(void*, guest_context*);
+
 	#pragma pack(push, 1)
 	typedef struct _voyager_t
 	{
-		u64 vcpu_run_rva; 	// RVA from vcpu_run entry ---> back to original vcpu_run...
+		u64 vcpu_run_rva;
 		u64 hyperv_module_base;
 		u64 hyperv_module_size;
 		u64 record_base;
 		u64 record_size;
 	} voyager_t, * pvoyager_t;
 	#pragma pack(pop)
+
 	__declspec(dllexport) inline voyager_t voyager_context;
 }

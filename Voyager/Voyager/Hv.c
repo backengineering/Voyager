@@ -1,5 +1,6 @@
 #include "Hv.h"
 
+PVOYAGER_T PayLoadDataPtr = NULL;
 VOID* MapModule(PVOYAGER_T VoyagerData, UINT8* ImageBase)
 {
 	if (!VoyagerData || !ImageBase)
@@ -13,10 +14,7 @@ VOID* MapModule(PVOYAGER_T VoyagerData, UINT8* ImageBase)
 	if (ntHeaders->Signature != EFI_IMAGE_NT_SIGNATURE)
 		return NULL;
 
-	// Map headers (no reason not too here, memory is unaccessable from guest lol)
 	MemCopy(VoyagerData->ModuleBase, ImageBase, ntHeaders->OptionalHeader.SizeOfHeaders);
-
-	// Map sections
 	EFI_IMAGE_SECTION_HEADER* sections = (EFI_IMAGE_SECTION_HEADER*)((UINT8*)&ntHeaders->OptionalHeader + ntHeaders->FileHeader.SizeOfOptionalHeader);
 	for (UINT32 i = 0; i < ntHeaders->FileHeader.NumberOfSections; ++i) 
 	{
@@ -32,7 +30,6 @@ VOID* MapModule(PVOYAGER_T VoyagerData, UINT8* ImageBase)
 		}
 	}
 
-	// set exported pointer to voyager context...
 	EFI_IMAGE_EXPORT_DIRECTORY* ExportDir = (EFI_IMAGE_EXPORT_DIRECTORY*)(
 		VoyagerData->ModuleBase + ntHeaders->OptionalHeader.DataDirectory[EFI_IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
 
@@ -125,7 +122,7 @@ VOID MakeVoyagerData
 		UINT64 VmExitFunction = VmExitHandlerCallRip + *(INT32*)((UINT64)(VmExitHandlerCall + 1)); // + 1 to skip E8 (call) and read 4 bytes (RVA)
 		VoyagerData->VmExitHandlerRva = ((UINT64)PayLoadEntry(PayLoadBase)) - (UINT64)VmExitFunction;
 	}
-	else
+	else // else AMD
 	{
 		VOID* VmExitHandlerCall =
 			FindPattern(
@@ -167,7 +164,7 @@ VOID* HookVmExit(VOID* HypervBase, VOID* HypervSize, VOID* VmExitHook)
 		*(INT32*)((UINT64)(VmExitHandlerCall + 1)) = NewVmExitRVA;
 		return VmExitFunction;
 	}
-	else
+	else // else AMD
 	{
 		VOID* VmExitHandlerCall =
 			FindPattern(

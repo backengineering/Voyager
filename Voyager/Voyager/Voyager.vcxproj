@@ -271,6 +271,9 @@
       <AdditionalDependencies>UefiHiiLib.lib;UefiHiiServicesLib.lib;UefiSortLib.lib;UefiShellLib.lib;GlueLib.lib;BaseLib.lib;BaseDebugPrintErrorLevelLib.lib;BasePrintLib.lib;UefiLib.lib;UefiBootServicesTableLib.lib;UefiRuntimeServicesTableLib.lib;UefiDevicePathLibDevicePathProtocol.lib;UefiDebugLibConOut.lib;UefiMemoryLib.lib;UefiMemoryAllocationLib.lib;BaseSynchronizationLib.lib;UefiFileHandleLib.lib;UefiApplicationEntryPoint.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>EfiMain</EntryPointSymbol>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>Voyager.map</MapFileName>
+      <MapExports>true</MapExports>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
@@ -300,6 +303,9 @@
       <AdditionalDependencies>UefiHiiLib.lib;UefiHiiServicesLib.lib;UefiSortLib.lib;UefiShellLib.lib;GlueLib.lib;BaseLib.lib;BaseDebugPrintErrorLevelLib.lib;BasePrintLib.lib;UefiLib.lib;UefiBootServicesTableLib.lib;UefiRuntimeServicesTableLib.lib;UefiDevicePathLibDevicePathProtocol.lib;UefiDebugLibConOut.lib;UefiMemoryLib.lib;UefiMemoryAllocationLib.lib;BaseSynchronizationLib.lib;UefiFileHandleLib.lib;UefiApplicationEntryPoint.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>EfiMain</EntryPointSymbol>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>Voyager.map</MapFileName>
+      <MapExports>true</MapExports>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
@@ -329,6 +335,9 @@
       <AdditionalDependencies>UefiHiiLib.lib;UefiHiiServicesLib.lib;UefiSortLib.lib;UefiShellLib.lib;GlueLib.lib;BaseLib.lib;BaseDebugPrintErrorLevelLib.lib;BasePrintLib.lib;UefiLib.lib;UefiBootServicesTableLib.lib;UefiRuntimeServicesTableLib.lib;UefiDevicePathLibDevicePathProtocol.lib;UefiDebugLibConOut.lib;UefiMemoryLib.lib;UefiMemoryAllocationLib.lib;BaseSynchronizationLib.lib;UefiFileHandleLib.lib;UefiApplicationEntryPoint.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>EfiMain</EntryPointSymbol>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>Voyager.map</MapFileName>
+      <MapExports>true</MapExports>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
@@ -358,6 +367,9 @@
       <AdditionalDependencies>UefiHiiLib.lib;UefiHiiServicesLib.lib;UefiSortLib.lib;UefiShellLib.lib;GlueLib.lib;BaseLib.lib;BaseDebugPrintErrorLevelLib.lib;BasePrintLib.lib;UefiLib.lib;UefiBootServicesTableLib.lib;UefiRuntimeServicesTableLib.lib;UefiDevicePathLibDevicePathProtocol.lib;UefiDebugLibConOut.lib;UefiMemoryLib.lib;UefiMemoryAllocationLib.lib;BaseSynchronizationLib.lib;UefiFileHandleLib.lib;UefiApplicationEntryPoint.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>EfiMain</EntryPointSymbol>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>Voyager.map</MapFileName>
+      <MapExports>true</MapExports>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
@@ -387,6 +399,9 @@
       <AdditionalDependencies>UefiHiiLib.lib;UefiHiiServicesLib.lib;UefiSortLib.lib;UefiShellLib.lib;GlueLib.lib;BaseLib.lib;BaseDebugPrintErrorLevelLib.lib;BasePrintLib.lib;UefiLib.lib;UefiBootServicesTableLib.lib;UefiRuntimeServicesTableLib.lib;UefiDevicePathLibDevicePathProtocol.lib;UefiDebugLibConOut.lib;UefiMemoryLib.lib;UefiMemoryAllocationLib.lib;BaseSynchronizationLib.lib;UefiFileHandleLib.lib;UefiApplicationEntryPoint.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>EfiMain</EntryPointSymbol>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>Voyager.map</MapFileName>
+      <MapExports>true</MapExports>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
@@ -416,6 +431,9 @@
       <AdditionalDependencies>UefiHiiLib.lib;UefiHiiServicesLib.lib;UefiSortLib.lib;UefiShellLib.lib;GlueLib.lib;BaseLib.lib;BaseDebugPrintErrorLevelLib.lib;BasePrintLib.lib;UefiLib.lib;UefiBootServicesTableLib.lib;UefiRuntimeServicesTableLib.lib;UefiDevicePathLibDevicePathProtocol.lib;UefiDebugLibConOut.lib;UefiMemoryLib.lib;UefiMemoryAllocationLib.lib;BaseSynchronizationLib.lib;UefiFileHandleLib.lib;UefiApplicationEntryPoint.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>EfiMain</EntryPointSymbol>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>Voyager.map</MapFileName>
+      <MapExports>true</MapExports>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
@@ -445,6 +463,9 @@
       <AdditionalDependencies>UefiHiiLib.lib;UefiHiiServicesLib.lib;UefiSortLib.lib;UefiShellLib.lib;GlueLib.lib;BaseLib.lib;BaseDebugPrintErrorLevelLib.lib;BasePrintLib.lib;UefiLib.lib;UefiBootServicesTableLib.lib;UefiRuntimeServicesTableLib.lib;UefiDevicePathLibDevicePathProtocol.lib;UefiDebugLibConOut.lib;UefiMemoryLib.lib;UefiMemoryAllocationLib.lib;BaseSynchronizationLib.lib;UefiFileHandleLib.lib;UefiApplicationEntryPoint.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>EfiMain</EntryPointSymbol>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>Voyager.map</MapFileName>
+      <MapExports>true</MapExports>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
@@ -474,6 +495,9 @@
       <AdditionalDependencies>UefiHiiLib.lib;UefiHiiServicesLib.lib;UefiSortLib.lib;UefiShellLib.lib;GlueLib.lib;BaseLib.lib;BaseDebugPrintErrorLevelLib.lib;BasePrintLib.lib;UefiLib.lib;UefiBootServicesTableLib.lib;UefiRuntimeServicesTableLib.lib;UefiDevicePathLibDevicePathProtocol.lib;UefiDebugLibConOut.lib;UefiMemoryLib.lib;UefiMemoryAllocationLib.lib;BaseSynchronizationLib.lib;UefiFileHandleLib.lib;UefiApplicationEntryPoint.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>EfiMain</EntryPointSymbol>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>Voyager.map</MapFileName>
+      <MapExports>true</MapExports>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
@@ -503,6 +527,9 @@
       <AdditionalDependencies>UefiHiiLib.lib;UefiHiiServicesLib.lib;UefiSortLib.lib;UefiShellLib.lib;GlueLib.lib;BaseLib.lib;BaseDebugPrintErrorLevelLib.lib;BasePrintLib.lib;UefiLib.lib;UefiBootServicesTableLib.lib;UefiRuntimeServicesTableLib.lib;UefiDevicePathLibDevicePathProtocol.lib;UefiDebugLibConOut.lib;UefiMemoryLib.lib;UefiMemoryAllocationLib.lib;BaseSynchronizationLib.lib;UefiFileHandleLib.lib;UefiApplicationEntryPoint.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>EfiMain</EntryPointSymbol>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>Voyager.map</MapFileName>
+      <MapExports>true</MapExports>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
@@ -532,6 +559,10 @@
       <AdditionalDependencies>UefiHiiLib.lib;UefiHiiServicesLib.lib;UefiSortLib.lib;UefiShellLib.lib;GlueLib.lib;BaseLib.lib;BaseDebugPrintErrorLevelLib.lib;BasePrintLib.lib;UefiLib.lib;UefiBootServicesTableLib.lib;UefiRuntimeServicesTableLib.lib;UefiDevicePathLibDevicePathProtocol.lib;UefiDebugLibConOut.lib;UefiMemoryLib.lib;UefiMemoryAllocationLib.lib;BaseSynchronizationLib.lib;UefiFileHandleLib.lib;UefiApplicationEntryPoint.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>EfiMain</EntryPointSymbol>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>
+      </MapFileName>
+      <MapExports>true</MapExports>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
@@ -541,7 +572,7 @@
     <ClCompile Include="BootMgfw.c" />
     <ClCompile Include="Hv.c" />
     <ClCompile Include="HvLoader.c" />
-    <ClCompile Include="ShitHook.c" />
+    <ClCompile Include="InlineHook.c" />
     <ClCompile Include="PayLoad.c" />
     <ClCompile Include="SplashScreen.c" />
     <ClCompile Include="UefiMain.c" />
@@ -553,7 +584,7 @@
     <ClInclude Include="Hv.h" />
     <ClInclude Include="HvLoader.h" />
     <ClInclude Include="PagingTables.h" />
-    <ClInclude Include="ShitHook.h" />
+    <ClInclude Include="InlineHook.h" />
     <ClInclude Include="PayLoad.h" />
     <ClInclude Include="SplashScreen.h" />
     <ClInclude Include="Utils.h" />

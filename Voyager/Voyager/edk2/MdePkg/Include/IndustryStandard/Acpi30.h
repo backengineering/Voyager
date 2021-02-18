@@ -37,7 +37,7 @@ typedef PACKED struct {
   UINT8                         GenFlag;
   UINT8                         SpecificFlag;
   UINT8                         RevisionId;
-  UINT8                         Reserved;
+  UINT8                         reserved;
   UINT64                        AddrSpaceGranularity;
   UINT64                        AddrRangeMin;
   UINT64                        AddrRangeMax;
@@ -109,7 +109,7 @@ typedef struct {
   UINT32  Length;
   UINT64  XsdtAddress;
   UINT8   ExtendedChecksum;
-  UINT8   Reserved[3];
+  UINT8   reserved[3];
 } EFI_ACPI_3_0_ROOT_SYSTEM_DESCRIPTION_POINTER;
 
 ///
@@ -270,7 +270,7 @@ typedef struct {
   UINT32  Flags;
   UINT64  XFirmwareWakingVector;
   UINT8   Version;
-  UINT8   Reserved[31];
+  UINT8   reserved[31];
 } EFI_ACPI_3_0_FIRMWARE_ACPI_CONTROL_STRUCTURE;
 
 ///
@@ -357,7 +357,7 @@ typedef struct {
   UINT8   Type;
   UINT8   Length;
   UINT8   IoApicId;
-  UINT8   Reserved;
+  UINT8   reserved;
   UINT32  IoApicAddress;
   UINT32  GlobalSystemInterruptBase;
 } EFI_ACPI_3_0_IO_APIC_STRUCTURE;
@@ -388,7 +388,7 @@ typedef struct {
   UINT32  GlobalSystemInterrupt;
   UINT32  PlatformInterruptSourceFlags;
   UINT8   CpeiProcessorOverride;
-  UINT8   Reserved[31];
+  UINT8   reserved[31];
 } EFI_ACPI_3_0_PLATFORM_INTERRUPT_APIC_STRUCTURE;
 
 //
@@ -425,7 +425,7 @@ typedef struct {
 typedef struct {
   UINT8   Type;
   UINT8   Length;
-  UINT16  Reserved;
+  UINT16  reserved;
   UINT64  LocalApicAddress;
 } EFI_ACPI_3_0_LOCAL_APIC_ADDRESS_OVERRIDE_STRUCTURE;
 
@@ -436,7 +436,7 @@ typedef struct {
   UINT8   Type;
   UINT8   Length;
   UINT8   IoApicId;
-  UINT8   Reserved;
+  UINT8   reserved;
   UINT32  GlobalSystemInterruptBase;
   UINT64  IoSapicAddress;
 } EFI_ACPI_3_0_IO_SAPIC_STRUCTURE;
@@ -451,7 +451,7 @@ typedef struct {
   UINT8   AcpiProcessorId;
   UINT8   LocalSapicId;
   UINT8   LocalSapicEid;
-  UINT8   Reserved[3];
+  UINT8   reserved[3];
   UINT32  Flags;
   UINT32  ACPIProcessorUIDValue;
 } EFI_ACPI_3_0_PROCESSOR_LOCAL_SAPIC_STRUCTURE;
@@ -544,7 +544,7 @@ typedef struct {
   UINT32  Flags;
   UINT8   LocalSapicEid;
   UINT8   ProximityDomain31To8[3];
-  UINT8   Reserved[4];
+  UINT8   reserved[4];
 } EFI_ACPI_3_0_PROCESSOR_LOCAL_APIC_SAPIC_AFFINITY_STRUCTURE;
 
 ///

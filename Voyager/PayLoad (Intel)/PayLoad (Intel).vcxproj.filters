@@ -14,7 +14,13 @@
     <ClCompile Include="vmexit_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pg_table.cpp">
+    <ClCompile Include="debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vmexit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -25,7 +31,13 @@
     <ClInclude Include="ia32.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="pg_table.h">
+    <ClInclude Include="debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vmexit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

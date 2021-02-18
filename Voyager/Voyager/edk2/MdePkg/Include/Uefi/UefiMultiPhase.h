@@ -174,7 +174,7 @@ typedef struct {
   ///
   /// Reserved field that must be set to 0.
   ///
-  UINT32  Reserved;
+  UINT32  reserved;
 } EFI_TABLE_HEADER;
 
 ///

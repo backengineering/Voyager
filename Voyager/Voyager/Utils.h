@@ -17,6 +17,7 @@
 #define SEC_TO_MS(seconds) seconds * 1000000
 #define SECTION_RWX (EFI_IMAGE_SCN_MEM_READ | EFI_IMAGE_SCN_MEM_WRITE | EFI_IMAGE_SCN_MEM_EXECUTE)
 
+void __outdword(unsigned short, unsigned long);
 VOID __outbytestring(UINT16 Port, UINT8* Buffer, UINT32 Count);
 void __outbyte(unsigned short Port, unsigned char Data);
 #pragma intrinsic(__outbytestring)

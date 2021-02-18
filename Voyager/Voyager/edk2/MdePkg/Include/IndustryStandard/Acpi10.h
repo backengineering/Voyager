@@ -397,7 +397,7 @@ typedef struct {
   UINT64  Signature;
   UINT8   Checksum;
   UINT8   OemId[6];
-  UINT8   Reserved;
+  UINT8   reserved;
   UINT32  RsdtAddress;
 } EFI_ACPI_1_0_ROOT_SYSTEM_DESCRIPTION_POINTER;
 
@@ -491,7 +491,7 @@ typedef struct {
   UINT32  FirmwareWakingVector;
   UINT32  GlobalLock;
   UINT32  Flags;
-  UINT8   Reserved[40];
+  UINT8   reserved[40];
 } EFI_ACPI_1_0_FIRMWARE_ACPI_CONTROL_STRUCTURE;
 
 ///
@@ -559,7 +559,7 @@ typedef struct {
   UINT8   Type;
   UINT8   Length;
   UINT8   IoApicId;
-  UINT8   Reserved;
+  UINT8   reserved;
   UINT32  IoApicAddress;
   UINT32  SystemVectorBase;
 } EFI_ACPI_1_0_IO_APIC_STRUCTURE;

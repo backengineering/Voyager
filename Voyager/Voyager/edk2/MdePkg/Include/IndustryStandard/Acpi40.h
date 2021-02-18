@@ -67,7 +67,7 @@ typedef struct {
   UINT32  Length;
   UINT64  XsdtAddress;
   UINT8   ExtendedChecksum;
-  UINT8   Reserved[3];
+  UINT8   reserved[3];
 } EFI_ACPI_4_0_ROOT_SYSTEM_DESCRIPTION_POINTER;
 
 ///
@@ -326,7 +326,7 @@ typedef struct {
   UINT8   Type;
   UINT8   Length;
   UINT8   IoApicId;
-  UINT8   Reserved;
+  UINT8   reserved;
   UINT32  IoApicAddress;
   UINT32  GlobalSystemInterruptBase;
 } EFI_ACPI_4_0_IO_APIC_STRUCTURE;
@@ -357,7 +357,7 @@ typedef struct {
   UINT32  GlobalSystemInterrupt;
   UINT32  PlatformInterruptSourceFlags;
   UINT8   CpeiProcessorOverride;
-  UINT8   Reserved[31];
+  UINT8   reserved[31];
 } EFI_ACPI_4_0_PLATFORM_INTERRUPT_APIC_STRUCTURE;
 
 //
@@ -394,7 +394,7 @@ typedef struct {
 typedef struct {
   UINT8   Type;
   UINT8   Length;
-  UINT16  Reserved;
+  UINT16  reserved;
   UINT64  LocalApicAddress;
 } EFI_ACPI_4_0_LOCAL_APIC_ADDRESS_OVERRIDE_STRUCTURE;
 
@@ -405,7 +405,7 @@ typedef struct {
   UINT8   Type;
   UINT8   Length;
   UINT8   IoApicId;
-  UINT8   Reserved;
+  UINT8   reserved;
   UINT32  GlobalSystemInterruptBase;
   UINT64  IoSapicAddress;
 } EFI_ACPI_4_0_IO_SAPIC_STRUCTURE;
@@ -420,7 +420,7 @@ typedef struct {
   UINT8   AcpiProcessorId;
   UINT8   LocalSapicId;
   UINT8   LocalSapicEid;
-  UINT8   Reserved[3];
+  UINT8   reserved[3];
   UINT32  Flags;
   UINT32  ACPIProcessorUIDValue;
 } EFI_ACPI_4_0_PROCESSOR_LOCAL_SAPIC_STRUCTURE;
@@ -452,7 +452,7 @@ typedef struct {
 typedef struct {
   UINT8   Type;
   UINT8   Length;
-  UINT8   Reserved[2];
+  UINT8   reserved[2];
   UINT32  X2ApicId;
   UINT32  Flags;
   UINT32  AcpiProcessorUid;
@@ -467,7 +467,7 @@ typedef struct {
   UINT16  Flags;
   UINT32  AcpiProcessorUid;
   UINT8   LocalX2ApicLint;
-  UINT8   Reserved[3];
+  UINT8   reserved[3];
 } EFI_ACPI_4_0_LOCAL_X2APIC_NMI_STRUCTURE;
 
 ///
@@ -603,7 +603,7 @@ typedef struct {
 ///
 typedef struct {
   EFI_ACPI_DESCRIPTION_HEADER Header;
-  UINT8                       Reserved[8];
+  UINT8                       reserved[8];
 } EFI_ACPI_4_0_CORRECTED_PLATFORM_ERROR_POLLING_TABLE_HEADER;
 
 ///
@@ -678,7 +678,7 @@ typedef struct {
   UINT32       MultipleUncorrectableErrors:1;
   UINT32       MultipleCorrectableErrors:1;
   UINT32       ErrorDataEntryCount:10;
-  UINT32       Reserved:18;
+  UINT32       reserved:18;
 } EFI_ACPI_4_0_ERROR_BLOCK_STATUS;
 
 ///
@@ -807,7 +807,7 @@ typedef struct {
   UINT16    SwitchToPollingThresholdWindow:1;
   UINT16    ErrorThresholdValue:1;
   UINT16    ErrorThresholdWindow:1;
-  UINT16    Reserved:10;
+  UINT16    reserved:10;
 } EFI_ACPI_4_0_HARDWARE_ERROR_NOTIFICATION_CONFIGURATION_WRITE_ENABLE_STRUCTURE;
 
 ///

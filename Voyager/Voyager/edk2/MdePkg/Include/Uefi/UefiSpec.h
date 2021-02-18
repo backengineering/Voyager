@@ -1885,7 +1885,7 @@ typedef struct {
   EFI_REINSTALL_PROTOCOL_INTERFACE  ReinstallProtocolInterface;
   EFI_UNINSTALL_PROTOCOL_INTERFACE  UninstallProtocolInterface;
   EFI_HANDLE_PROTOCOL               HandleProtocol;
-  VOID                              *Reserved;
+  VOID                              *reserved;
   EFI_REGISTER_PROTOCOL_NOTIFY      RegisterProtocolNotify;
   EFI_LOCATE_HANDLE                 LocateHandle;
   EFI_LOCATE_DEVICE_PATH            LocateDevicePath;
@@ -2139,7 +2139,7 @@ typedef union {
     /// The SysReq key must be pressed (1) or must not be pressed (0).
     ///
     UINT32  SysReqPressed    : 1;
-    UINT32  Reserved        : 16;
+    UINT32  reserved        : 16;
     ///
     /// Specifies the actual number of entries in EFI_KEY_OPTION.Keys, from 0-3. If
     /// zero, then only the shift state is considered. If more than one, then the boot option will

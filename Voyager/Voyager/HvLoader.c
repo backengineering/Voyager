@@ -1,9 +1,9 @@
 #include "HvLoader.h"
 
-SHITHOOK HvLoadImageHook;
-SHITHOOK HvLoadImageBufferHook;
-SHITHOOK HvLoadAllocImageHook;
-SHITHOOK TransferControlShitHook;
+INLINE_HOOK HvLoadImageHook;
+INLINE_HOOK HvLoadImageBufferHook;
+INLINE_HOOK HvLoadAllocImageHook;
+INLINE_HOOK TransferControlShitHook;
 
 BOOLEAN HvExtendedAllocation = FALSE;
 BOOLEAN HvHookedHyperV = FALSE;
@@ -29,7 +29,7 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageFromSourceBuffer
 )
 {
 	// disable hook and call the original...
-	DisableShitHook(&HvLoadImageBufferHook);
+	DisableInlineHook(&HvLoadImageBufferHook);
 	EFI_STATUS Result = ((HV_LDR_LOAD_IMAGE_BUFFER)HvLoadImageBufferHook.Address)
 	(
 		a1,
@@ -51,59 +51,40 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageFromSourceBuffer
 
 	// keep hooking until we have extended hyper-v allocation and hooked into hyper-v...
 	if(!HvExtendedAllocation && !HvHookedHyperV)
-		EnableShitHook(&HvLoadImageBufferHook);
+		EnableInlineHook(&HvLoadImageBufferHook);
 
 	if (HvExtendedAllocation && !HvHookedHyperV)
 	{
 		HvHookedHyperV = TRUE;
-		EFI_IMAGE_DOS_HEADER* HypervDosHeader = *ImageBase;
-		if (HypervDosHeader->e_magic != EFI_IMAGE_DOS_SIGNATURE)
-			return Result;
+		VOYAGER_T VoyagerData;
 
-		EFI_IMAGE_NT_HEADERS64* HypervNtHeader = (UINT64)HypervDosHeader + HypervDosHeader->e_lfanew;
-		if (HypervNtHeader->Signature != EFI_IMAGE_NT_SIGNATURE)
-			return Result;
+		// add a new section to hyper-v called "payload", then fill in voyager data
+		// and hook the vmexit handler...
+		MakeVoyagerData
+		(
+			&VoyagerData,
+			*ImageBase,
+			*ImageSize,
+			AddSection
+			(
+				*ImageBase,
+				"payload",
+				PayLoadSize(),
+				SECTION_RWX
+			),
+			PayLoadSize()
+		);
 
-		EFI_IMAGE_SECTION_HEADER* pSection = ((UINT64)&HypervNtHeader->OptionalHeader) +
-			HypervNtHeader->FileHeader.SizeOfOptionalHeader;
-
-		for (UINT16 idx = 0; idx < HypervNtHeader->FileHeader.NumberOfSections; ++idx, ++pSection)
-		{
-			if (!AsciiStrCmp(&pSection->Name, ".reloc"))
-			{
-				VOYAGER_T VoyagerData;
-
-				//
-				// the payload's base address needs to be page aligned in 
-				// order for the paging table sections to be page aligned...
-				//
-				UINT32 PageRemainder = (0x1000 - (((*ImageBase + pSection->VirtualAddress + pSection->Misc.VirtualSize) << 52) >> 52));
-				MakeVoyagerData
-				(
-					&VoyagerData,
-					*ImageBase,
-					*ImageSize,
-					*ImageBase + pSection->VirtualAddress + pSection->Misc.VirtualSize + PageRemainder,
-					PayLoadSize()
-				);
-
-				HookVmExit
-				(
-					VoyagerData.HypervModuleBase,
-					VoyagerData.HypervModuleSize,
-					MapModule(&VoyagerData, PayLoad)
-				);
-
-				// make the .reloc section RWX and increase the sections size...
-				pSection->Characteristics = SECTION_RWX;
-				pSection->Misc.VirtualSize += PayLoadSize();
-			}
-		}
+		HookVmExit
+		(
+			VoyagerData.HypervModuleBase,
+			VoyagerData.HypervModuleSize,
+			MapModule(&VoyagerData, PayLoad)
+		);
 
 		// extend the size of the image in hyper-v's nt headers and LDR data entry...
 		// this is required, if this is not done, then hyper-v will simply not be loaded...
-		HypervNtHeader->OptionalHeader.SizeOfImage += PayLoadSize();
-		*ImageSize += PayLoadSize();
+		*ImageSize += NT_HEADER(*ImageBase)->OptionalHeader.SizeOfImage;
 	}
 	return Result;
 }
@@ -126,7 +107,7 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageEx
 )
 {
 	// disable shithook and call the original...
-	DisableShitHook(&HvLoadImageHook);
+	DisableInlineHook(&HvLoadImageHook);
 	EFI_STATUS Result = ((HV_LDR_LOAD_IMAGE)HvLoadImageHook.Address)
 	(
 		DeviceId,
@@ -146,59 +127,40 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageEx
 
 	// keep hooking until we have extended hyper-v allocation and hooked into hyper-v...
 	if(!HvExtendedAllocation && !HvHookedHyperV)
-		EnableShitHook(&HvLoadImageHook);
+		EnableInlineHook(&HvLoadImageHook);
 
 	if (HvExtendedAllocation && !HvHookedHyperV)
 	{
 		HvHookedHyperV = TRUE;
-		EFI_IMAGE_DOS_HEADER* HypervDosHeader = *ImageBase;
-		if (HypervDosHeader->e_magic != EFI_IMAGE_DOS_SIGNATURE)
-			return Result;
+		VOYAGER_T VoyagerData;
 
-		EFI_IMAGE_NT_HEADERS64* HypervNtHeader = (UINT64)HypervDosHeader + HypervDosHeader->e_lfanew;
-		if (HypervNtHeader->Signature != EFI_IMAGE_NT_SIGNATURE)
-			return Result;
+		// add a new section to hyper-v called "payload", then fill in voyager data
+		// and hook the vmexit handler...
+		MakeVoyagerData
+		(
+			&VoyagerData,
+			*ImageBase,
+			*ImageSize,
+			AddSection
+			(
+				*ImageBase,
+				"payload",
+				PayLoadSize(),
+				SECTION_RWX
+			),
+			PayLoadSize()
+		);
 
-		EFI_IMAGE_SECTION_HEADER* pSection = ((UINT64)&HypervNtHeader->OptionalHeader) +
-			HypervNtHeader->FileHeader.SizeOfOptionalHeader;
-
-		for (UINT16 idx = 0; idx < HypervNtHeader->FileHeader.NumberOfSections; ++idx, ++pSection)
-		{
-			if (!AsciiStrCmp(&pSection->Name, ".reloc"))
-			{
-				VOYAGER_T VoyagerData;
-
-				//
-				// the payload's base address needs to be page aligned in 
-				// order for the paging table sections to be page aligned...
-				//
-				UINT32 PageRemainder = (0x1000 - (((*ImageBase + pSection->VirtualAddress + pSection->Misc.VirtualSize) << 52) >> 52));
-				MakeVoyagerData
-				(
-					&VoyagerData,
-					*ImageBase,
-					*ImageSize,
-					*ImageBase + pSection->VirtualAddress + pSection->Misc.VirtualSize + PageRemainder,
-					PayLoadSize()
-				);
-
-				HookVmExit
-				(
-					VoyagerData.HypervModuleBase,
-					VoyagerData.HypervModuleSize,
-					MapModule(&VoyagerData, PayLoad)
-				);
-
-				// make the .reloc section RWX and increase the sections size...
-				pSection->Characteristics = SECTION_RWX;
-				pSection->Misc.VirtualSize += PayLoadSize();
-			}
-		}
+		HookVmExit
+		(
+			VoyagerData.HypervModuleBase,
+			VoyagerData.HypervModuleSize,
+			MapModule(&VoyagerData, PayLoad)
+		);
 
 		// extend the size of the image in hyper-v's nt headers and LDR data entry...
 		// this is required, if this is not done, then hyper-v will simply not be loaded...
-		HypervNtHeader->OptionalHeader.SizeOfImage += PayLoadSize();
-		*ImageSize += PayLoadSize();
+		*ImageSize = NT_HEADER(*ImageBase)->OptionalHeader.SizeOfImage;
 	}
 	return Result;
 }
@@ -223,7 +185,7 @@ UINT64 EFIAPI HvBlImgAllocateImageBuffer
 	}
 
 	// disable shithook and call the original function....
-	DisableShitHook(&HvLoadAllocImageHook);
+	DisableInlineHook(&HvLoadAllocImageHook);
 	UINT64 Result = ((ALLOCATE_IMAGE_BUFFER)HvLoadAllocImageHook.Address)
 	(
 		imageBuffer, 
@@ -236,30 +198,7 @@ UINT64 EFIAPI HvBlImgAllocateImageBuffer
 
 	// continue shithooking this function until we have extended the allocation of hyper-v...
 	if(!HvExtendedAllocation)
-		EnableShitHook(&HvLoadAllocImageHook);
+		EnableInlineHook(&HvLoadAllocImageHook);
 
 	return Result;
-}
-
-VOID TransferToHyperV(UINT64 Pml4PhysicalAddress, VOID* Unknown, VOID* AssemblyStub, VOID* Unknown2)
-{
-	PML4E_T SelfRefEntry;
-	PPML4E_T Pml4 = NULL;
-	MmMapPhysicalMemory(&Pml4, Pml4PhysicalAddress, 0x1000, NULL, NULL);
-
-	// setup self referencing paging table entry...
-	Pml4[255].Value = NULL;
-	Pml4[255].Present = TRUE;
-	Pml4[255].Pfn = Pml4PhysicalAddress >> 12;
-	Pml4[255].UserSuperVisor = FALSE;
-	Pml4[255].ReadWrite = TRUE;
-
-	DisableShitHook(&TransferControlShitHook);
-	((VOID(__fastcall*)(VOID*, VOID*, VOID*, VOID*))TransferControlShitHook.Address)
-	(
-		Pml4PhysicalAddress,
-		Unknown,
-		AssemblyStub,
-		Unknown2
-	);
 }

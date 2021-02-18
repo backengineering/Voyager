@@ -1,8 +1,9 @@
 #pragma once
 #include "HvLoader.h"
+#include "PayLoad.h"
 
-extern SHITHOOK WinLoadImageShitHook;
-extern SHITHOOK WinLoadAllocateImageHook;
+extern INLINE_HOOK WinLoadImageShitHook;
+extern INLINE_HOOK WinLoadAllocateImageHook;
 
 // 2004-1511 winload.BlImgAllocateImageBuffer
 #define ALLOCATE_IMAGE_BUFFER_SIG "\xE8\x00\x00\x00\x00\x8B\xD8\x85\xC0\x78\x7C\x21\x7C\x24\x00\x45\x33\xC0"
@@ -16,12 +17,6 @@ extern SHITHOOK WinLoadAllocateImageHook;
 #define LOAD_PE_IMG_SIG "\x48\x89\x44\x24\x00\xE8\x00\x00\x00\x00\x44\x8B\xF0\x85\xC0\x79\x11"
 #define LOAD_PE_IMG_MASK "xxxx?x????xxxxxxx"
 
-// 1703-1511
-//
-// winload.HvlpTransferToHypervisor is used to transfer control to hyper-v...
-// on 2004-1709, this function is going to be inside of hvloader.dll...
-#define TRANS_TO_HV_SIG "\x48\x8B\x51\x10\x48\x8B\x49\x18\xE8"
-#define TRANS_TO_HV_MASK "xxxxxxxxx"
 static_assert(sizeof(ALLOCATE_IMAGE_BUFFER_SIG) == sizeof(ALLOCATE_IMAGE_BUFFER_MASK), "signature and mask do not match size!");
 
 typedef UINT64 (EFIAPI* ALLOCATE_IMAGE_BUFFER)(VOID** imageBuffer, UINTN imageSize, UINT32 memoryType, 

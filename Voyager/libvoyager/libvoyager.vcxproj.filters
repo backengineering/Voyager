@@ -11,12 +11,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="libvoyager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="com.h">
+    <ClInclude Include="libvoyager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

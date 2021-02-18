@@ -20,7 +20,7 @@ static_assert(sizeof(START_BOOT_APPLICATION_SIG) == sizeof(START_BOOT_APPLICATIO
 #define PAYLOAD_PATH L"\\efi\\microsoft\\boot\\payload.dll"
 #define WINDOWS_BOOTMGFW_BACKUP_PATH L"\\efi\\microsoft\\boot\\bootmgfw.efi.backup"
 
-extern SHITHOOK BootMgfwShitHook;
+extern INLINE_HOOK BootMgfwShitHook;
 typedef EFI_STATUS(EFIAPI* IMG_ARCH_START_BOOT_APPLICATION)(VOID*, VOID*, UINT32, UINT8, VOID*);
 
 /// <summary>

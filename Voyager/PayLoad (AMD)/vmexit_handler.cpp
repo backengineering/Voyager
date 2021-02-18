@@ -1,31 +1,106 @@
 #include "types.h"
-#include "pg_table.h"
+#include "mm.h"
+#include "vmexit.h"
+#include "debug.h"
 
-svm::pgs_base_struct vmexit_handler(void* unknown, svm::pguest_context context)
+auto vmexit_handler(void* unknown, svm::pguest_context context) -> svm::pgs_base_struct
 {
-	// AMD does not have a vmread/vmwrite instruction... only a vmload
-	// and vmsave instruction... this means I had to hunt down the damn
-	// VMCB location... this is the pointer chain to the VMCB...
-	//
-	// TODO: could sig scan for this in Voyager...
-	const auto vmcb = *reinterpret_cast<svm::pvmcb*>(
-		*reinterpret_cast<u64*>(
-			*reinterpret_cast<u64*>(
-				__readgsqword(0) + offset_vmcb_base) 
-					+ offset_vmcb_link) + offset_vmcb);
-
+	const auto vmcb = svm::get_vmcb();
 	if (vmcb->exitcode == VMEXIT_CPUID && context->rcx == VMEXIT_KEY)
 	{
 		switch ((svm::vmexit_command_t)context->rdx)
 		{
-		case svm::vmexit_command_t::init_paging_tables:
-			vmcb->rax = pg_table::init_pg_tables();
+		case svm::vmexit_command_t::init_page_tables:
+		{
+			vmcb->rax = (u64) mm::init();
 			break;
+		}
+		case svm::vmexit_command_t::get_dirbase:
+		{
+			auto command_data =
+				vmexit::get_command(context->r8);
+
+			command_data.dirbase = 
+				cr3{ vmcb->cr3 }.pml4_pfn << 12;
+
+			vmcb->rax = (u64)svm::vmxroot_error_t::error_success;
+
+			vmexit::set_command(
+				context->r8, command_data);
+			break;
+		}
+		case svm::vmexit_command_t::read_guest_phys:
+		{
+			auto command_data =
+				vmexit::get_command(context->r8);
+
+			const auto guest_dirbase = 
+				cr3{ vmcb->cr3 }.pml4_pfn << 12;
+
+			vmcb->rax = (u64)mm::read_guest_phys(
+				guest_dirbase,
+				command_data.copy_phys.phys_addr,
+				command_data.copy_phys.buffer,
+				command_data.copy_phys.size);
+
+			vmexit::set_command(
+				context->r8, command_data);
+			break;
+		}
+		case svm::vmexit_command_t::write_guest_phys:
+		{
+			auto command_data =
+				vmexit::get_command(context->r8);
+
+			const auto guest_dirbase =
+				cr3{ vmcb->cr3 }.pml4_pfn << 12;
+
+			vmcb->rax = (u64) mm::write_guest_phys(
+				guest_dirbase,
+				command_data.copy_phys.phys_addr,
+				command_data.copy_phys.buffer,
+				command_data.copy_phys.size);
+
+			vmexit::set_command(
+				context->r8, command_data);
+			break;
+		}
+		case svm::vmexit_command_t::copy_guest_virt:
+		{
+			auto command_data =
+				vmexit::get_command(context->r8);
+
+			auto virt_data = command_data.copy_virt;
+			vmcb->rax = (u64) mm::copy_guest_virt(
+				virt_data.dirbase_src,
+				virt_data.virt_src, 
+				virt_data.dirbase_dest,
+				virt_data.virt_dest, 
+				virt_data.size);
+			break;
+		}
+		case svm::vmexit_command_t::translate:
+		{
+			auto command_data =
+				vmexit::get_command(context->r8);
+
+			const auto guest_dirbase =
+				cr3{ vmcb->cr3 }.pml4_pfn << 12;
+
+			command_data.translate_virt.phys_addr =
+				mm::translate_guest_virtual(guest_dirbase, 
+					command_data.translate_virt.virt_src);
+
+			vmcb->rax = (u64)svm::vmxroot_error_t::error_success;
+
+			vmexit::set_command(
+				context->r8, command_data);
+			break;
+		}
 		default:
 			break;
 		}
 
-		// advance RIP and return back to VMLOAD/VMRUN...
 		vmcb->rip = vmcb->nrip;
 		return reinterpret_cast<svm::pgs_base_struct>(__readgsqword(0));
 	}

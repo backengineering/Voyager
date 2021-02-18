@@ -1,6 +1,6 @@
-#include "ShitHook.h"
+#include "InlineHook.h"
 
-VOID MakeShitHook(PSHITHOOK Hook, VOID* HookFrom, VOID* HookTo, BOOLEAN Install)
+VOID MakeInlineHook(PINLINE_HOOK_T Hook, VOID* HookFrom, VOID* HookTo, BOOLEAN Install)
 {
 	unsigned char JmpCode[14] =
 	{
@@ -19,15 +19,15 @@ VOID MakeShitHook(PSHITHOOK Hook, VOID* HookFrom, VOID* HookTo, BOOLEAN Install)
 	// setup hook...
 	MemCopy(JmpCode + 6, &HookTo, sizeof HookTo);
 	MemCopy(Hook->JmpCode, JmpCode, sizeof JmpCode);
-	if (Install) EnableShitHook(Hook);
+	if (Install) EnableInlineHook(Hook);
 }
 
-VOID EnableShitHook(PSHITHOOK Hook)
+VOID EnableInlineHook(PINLINE_HOOK_T Hook)
 {
 	MemCopy(Hook->Address, Hook->JmpCode, sizeof Hook->JmpCode);
 }
 
-VOID DisableShitHook(PSHITHOOK Hook)
+VOID DisableInlineHook(PINLINE_HOOK_T Hook)
 {
 	MemCopy(Hook->Address, Hook->Code, sizeof Hook->Code);
 }

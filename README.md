@@ -80,3 +80,66 @@ rename it to `payload.dll`. Put both `bootmgfw.efi` (Voyager.efi rename), and `p
         <img src="https://githacks.org/xerox/voyager/uploads/fb3b24b28282a0cfe4c1b0440246844f/image.png"/>
     </div>
 </div>
+
+### libvoyager
+
+libvoyager is a tiny lib that allows a programmer to integrate voyager into VDM or other projects that require reading and writing to physical and virtual memory. There is
+an example in the repo which contains example code for integrating into VDM. 
+
+```cpp
+vdm::read_phys_t _read_phys = 
+	[&](void* addr, void* buffer, std::size_t size) -> bool
+{
+	const auto read_result = 
+		voyager::read_phys((u64)addr, (u64)buffer, size);
+
+	return read_result == 
+		voyager::vmxroot_error_t::error_success;
+};
+
+vdm::write_phys_t _write_phys =
+	[&](void* addr, void* buffer, std::size_t size) -> bool
+{
+	const auto write_result = 
+		voyager::write_phys((u64)addr, (u64)buffer, size);
+
+	return write_result ==
+		voyager::vmxroot_error_t::error_success;
+};
+```
+
+Any project that uses VDM can now use Voyager instead of a vulnerable driver. This includes all PTM projects.
+
+### Page Table Code
+
+mm.cpp and mm.hpp contain all of the memory managment code. Hyper-v has a self referencing PML4E at index 510. This is the same index for all versions of Hyper-v. 
+This is crucial as without knowing where the PML4 of the current logical processor is located in virtual memory, there is no way to interface with physical memory.
+Each logical processor running under hyper-v has its own host cr3 value (each core has its own host PML4).
+
+###### Mapping PTE's
+
+In the Intel and AMD payloads of this project, there is a section for PDPT, PD, and PT. These sections need to be page aligned in 
+order for them to work (they are just putting this here as a warning). Each logical processor has two PTE's, one for source and one for destination. This allows for
+copying of physical memory between two pages without requiring a buffer. 
+
+```cpp
+
+auto mm::map_page(host_phys_t phys_addr, map_type_t map_type) -> u64
+{
+	cpuid_eax_01 cpuid_value;
+	__cpuid((int*)&cpuid_value, 1);
+
+	mm::pt[(cpuid_value
+		.cpuid_additional_information
+		.initial_apic_id * 2)
+			+ (unsigned)map_type].pfn = phys_addr >> 12;
+
+	__invlpg(reinterpret_cast<void*>(
+		get_map_virt(virt_addr_t{ phys_addr }.offset_4kb, map_type)));
+
+	return get_map_virt(virt_addr_t{ phys_addr }.offset_4kb, map_type);
+}
+```
+
+As you can see from the code above, the logical processor number which is obtained from CPUID instruction is mulitplied by the `map_type`. There can be a max of 256 cores on the system, if there
+are more then 256 cores on the system then this code above will not work.

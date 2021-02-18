@@ -3,14 +3,22 @@
 #include "PagingTables.h"
 #include <Library/ShellLib.h>
 
-extern VOID* PayLoad;
-extern PPTE_T PayLoadPt;
-extern PPDE_T PayLoadPd;
-extern PPDPTE_T PayLoadPdPt;
-extern UINT64 PayLoadPtPhysAddr;
-extern UINT64 PayLoadPdPhysAddr;
-extern UINT64 PayLoadPdPtPhysAddr;
+#define NT_HEADER(x) ((EFI_IMAGE_NT_HEADERS64*)(((UINT64)(x)) + ((EFI_IMAGE_DOS_HEADER*)(x))->e_lfanew))
 
+#define SECTION_RWX ((EFI_IMAGE_SCN_MEM_WRITE | \
+	EFI_IMAGE_SCN_CNT_CODE | \
+	EFI_IMAGE_SCN_CNT_UNINITIALIZED_DATA | \
+	EFI_IMAGE_SCN_MEM_EXECUTE | \
+	EFI_IMAGE_SCN_CNT_INITIALIZED_DATA | \
+	EFI_IMAGE_SCN_MEM_READ))
+
+// Source: https://blogs.oracle.com/jwadams/macros-and-powers-of-two
+// align x down to the nearest multiple of align. align must be a power of 2.
+#define P2ALIGNDOWN(x, align) ((x) & -(align))
+// align x up to the nearest multiple of align. align must be a power of 2.
+#define P2ALIGNUP(x, align) (-(-(x) & -(align)))
+
+extern VOID* PayLoad;
 #pragma pack(push, 1)
 typedef struct _VOYAGER_T
 {
@@ -26,5 +34,6 @@ typedef struct _VOYAGER_T
 #define PAYLOAD_PATH L"\\efi\\microsoft\\boot\\payload.dll"
 
 UINT32 PayLoadSize(VOID);
-EFI_STATUS LoadPayLoadFromDisk(VOID** PayLoadBufferPtr);
 VOID* PayLoadEntry(VOID* ModuleBase);
+EFI_STATUS LoadPayLoadFromDisk(VOID** PayLoadBufferPtr);
+VOID* AddSection(VOID* ImageBase, CHAR8* SectionName, UINT32 VirtualSize, UINT32 Characteristics);

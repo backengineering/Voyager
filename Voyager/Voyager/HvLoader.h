@@ -1,13 +1,13 @@
 #pragma once
 #include "PayLoad.h"
 #include "Hv.h"
-#include "ShitHook.h"
+#include "InlineHook.h"
 #include "PagingTables.h"
 
-extern SHITHOOK HvLoadImageHook;
-extern SHITHOOK HvLoadAllocImageHook;
-extern SHITHOOK HvLoadImageBufferHook;
-extern SHITHOOK TransferControlShitHook;
+extern INLINE_HOOK HvLoadImageHook;
+extern INLINE_HOOK HvLoadAllocImageHook;
+extern INLINE_HOOK HvLoadImageBufferHook;
+extern INLINE_HOOK TransferControlShitHook;
 
 #define HV_ALLOCATE_IMAGE_BUFFER_SIG "\xE8\x00\x00\x00\x00\x8B\xF8\x85\xC0\x79\x0A"
 #define HV_ALLOCATE_IMAGE_BUFFER_MASK "x????xxxxxx"
@@ -20,14 +20,6 @@ static_assert(sizeof(HV_LOAD_PE_IMG_FROM_BUFFER_SIG) == sizeof(HV_LOAD_PE_IMG_FR
 #define HV_LOAD_PE_IMG_SIG "\x48\x89\x44\x24\x00\xE8\x00\x00\x00\x00\x44\x8B\xF0\x85\xC0\x0F\x88\x00\x00\x00\x00\x4C\x8D\x45"
 #define HV_LOAD_PE_IMG_MASK "xxxx?x????xxxxxxx????xxx"
 static_assert(sizeof(HV_LOAD_PE_IMG_SIG) == sizeof(HV_LOAD_PE_IMG_MASK), "signature and mask do not match size...");
-
-// 1703-1511
-//
-// winload.HvlpTransferToHypervisor is used to transfer control to hyper-v...
-// on 2004-1709, this function is going to be inside of hvloader.dll...
-#define TRANS_TO_HV_SIG "\x48\x8B\x51\x10\x48\x8B\x49\x18\xE8"
-#define TRANS_TO_HV_MASK "xxxxxxxxx"
-static_assert(sizeof(TRANS_TO_HV_SIG) == sizeof(TRANS_TO_HV_MASK), "signature and mask do not match size...");
 
 typedef EFI_STATUS(EFIAPI* ALLOCATE_IMAGE_BUFFER)(VOID** imageBuffer, UINTN imageSize, UINT32 memoryType, 
 	UINT32 attributes, VOID* unused, UINT32 Value);
@@ -131,18 +123,4 @@ EFI_STATUS EFIAPI HvBlImgLoadPEImageFromSourceBuffer
 	VOID* a13, 
 	VOID* a14,
 	VOID* a15
-);
-
-/// <summary>
-/// called when the hypervisor is started... 
-/// </summary>
-/// <param name="Pml4PhysicalAddress">the physical address of hyper-v's pml4...</param>
-/// <param name="Unknown"></param>
-/// <param name="AssemblyStub">assembly stub to set CR3...</param>
-VOID TransferToHyperV
-(
-	UINT64 Pml4PhysicalAddress,
-	VOID* Unknown,
-	VOID* AssemblyStub,
-	VOID* Unknown2
 );

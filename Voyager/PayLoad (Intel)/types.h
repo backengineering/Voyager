@@ -3,10 +3,14 @@
 #include <xmmintrin.h>
 #include <cstddef>
 
-#define PORT_NUM 0x2F8
+#include <Windows.h>
+#include <ntstatus.h>
+#include "ia32.hpp"
+
 #define VMEXIT_KEY 0xDEADBEEFDEADBEEF
-#define DBG_PRINT(arg) \
-	__outbytestring(PORT_NUM, (unsigned char*)arg, sizeof arg);
+#define PAGE_4KB 0x1000
+#define PAGE_2MB PAGE_4KB * 512
+#define PAGE_1GB PAGE_2MB * 512
 
 using u8 = unsigned char;
 using u16 = unsigned short;
@@ -14,11 +18,64 @@ using u32 = unsigned int;
 using u64 = unsigned long long;
 using u128 = __m128;
 
+using guest_virt_t = u64;
+using guest_phys_t = u64;
+using host_virt_t = u64;
+using host_phys_t = u64;
+
 enum class vmexit_command_t
 {
-	init_paging_tables = 0x111
-	// add your commands here...
+	init_page_tables,
+	read_guest_phys,
+	write_guest_phys,
+	copy_guest_virt,
+	get_dirbase,
+	translate
 };
+
+enum class vmxroot_error_t
+{
+	error_success,
+	pml4e_not_present,
+	pdpte_not_present,
+	pde_not_present,
+	pte_not_present,
+	vmxroot_translate_failure,
+	invalid_self_ref_pml4e,
+	invalid_mapping_pml4e,
+	invalid_host_virtual,
+	invalid_guest_physical,
+	invalid_guest_virtual,
+	page_table_init_failed
+};
+
+typedef union _command_t
+{
+	struct _copy_phys
+	{
+		host_phys_t  phys_addr;
+		guest_virt_t buffer;
+		u64 size;
+	} copy_phys;
+
+	struct _copy_virt
+	{
+		guest_phys_t dirbase_src;
+		guest_virt_t virt_src;
+		guest_phys_t dirbase_dest;
+		guest_virt_t virt_dest;
+		u64 size;
+	} copy_virt;
+
+	struct _translate_virt
+	{
+		guest_virt_t virt_src;
+		guest_phys_t phys_addr;
+	} translate_virt;
+
+	guest_phys_t dirbase;
+
+} command_t, * pcommand_t;
 
 typedef struct _context_t
 {
@@ -55,12 +112,12 @@ using vmexit_handler_t = void(__fastcall*)(pcontext_t context, void* unknown);
 #pragma pack(push, 1)
 typedef struct _voyager_t
 {
-	// RVA from golden record entry ---> back to original vmexit handler...
 	u64 vmexit_handler_rva;
 	u64 hyperv_module_base;
 	u64 hyperv_module_size;
-	u64 record_base;
-	u64 record_size;
+	u64 payload_base;
+	u64 payload_size;
 } voyager_t, *pvoyager_t;
 #pragma pack(pop)
+
 __declspec(dllexport) inline voyager_t voyager_context;

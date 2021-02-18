@@ -20,9 +20,6 @@
     <ClCompile Include="BootMgfw.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ShitHook.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Utils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -38,15 +35,15 @@
     <ClCompile Include="Hv.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InlineHook.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BootMgfw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WinLoad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ShitHook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
@@ -65,6 +62,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PagingTables.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InlineHook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

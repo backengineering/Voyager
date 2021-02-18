@@ -357,7 +357,7 @@ typedef struct {
   ///
   /// Reserved for the future.
   ///
-  UINT32                          Reserved;
+  UINT32                          reserved;
   ///
   /// Fibre Channel World Wide Number.
   ///
@@ -377,7 +377,7 @@ typedef struct {
   ///
   /// Reserved for the future.
   ///
-  UINT32                          Reserved;
+  UINT32                          reserved;
   ///
   /// 8 byte array containing Fibre Channel End Device Port Name.
   ///
@@ -397,7 +397,7 @@ typedef struct {
   ///
   /// Reserved for the future.
   ///
-  UINT32                          Reserved;
+  UINT32                          reserved;
   ///
   /// 1394 Global Unique ID (GUID).
   ///
@@ -687,7 +687,7 @@ typedef struct {
   ///
   /// Reserved.
   ///
-  UINT32                          Reserved;
+  UINT32                          reserved;
   ///
   /// The baud rate setting for the UART style device. A value of 0
   /// means that the device's default baud rate will be used.
@@ -764,7 +764,7 @@ typedef struct {
   ///
   /// Reserved for future use.
   ///
-  UINT32                          Reserved;
+  UINT32                          reserved;
   ///
   /// SAS Address for Serial Attached SCSI Target.
   ///
@@ -1126,7 +1126,7 @@ typedef struct {
 ///
 typedef struct {
   EFI_DEVICE_PATH_PROTOCOL  Header;
-  UINT32                    Reserved;
+  UINT32                    reserved;
   UINT64                    StartingOffset;
   UINT64                    EndingOffset;
 } MEDIA_RELATIVE_OFFSET_RANGE_DEVICE_PATH;

@@ -14132,7 +14132,7 @@ typedef union
     };
 
     UINT64_t flags;
-} pml4e_64;
+} pml4e;
 
 /**
  * @brief Format of a 4-Level Page-Directory-Pointer-Table Entry (PDPTE) that Maps a 1-GByte Page
@@ -14431,7 +14431,7 @@ typedef union
     };
 
     UINT64_t flags;
-} pdpte_64;
+} pdpte;
 
 /**
  * @brief Format of a 4-Level Page-Directory Entry that Maps a 2-MByte Page
@@ -14730,7 +14730,7 @@ typedef union
     };
 
     UINT64_t flags;
-} pde_64;
+} pde;
 
 /**
  * @brief Format of a 4-Level Page-Table Entry that Maps a 4-KByte Page
@@ -14891,7 +14891,7 @@ typedef union
     };
 
     UINT64_t flags;
-} pte_64;
+} pte;
 
 /**
  * @brief Format of a common Page-Table Entry
@@ -18281,7 +18281,7 @@ typedef union
     };
 
     UINT64_t flags;
-} ept_pml4;
+} ept_pml4e;
 
 /**
  * @brief Format of an EPT Page-Directory-Pointer-Table Entry (PDPTE) that Maps a 1-GByte Page
@@ -18412,7 +18412,7 @@ typedef union
     };
 
     UINT64_t flags;
-} epdpte_1gb;
+} ept_pdpte_1gb;
 
 /**
  * @brief Format of an EPT Page-Directory-Pointer-Table Entry (PDPTE) that References an EPT Page Directory
@@ -18489,7 +18489,7 @@ typedef union
     };
 
     UINT64_t flags;
-} epdpte;
+} ept_pdpte;
 
 /**
  * @brief Format of an EPT Page-Directory Entry (PDE) that Maps a 2-MByte Page
@@ -18697,7 +18697,7 @@ typedef union
     };
 
     UINT64_t flags;
-} epde;
+} ept_pde;
 
 /**
  * @brief Format of an EPT Page-Table Entry that Maps a 4-KByte Page
@@ -18820,7 +18820,7 @@ typedef union
     };
 
     UINT64_t flags;
-} epte;
+} ept_pte;
 
 /**
  * @brief Format of a common EPT Entry

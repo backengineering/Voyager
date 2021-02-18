@@ -1,7 +1,7 @@
 #include "WinLoad.h"
 
-SHITHOOK WinLoadImageShitHook;
-SHITHOOK WinLoadAllocateImageHook;
+INLINE_HOOK WinLoadImageShitHook;
+INLINE_HOOK WinLoadAllocateImageHook;
 
 BOOLEAN HyperVloading = FALSE;
 BOOLEAN InstalledHvLoaderHook = FALSE;
@@ -34,7 +34,7 @@ EFI_STATUS EFIAPI BlLdrLoadImage
 		HyperVloading = TRUE;
 
 	// disable shithook and call the original function...
-	DisableShitHook(&WinLoadImageShitHook);
+	DisableInlineHook(&WinLoadImageShitHook);
 	EFI_STATUS Result = ((LDR_LOAD_IMAGE)WinLoadImageShitHook.Address)
 	(
 		Arg1,
@@ -57,80 +57,41 @@ EFI_STATUS EFIAPI BlLdrLoadImage
 
 	// continue hooking until we inject/hook into hyper-v...
 	if (!HookedHyperV)
-		EnableShitHook(&WinLoadImageShitHook);
-
-	if (StrStr(ModulePath, L"hvloader.dll"))
-	{
-		PLDR_DATA_TABLE_ENTRY TableEntry = *lplpTableEntry;
-		VOID* HvlpTransferToHypervisor =
-			FindPattern(
-				TableEntry->ModuleBase,
-				TableEntry->SizeOfImage,
-				TRANS_TO_HV_SIG,
-				TRANS_TO_HV_MASK
-			);
-
-		MakeShitHook
-		(
-			&TransferControlShitHook,
-			RESOLVE_RVA(HvlpTransferToHypervisor, 13, 9),
-			&TransferToHyperV, 
-			TRUE
-		);
-	}
+		EnableInlineHook(&WinLoadImageShitHook);
 
 	if (!StrCmp(ModuleName, L"hv.exe"))
 	{
 		HookedHyperV = TRUE;
+		VOYAGER_T VoyagerData;
 		PLDR_DATA_TABLE_ENTRY TableEntry = *lplpTableEntry;
 
-		EFI_IMAGE_DOS_HEADER* HypervDosHeader = TableEntry->ModuleBase;
-		if (HypervDosHeader->e_magic != EFI_IMAGE_DOS_SIGNATURE)
-			return Result;
+		// add a new section to hyper-v called "payload", then fill in voyager data
+		// and hook the vmexit handler...
+		MakeVoyagerData
+		(
+			&VoyagerData, 
+			TableEntry->ModuleBase,
+			TableEntry->SizeOfImage, 
+			AddSection
+			(
+				TableEntry->ModuleBase,
+				"payload",
+				PayLoadSize(),
+				SECTION_RWX
+			),
+			PayLoadSize()
+		);
 
-		EFI_IMAGE_NT_HEADERS64* HypervNtHeader = (UINT64)HypervDosHeader + HypervDosHeader->e_lfanew;
-		if (HypervNtHeader->Signature != EFI_IMAGE_NT_SIGNATURE)
-			return Result;
-
-		EFI_IMAGE_SECTION_HEADER* pSection = ((UINT64)&HypervNtHeader->OptionalHeader) +
-			HypervNtHeader->FileHeader.SizeOfOptionalHeader;
-
-		for (UINT16 idx = 0; idx < HypervNtHeader->FileHeader.NumberOfSections; ++idx, ++pSection)
-		{
-			if (!AsciiStrCmp(&pSection->Name, ".reloc"))
-			{
-				VOYAGER_T VoyagerData;
-				//
-				// the payload's base address needs to be page aligned in 
-				// order for the paging table sections to be page aligned...
-				//
-				UINT32 PageRemainder = (0x1000 - (((TableEntry->ModuleBase + pSection->VirtualAddress + pSection->Misc.VirtualSize) << 52) >> 52));
-				MakeVoyagerData
-				(
-					&VoyagerData,
-					TableEntry->ModuleBase,
-					TableEntry->SizeOfImage,
-					TableEntry->ModuleBase + pSection->VirtualAddress + pSection->Misc.VirtualSize + PageRemainder,
-					PayLoadSize()
-				);
-
-				HookVmExit
-				(
-					VoyagerData.HypervModuleBase,
-					VoyagerData.HypervModuleSize,
-					MapModule(&VoyagerData, PayLoad)
-				);
-
-				// make the .reloc section RWX and increase the sections size...
-				pSection->Characteristics = SECTION_RWX;
-				pSection->Misc.VirtualSize += PayLoadSize();
-			}
-		}
+		HookVmExit
+		(
+			VoyagerData.HypervModuleBase,
+			VoyagerData.HypervModuleSize,
+			MapModule(&VoyagerData, PayLoad)
+		);
 
 		// extend the size of the image in hyper-v's nt headers and LDR data entry...
 		// this is required, if this is not done, then hyper-v will simply not be loaded...
-		HypervNtHeader->OptionalHeader.SizeOfImage += PayLoadSize();
-		TableEntry->SizeOfImage += PayLoadSize();
+		TableEntry->SizeOfImage = NT_HEADER(TableEntry->ModuleBase)->OptionalHeader.SizeOfImage;
 	}
 	return Result;
 }
@@ -154,7 +115,7 @@ EFI_STATUS EFIAPI BlImgLoadPEImageEx
 )
 {
 	// disable shithook and call the original function...
-	DisableShitHook(&WinLoadImageShitHook);
+	DisableInlineHook(&WinLoadImageShitHook);
 	EFI_STATUS Result = ((LDR_LOAD_IMAGE)WinLoadImageShitHook.Address)
 	(
 		a1,
@@ -175,7 +136,7 @@ EFI_STATUS EFIAPI BlImgLoadPEImageEx
 
 	// continue hooking BlImgLoadPEImageEx until we have shithooked hvloader...
 	if (!InstalledHvLoaderHook)
-		EnableShitHook(&WinLoadImageShitHook);
+		EnableInlineHook(&WinLoadImageShitHook);
 
 	if (StrStr(ImagePath, L"hvloader.efi"))
 	{
@@ -207,11 +168,12 @@ EFI_STATUS EFIAPI BlImgLoadPEImageEx
 			);
 
 #if WINVER == 1703
-		MakeShitHook(&HvLoadImageBufferHook, RESOLVE_RVA(LoadImage, 5, 1), &HvBlImgLoadPEImageFromSourceBuffer, TRUE);
+		MakeInlineHook(&HvLoadImageBufferHook, RESOLVE_RVA(LoadImage, 5, 1), &HvBlImgLoadPEImageFromSourceBuffer, TRUE);
 #elif WINVER <= 1607 
-		MakeShitHook(&HvLoadImageHook, RESOLVE_RVA(LoadImage, 10, 6), &HvBlImgLoadPEImageEx, TRUE);
+		MakeInlineHook(&HvLoadImageHook, RESOLVE_RVA(LoadImage, 10, 6), &HvBlImgLoadPEImageEx, TRUE);
 	#endif
-		MakeShitHook(&HvLoadAllocImageHook, RESOLVE_RVA(AllocImage, 5, 1), &HvBlImgAllocateImageBuffer, TRUE);
+
+		MakeInlineHook(&HvLoadAllocImageHook, RESOLVE_RVA(AllocImage, 5, 1), &HvBlImgAllocateImageBuffer, TRUE);
 		InstalledHvLoaderHook = TRUE;
 	}
 	return Result;
@@ -248,7 +210,7 @@ UINT64 EFIAPI BlImgAllocateImageBuffer
 	}
 	
 	// disable shithook and call the original function...
-	DisableShitHook(&WinLoadAllocateImageHook);
+	DisableInlineHook(&WinLoadAllocateImageHook);
 	UINT64 Result = ((ALLOCATE_IMAGE_BUFFER)WinLoadAllocateImageHook.Address)
 	(
 		imageBuffer,
@@ -261,7 +223,7 @@ UINT64 EFIAPI BlImgAllocateImageBuffer
 
 	// keep hooking until we extend an allocation...
 	if(!ExtendedAllocation)
-		EnableShitHook(&WinLoadAllocateImageHook);
+		EnableInlineHook(&WinLoadAllocateImageHook);
 
 	return Result;
 }

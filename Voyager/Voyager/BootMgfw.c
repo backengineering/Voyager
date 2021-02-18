@@ -1,7 +1,7 @@
 #include "BootMgfw.h"
 #include "SplashScreen.h"
 
-SHITHOOK BootMgfwShitHook;
+INLINE_HOOK BootMgfwShitHook;
 EFI_STATUS EFIAPI RestoreBootMgfw(VOID)
 {
 	UINTN HandleCount = NULL;
@@ -200,10 +200,10 @@ EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE ImageHandle)
 
 #if WINVER >= 1703
 	Print(L"BootMgfw.BlImgStartBootApplication -> 0x%p\n", ArchStartBootApplication);
-	MakeShitHook(&BootMgfwShitHook, ArchStartBootApplication, &ArchStartBootApplicationHook, TRUE);
+	MakeInlineHook(&BootMgfwShitHook, ArchStartBootApplication, &ArchStartBootApplicationHook, TRUE);
 #else
 	Print(L"BootMgfw.BlImgStartBootApplication -> 0x%p\n", RESOLVE_RVA(ArchStartBootApplication, 5, 1));
-	MakeShitHook(&BootMgfwShitHook, RESOLVE_RVA(ArchStartBootApplication, 5, 1), &ArchStartBootApplicationHook, TRUE);
+	MakeInlineHook(&BootMgfwShitHook, RESOLVE_RVA(ArchStartBootApplication, 5, 1), &ArchStartBootApplicationHook, TRUE);
 #endif
 	return EFI_SUCCESS;
 }
@@ -211,19 +211,11 @@ EFI_STATUS EFIAPI InstallBootMgfwHooks(EFI_HANDLE ImageHandle)
 EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, UINT32 ImageSize, UINT8 BootOption, VOID* ReturnArgs)
 {
 	// disable ArchStartBootApplication shithook
-	DisableShitHook(&BootMgfwShitHook);
+	DisableInlineHook(&BootMgfwShitHook);
 
 	// on 1703 and below, winload does not export any functions
 	if (!GetExport(ImageBase, "BlLdrLoadImage"))
 	{
-		VOID* HvlpTransferToHypervisor =
-			FindPattern(
-				ImageBase,
-				ImageSize,
-				TRANS_TO_HV_SIG,
-				TRANS_TO_HV_MASK
-			);
-
 		VOID* ImgLoadPEImageEx =
 			FindPattern(
 				ImageBase,
@@ -232,31 +224,17 @@ EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, 
 				LOAD_PE_IMG_MASK
 			);
 
-		MmMapPhysicalMemory =
-			RESOLVE_RVA(
-				FindPattern(
-					ImageBase,
-					ImageSize,
-					MAP_PHYSICAL_SIG,
-					MAP_PHYSICAL_MASK),
-				5, 1);
-
 		gST->ConOut->ClearScreen(gST->ConOut);
 		gST->ConOut->OutputString(gST->ConOut, AsciiArt);
 		Print(L"\n");
 
 		Print(L"Hyper-V PayLoad Size -> 0x%x\n", PayLoadSize());
 		Print(L"winload.BlImgLoadPEImageEx -> 0x%p\n", RESOLVE_RVA(ImgLoadPEImageEx, 10, 6));
-		Print(L"winload.HvlpTransferToHypervisor -> 0x%p\n", RESOLVE_RVA(HvlpTransferToHypervisor, 13, 9));
-
-		MakeShitHook(&TransferControlShitHook, RESOLVE_RVA(HvlpTransferToHypervisor, 13, 9), &TransferToHyperV, TRUE);
-		MakeShitHook(&WinLoadImageShitHook, RESOLVE_RVA(ImgLoadPEImageEx, 10, 6), &BlImgLoadPEImageEx, TRUE);
+		MakeInlineHook(&WinLoadImageShitHook, RESOLVE_RVA(ImgLoadPEImageEx, 10, 6), &BlImgLoadPEImageEx, TRUE);
 	}
 	else // else the installed windows version is between 2004 and 1709
 	{
 		VOID* LdrLoadImage = GetExport(ImageBase, "BlLdrLoadImage");
-		MmMapPhysicalMemory = GetExport(ImageBase, "BlMmMapPhysicalAddressEx");
-
 		VOID* ImgAllocateImageBuffer =
 			FindPattern(
 				ImageBase,
@@ -273,8 +251,8 @@ EFI_STATUS EFIAPI ArchStartBootApplicationHook(VOID* AppEntry, VOID* ImageBase, 
 		Print(L"winload.BlLdrLoadImage -> 0x%p\n", LdrLoadImage);
 		Print(L"winload.BlImgAllocateImageBuffer -> 0x%p\n", RESOLVE_RVA(ImgAllocateImageBuffer, 5, 1));
 
-		MakeShitHook(&WinLoadImageShitHook, LdrLoadImage, &BlLdrLoadImage, TRUE);
-		MakeShitHook(&WinLoadAllocateImageHook, RESOLVE_RVA(ImgAllocateImageBuffer, 5, 1), &BlImgAllocateImageBuffer, TRUE);
+		MakeInlineHook(&WinLoadImageShitHook, LdrLoadImage, &BlLdrLoadImage, TRUE);
+		MakeInlineHook(&WinLoadAllocateImageHook, RESOLVE_RVA(ImgAllocateImageBuffer, 5, 1), &BlImgAllocateImageBuffer, TRUE);
 	}
 	return ((IMG_ARCH_START_BOOT_APPLICATION)BootMgfwShitHook.Address)(AppEntry, ImageBase, ImageSize, BootOption, ReturnArgs);
 }

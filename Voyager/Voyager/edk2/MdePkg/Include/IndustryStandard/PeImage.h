@@ -709,7 +709,7 @@ typedef struct {
   UINT32  OffsetToData;
   UINT32  Size;
   UINT32  CodePage;
-  UINT32  Reserved;
+  UINT32  reserved;
 } EFI_IMAGE_RESOURCE_DATA_ENTRY;
 
 ///
