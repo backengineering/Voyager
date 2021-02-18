@@ -145,7 +145,7 @@ namespace voyager
 	template <class T>
 	auto wpm(guest_phys_t dirbase, guest_virt_t virt_addr, const T& data) -> void
 	{
-		copy_virt(dirbase, (guest_virt_t)&data,
+		copy_virt(current_dirbase(), (guest_virt_t)&data,
 			dirbase, virt_addr, sizeof T);
 	}
 }
