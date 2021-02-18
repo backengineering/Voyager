@@ -125,7 +125,6 @@ order for them to work (they are just putting this here as a warning). Each logi
 copying of physical memory between two pages without requiring a buffer. 
 
 ```cpp
-
 auto mm::map_page(host_phys_t phys_addr, map_type_t map_type) -> u64
 {
 	cpuid_eax_01 cpuid_value;
@@ -145,3 +144,11 @@ auto mm::map_page(host_phys_t phys_addr, map_type_t map_type) -> u64
 
 As you can see from the code above, the logical processor number which is obtained from CPUID instruction is mulitplied by the `map_type`. There can be a max of 256 cores on the system, if there
 are more then 256 cores on the system then this code above will not work.
+
+
+# Demo - Virtual/Physical Read/Write + VDM Integration
+
+The demo project contains everything one would need to start coding using libvoyager. The demo uses VDM to get the dirbase of explorer.exe and the hypervisor
+to read/write to explorer.exe
+
+<img src="https://imgur.com/OYu188i.png"/>
