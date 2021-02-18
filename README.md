@@ -116,6 +116,8 @@ mm.cpp and mm.hpp contain all of the memory managment code. Hyper-v has a self r
 This is crucial as without knowing where the PML4 of the current logical processor is located in virtual memory, there is no way to interface with physical memory.
 Each logical processor running under hyper-v has its own host cr3 value (each core has its own host PML4).
 
+<img src="https://githacks.org/_xeroxz/voyager/-/raw/34cacd54a94a6db901c81d323ddf466e45a3cd90/img/sections.PNG"/>
+
 ###### Mapping PTE's
 
 In the Intel and AMD payloads of this project, there is a section for PDPT, PD, and PT. These sections need to be page aligned in 
