@@ -21,6 +21,10 @@
 Voyager is a project designed to offer module injection and vmexit hooking for both AMD & Intel versions of Hyper-V. 
 This project works on all versions of Windows 10-x64 (2004-1507).
 
+# Compiling - VisualUefi, EDK2
+
+Please follow the instructions on this page https://github.com/ionescu007/VisualUefi.
+
 # HookChain - information and order of hooks...
 
 <img src="https://githacks.org/xerox/voyager/-/raw/f5b9071bd896691a13466f0bd363bd16ee33e41b/img/hookchain.png"/>
