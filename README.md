@@ -23,7 +23,10 @@ This project works on all versions of Windows 10-x64 (2004-1507).
 
 # Compiling - VisualUefi, EDK2
 
-Please follow the instructions on this page https://github.com/ionescu007/VisualUefi.
+Please follow the instructions on this page https://github.com/ionescu007/VisualUefi. After you have compiled the EDK2 libraries, copy the ones
+used by Voyager into the edk2 folder inside of the Voyager folder. You should then be able to compile Voyager.
+
+Note you will need to install nasm and add it to your PATH system variable. This is detailed on `VisualUefi` repo.
 
 # HookChain - information and order of hooks...
 
