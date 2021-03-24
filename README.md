@@ -28,11 +28,11 @@ used by Voyager into the edk2 folder inside of the Voyager folder. You should th
 
 Note you will need to install nasm and add it to your PATH system variable. This is detailed on `VisualUefi` repo.
 
-`At first install NASM (https://www.nasm.us/) and check, that environment variable NASM_PREFIX is correctly set to NASM installation path. No other 3rd party tools are needed.
+*At first install NASM (https://www.nasm.us/) and check, that environment variable NASM_PREFIX is correctly set to NASM installation path. No other 3rd party tools are needed.
 
 Than you should be able to open the EDK-II.SLN file and build without any issues in either Visual Studio 2015 or 2017. WDK is not needed.
 
-Once the EDK-II libraries are built, you should be able to open the SAMPLES.SLN file and build the samples, which will create UefiApplication.efi, UefiDriver.efi, Cryptest.efi, and FtdiUsbSerialDxe.efi`
+Once the EDK-II libraries are built, you should be able to open the SAMPLES.SLN file and build the samples, which will create UefiApplication.efi, UefiDriver.efi, Cryptest.efi, and FtdiUsbSerialDxe.efi*
 
 # HookChain - information and order of hooks...
 
