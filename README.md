@@ -1,12 +1,12 @@
 <div align="center">
     <div>
-        <img src="https://githacks.org/xerox/voyager/-/raw/bc07837aae126ed06130f7524e3f8464d2b3ca13/img/unknown.png"/>
+        <img src="https://git.back.engineering/_xeroxz/Voyager/raw/branch/master/img/unknown.png"/>
     </div>
-    <img src="https://githacks.org/xerox/voyager/-/raw/master/img/amd_badge.svg"/>
-    <img src="https://githacks.org/xerox/voyager/-/raw/master/img/Intel-supported-green.svg"/>
-    <img src="https://githacks.org/xerox/voyager/-/raw/master/img/2004--1507-supported-green.svg"/>
-    <img src="https://githacks.org/xerox/voyager/-/raw/10f786da01b35d23de7abfcfecd6e54ed1efca0f/img/Secure%20Boot-Unsupported-red.svg"/>
-    <img src="https://githacks.org/xerox/voyager/-/raw/master/img/Legacy_BIOS-Unsupported-red.svg"/>
+    <img src="https://git.back.engineering/_xeroxz/Voyager/raw/branch/master/img/amd_badge.svg"/>
+    <img src="https://git.back.engineering/_xeroxz/Voyager/raw/branch/master/img/Intel-supported-green.svg"/>
+    <img src="https://git.back.engineering/_xeroxz/Voyager/raw/branch/master/img/2004--1507-supported-green.svg"/>
+    <img src="https://git.back.engineering/_xeroxz/Voyager/raw/branch/master/img/Secure%20Boot-Unsupported-red.svg"/>
+    <img src="https://git.back.engineering/_xeroxz/Voyager/raw/branch/master/img/Legacy_BIOS-Unsupported-red.svg"/>
 </div>
 
 ***
@@ -32,7 +32,7 @@ Note you will need to install nasm and add it to your PATH system variable. This
 
 # HookChain - information and order of hooks...
 
-<img src="https://githacks.org/xerox/voyager/-/raw/f5b9071bd896691a13466f0bd363bd16ee33e41b/img/hookchain.png"/>
+<img src="https://git.back.engineering/_xeroxz/Voyager/raw/branch/master/img/hookchain.png"/>
 
 ***
 
@@ -125,7 +125,7 @@ mm.cpp and mm.hpp contain all of the memory managment code. Hyper-v has a self r
 This is crucial as without knowing where the PML4 of the current logical processor is located in virtual memory, there is no way to interface with physical memory.
 Each logical processor running under hyper-v has its own host cr3 value (each core has its own host PML4).
 
-<img src="https://githacks.org/_xeroxz/voyager/-/raw/34cacd54a94a6db901c81d323ddf466e45a3cd90/img/sections.PNG"/>
+<img src="https://git.back.engineering/_xeroxz/Voyager/raw/branch/master/img/sections.PNG"/>
 
 ###### Mapping PTE's
 
